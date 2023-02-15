@@ -1,0 +1,4 @@
+.notification-indicator::before {
+    right: 0px;
+    top: 6px;
+}
