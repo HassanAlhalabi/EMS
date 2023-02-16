@@ -1,45 +1,147 @@
-import { Spinner } from "react-bootstrap"
+import { AxiosError } from "axios";
+import { useFormik } from "formik";
+import { Form, Row, Spinner, Col, Toast, ToastContainer } from "react-bootstrap"
+import Feedback from "../../../components/feedback";
+import { usePost } from "../../../hooks"
+import { signInValidation } from "../../../schema/sign-in";
+import { useContext } from 'react';
+import { AuthContext } from "../../../contexts/auth-context";
+import { useNavigate } from "react-router-dom";
+import { setCookie } from "../../../util";
+
+const INITIAL_VALUES = {
+  name: '',
+  password: '',
+  rememberMe: true
+}
 
 const SignIn = () => {
 
+  const navigate = useNavigate();
+  const { setAuthUser } = useContext(AuthContext);
 
-    return (
-      <div className="row flex-center min-vh-100 py-6">
-          <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
-            <div className="d-flex flex-center mb-4">
-              <span className="font-sans-serif fw-bolder fs-5 d-inline-block">EMS</span>
-            </div>
-            <div className="card">
-              <div className="card-body p-4 p-sm-5">
-                <div className="row flex-between-center mb-2">
-                  <div className="col-auto">
-                    <h5>Log in</h5>
-                  </div>
-                </div>
-                <form>
-                  <div className="mb-3"><input className="form-control" type="email" placeholder="Email address" /></div>
-                  <div className="mb-3"><input className="form-control" type="password" placeholder="Password" /></div>
-                  <div className="row flex-between-center">
-                    <div className="col-auto">
-                      <div className="form-check mb-0">
-                        <input className="form-check-input" type="checkbox" id="basic-checkbox" checked={false} />
-                          <label className="form-check-label mb-0" htmlFor="basic-checkbox">Remember me</label>
-                        </div>
-                    </div>
-                    <div className="col-auto"><a className="fs--1" href="forgot-password.html">Forgot Password?</a></div>
-                  </div>
-                  <div className="mb-3">
-                    <button className="btn btn-primary d-block w-100 mt-3 p-2" type="submit" name="submit">
-                      Log in <Spinner size="sm" animation="grow" />
-                    </button>
-                  </div>
-                </form>
+  const formik = useFormik({
+    initialValues: INITIAL_VALUES,
+    onSubmit: () => handleSignIn(),
+    validationSchema: signInValidation
+  })
+
+  const { mutateAsync , isLoading, isError, error } = usePost('/Authenticate', 
+                                        {
+                                          name: formik.values.name,
+                                          password: formik.values.password
+                                        });
+
+  const handleSignIn = async () => {
+
+    // Not Valid ... Do Nothing
+    if(!formik.isValid) return;
+
+    // If All Is Ok ... Do It
+    if(formik.isValid) {
+      try {
+        const mutationReq = await mutateAsync();
+        const user = mutationReq.data;
+        setCookie('EMSUser', user);
+        setAuthUser(true);
+        navigate('/');
+      } catch(error) {
+        const err = error as AxiosError;
+      }
+    }
+ 
+  }
+
+  return (
+    <div className="row flex-center min-vh-100 py-6">
+      <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+
+        <div className="d-flex flex-center mb-4">
+          <span className="font-sans-serif fw-bolder fs-5 d-inline-block">EMS</span>
+        </div>
+        
+        <div className="card">
+          <div className="card-body p-4 p-sm-5">
+
+            <div className="row flex-between-center mb-2">
+              <div className="col-auto">
+                <h5>Log in</h5>
               </div>
             </div>
+
+            <Form noValidate onSubmit={formik.handleSubmit} validated={formik.dirty}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text" 
+                    placeholder="User Name"
+                    name="name"
+                    value={formik.values.name} 
+                    onChange={formik.handleChange} />
+                  <Feedback type="invalid">
+                    {formik.errors.name}
+                  </Feedback>
+                </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control
+                  required
+                  type="password" 
+                  placeholder="Password"
+                  name="password"
+                  value={formik.values.password} 
+                  onChange={formik.handleChange} />
+                <Feedback type="invalid">
+                  {formik.errors.password}
+                </Feedback>
+              </Form.Group>  
+              <Row className="mb-3">
+                <Col>
+                  <Form.Group>
+                    <Form.Check
+                      className="d-inline-block"
+                      id="rememberMe"
+                      type="checkbox"
+                      name="rememberMe" 
+                      checked={formik.values.rememberMe} 
+                      onChange={formik.handleChange} />
+                    <Form.Label htmlFor="rememberMe" className="m-1">Remember me</Form.Label>
+                  </Form.Group>
+                </Col>
+                <Col className="d-flex justify-content-end">
+                  <a className="fs--1" href="forgot-password.html">Forgot Password?</a>
+                </Col>
+              </Row>
+                  
+              <div className="mb-3">
+                <button className="btn btn-primary d-block w-100 mt-3 p-2" type="submit" name="submit">
+                  {
+                    isLoading ? <Spinner size="sm" animation="grow" /> : 'Log in'
+                  }
+                </button>
+              </div>
+            </Form>
+
           </div>
         </div>
-    )
-  }
+      </div>
+      {
+        (isError) && 
+        <ToastContainer className="p-3" position="top-start">
+          <Toast show={isError} delay={3000} autohide bg='danger' className="text-white">
+            <Toast.Header>
+              <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+              <strong className="me-auto">Login Faild</strong>
+              {/* <small>11 mins ago</small> */}
+            </Toast.Header>
+            <Toast.Body>
+              { (error as AxiosError).response?.data[0] }
+            </Toast.Body>
+          </Toast>
+        </ToastContainer>
+      }
+    </div>
+  )
+}
   
-  export default SignIn
+export default SignIn
   

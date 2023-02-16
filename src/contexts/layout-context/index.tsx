@@ -24,7 +24,6 @@ export const LayoutContextProvider = ({children}:{children: ReactNode}) => {
     const [theme, setTheme] = useState<ThemeMode>('LIGHT');
 
     const toggleDrawer = () => { 
-        console.log('Triggered');
         setIsExpanded(prev => !prev);
     };
     
@@ -32,9 +31,9 @@ export const LayoutContextProvider = ({children}:{children: ReactNode}) => {
 
     useEffect(() => {
         handleToggleTheme(theme);
-    },[theme]);
+    }, [theme]);
 
-    return <LayoutContext.Provider value={{ drawerIsExpanded, toggleDrawer, theme, toggleTheme }}>
+    return  <LayoutContext.Provider value={{ drawerIsExpanded, toggleDrawer, theme, toggleTheme }}>
                 {children}
             </LayoutContext.Provider>
 

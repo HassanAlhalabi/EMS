@@ -9,7 +9,7 @@ export const AuthContext = createContext(AUTH_INITIAL_VALUE);
 
 export const AuthProvider = ({children}:{children: ReactNode}) => {
 
-    const [isAuthUser, setIsAuth] = useState(true);
+    const [isAuthUser, setIsAuth] = useState(false);
 
     const handleAuthUser = (isAuth: boolean) => setIsAuth(isAuth);
 
