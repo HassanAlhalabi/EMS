@@ -1,5 +1,6 @@
 import { Children, ReactNode, useState } from "react";
 import { Collapse } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 interface INavLink {
     faIcon: string,
@@ -17,8 +18,8 @@ const NavLink = ({faIcon,title,link, children}:INavLink) => {
 
     return (
         <li className="nav-item">
-            <a  className={`nav-link ${isParent ? 'dropdown-indicator' : '' } ${expanded ? '' : 'collapesed'}`} 
-                href={link} 
+            <Link  className={`nav-link ${isParent ? 'dropdown-indicator' : '' } ${expanded ? '' : 'collapesed'}`} 
+                to={link} 
                 role="button" 
                 aria-expanded={expanded && isParent}
                 aria-controls="dashboard"
@@ -29,7 +30,7 @@ const NavLink = ({faIcon,title,link, children}:INavLink) => {
                     </span>
                     <span className="nav-link-text ps-1">{title}</span>
                 </div>
-            </a>
+            </Link>
             {
             isParent &&
             <Collapse in={expanded}>

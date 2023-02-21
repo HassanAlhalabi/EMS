@@ -1,6 +1,8 @@
 import { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import Logo from '../../assets/img/icons/spot-illustrations/falcon.png';
 import { LayoutContext } from '../../contexts/layout-context';
+import { drawerMenu } from '../../routes';
 import NavList from '../nav-list';
 import NavLink from '../nav-list/nav-link';
 import NavListLabel from '../nav-list/nav-list-label';
@@ -22,30 +24,43 @@ const Drawer = () => {
             </span>
           </button>
         </div>
-        <a className="navbar-brand" href="/">
+        <Link className="navbar-brand" to="/">
           <div className="d-flex align-items-center py-3">
             <img className="me-2" src={Logo} alt="" width="40" />
             <span className="font-sans-serif">falcon</span>
           </div>
-        </a>
+        </Link>
       </div>
 
       <div className={`collapse navbar-collapse ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
-            <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="#">
-              <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="#" />
-            </NavLink>
+            {/* {
+              drawerMenu.map(menuItem => ({
 
-            <NavListLabel title='App' />
+              }))
+            } */}
+
+            <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />
+
+            <NavListLabel title='Users Management' />
+            <NavLink title="Users" faIcon="fas fa-users" link="users" />
+            <NavLink title="Roles" faIcon="fas fa-user" link="roles" />
+
+            <NavListLabel title='University Management' />
+            <NavLink title="Users" faIcon="fas fa-users" link="users" />
+            <NavLink title="Roles" faIcon="fas fa-user" link="roles" />
+            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
+
+            <NavListLabel title='Students Management' />
+            <NavLink title="Users" faIcon="fas fa-users" link="users" />
+            <NavLink title="Roles" faIcon="fas fa-user" link="roles" />
+            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
+
+            <NavListLabel title='Transport Management' />
             <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
             <NavLink title="Chat" faIcon="fas fa-comments" link="#" />
             <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
 
-            <NavListLabel title='Pages' />
-            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#">
-              <NavLink title="Chat" faIcon="fas fa-comments" link="#" />
-              <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
-            </NavLink>
         </NavList>
       </div>
     </nav>

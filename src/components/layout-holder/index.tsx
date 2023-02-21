@@ -16,7 +16,7 @@ const LayoutHolder = ({ children } : { children: ReactNode }) => {
         </div>
       </main>
 
-      <LayoutSettings />
+      {/* <LayoutSettings /> */}
 
     </div>
   )

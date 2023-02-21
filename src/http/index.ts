@@ -1,10 +1,23 @@
 import axios from "axios";
+import { getCookie } from "../util";
 
 export const baseURL = 'http://alimakhlouf222-001-site1.btempurl.com/api';
 
-const HTTPclient = axios.create({
+let HTTPclient = axios.create({
   baseURL,
+  headers: {
+      Authorization : getCookie("EMSUser") && `Bearer ${getCookie("EMSUser").token}`,
+    }
 });
+
+export const updateHTTPClient = () => {
+  HTTPclient = axios.create({
+    baseURL,
+    headers: {
+        Authorization : getCookie("EMSUser") && `Bearer ${getCookie("EMSUser").token}`,
+      }
+  });
+}
 
 // // Request interceptor
 // axios.interceptors.request.use(function (config) {
@@ -15,17 +28,15 @@ const HTTPclient = axios.create({
 //     return Promise.reject(error);
 //   });
 
-// // Response interceptor
-// axios.interceptors.response.use(function (response) {
-//     // Any status code that lie within the range of 2xx cause this function to trigger
-//     // Do something with response data
-//     console.log('Handle Success');
-//     return response;
-//   }, function (error) {
-//     // Any status codes that falls outside the range of 2xx cause this function to trigger
-//     // Do something with response error
-//     console.log('Handle Response Error');
-//     return Promise.reject(error);
-//   });
+// Response interceptor
+HTTPclient.interceptors.response.use(function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response.data;
+  }, function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    return Promise.reject(error);
+  });
 
 export const { get, post, put } = HTTPclient;

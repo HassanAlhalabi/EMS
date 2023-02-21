@@ -1,7 +1,10 @@
 import Cookies from "js-cookie";
 
-export const setCookie = <T>(key: string, data: T, time: number = 1) => {
-    Cookies.set(key, JSON.stringify(data), { expires: time })
+export const setCookie = <T>(key: string, data: T, time?: number) => {
+    if(time) {
+        return Cookies.set(key, JSON.stringify(data), { expires: time });
+    }
+    return Cookies.set(key, JSON.stringify(data));
 }
 
 export const getCookie = (key: string) => {
@@ -13,4 +16,13 @@ export const getCookie = (key: string) => {
         } 
     }
     return null;
+}
+
+export const removeCookie = (key: string) => Cookies.remove(key);
+
+export const isAuthUser = () => {
+    if(getCookie('EMSUser')) {
+        return true;
+    }
+    return false;
 }

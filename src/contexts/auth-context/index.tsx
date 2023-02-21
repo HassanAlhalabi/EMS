@@ -1,4 +1,5 @@
 import { createContext, useState, ReactNode, useEffect } from 'react';
+import { getCookie } from '../../util';
 
 const AUTH_INITIAL_VALUE = {
     isAuthUser: false,
@@ -12,6 +13,13 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     const [isAuthUser, setIsAuth] = useState(false);
 
     const handleAuthUser = (isAuth: boolean) => setIsAuth(isAuth);
+
+    useEffect(() => {
+        const user = getCookie('EMSUser');
+        if(user) {
+            handleAuthUser(true);
+        }
+    },[])
 
     return <AuthContext.Provider value={{isAuthUser: isAuthUser, setAuthUser: handleAuthUser}}>
                 {children}

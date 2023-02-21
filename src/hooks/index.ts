@@ -1,6 +1,18 @@
-import { useMutation } from "react-query";
-import { post, put } from "../http";
+import { useMutation, useQuery } from "react-query";
+import { post, put, get } from "../http";
 import { useState } from 'react';
+
+export const useGet = (path: string, page: number = 1, pageSize: number = 15) => {
+
+    const queryFn = () => get(`${path}?page=${page}&pageSize=${pageSize}`);
+
+    console.log(page)
+    
+    return useQuery([path, page],  queryFn, {
+        keepPreviousData: true
+    })
+
+}
 
 export const usePost = <T>(path: string, data: T) => {
 

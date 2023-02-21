@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import { AuthContext } from "../../../contexts/auth-context";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../../util";
+import { updateHTTPClient } from "../../../http";
 
 const INITIAL_VALUES = {
   name: '',
@@ -42,8 +43,14 @@ const SignIn = () => {
       try {
         const mutationReq = await mutateAsync();
         const user = mutationReq.data;
-        setCookie('EMSUser', user);
+        const cookieTime = formik.values.rememberMe ? 9 : null
+        if(cookieTime) {
+          setCookie('EMSUser', user, cookieTime);
+        } else {
+          setCookie('EMSUser', user);
+        }
         setAuthUser(true);
+        updateHTTPClient();
         navigate('/');
       } catch(error) {
         const err = error as AxiosError;
