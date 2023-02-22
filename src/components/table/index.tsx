@@ -1,31 +1,40 @@
-import { ChangeEvent, forwardRef, useEffect, useMemo, useRef } from "react";
-import { Form } from "react-bootstrap";
-import { Column,
-		 useRowSelect, 
+import {ChangeEvent,
+		forwardRef, 
+		MutableRefObject, 
+		Ref, 
+		useCallback, 
+		useEffect, 
+		useRef } from "react";
+import { useRowSelect, 
 		 useTable, 
 		 usePagination, 
 		 useSortBy } from "react-table";
-import { NULL } from "sass";
-import { PaginationInfo } from "../../types";
-import Loader from "../loader";
 import TableOptions from "./table-options"
 import TablePagination from "./table-pagination"
+import { IndeterminateCheckboxProps, ITable } from "./types";
 
-interface ITable {
-	columns: readonly Column<{}>[],
-	data:  any,
-	isBulk?: boolean,
-	loading?: boolean,
-	setPage: (page: number) => void,
-	setPageSize: (pageSize: number) => void,
-	pagination?: PaginationInfo 
-}
+const useCombinedRefs = (...refs: (Ref<HTMLInputElement> | MutableRefObject<undefined>)[]): 
+									MutableRefObject<any> => {
+	const targetRef = useRef(null);
+	useEffect(() => {
+	  refs.forEach(ref => {
+		if (!ref) return;
+		if (typeof ref === 'function') {
+		  ref(targetRef.current);
+		} else { 
+			// @ts-ignore
+		  	ref.current = targetRef.current;
+		}
+	  });
+	}, [refs]);
+	return targetRef;
+  };
 
-const IndeterminateCheckbox = forwardRef(
-	({ indeterminate, ...rest }, ref) => {
+const IndeterminateCheckbox = forwardRef<HTMLInputElement, IndeterminateCheckboxProps>(
+	({ indeterminate, ...rest }, ref: Ref<HTMLInputElement>) => {
 
 	  	const defaultRef = useRef()
-	  	const resolvedRef = ref || defaultRef
+	  	const resolvedRef = useCombinedRefs(ref, defaultRef)
  
 		useEffect(() => {
 			resolvedRef.current.indeterminate = indeterminate
@@ -39,13 +48,19 @@ const IndeterminateCheckbox = forwardRef(
 	}
 )
 
-const Table = ({ isBulk, 
-				 columns, 
-				 data, 
-				 loading, 
-				 pagination,
-				 setPageSize, 
-				 setPage }: ITable) => {
+const Table = ({ 	isBulk, 
+				 	columns, 
+				 	data, 
+				 	loading, 
+				 	pagination,
+				 	pageNumber,
+				 	pageSize,
+				 	setPageSize, 
+				 	setPage,
+				 	getBulkIds,
+					renderTableOptions,
+					renderRowActions 
+				} : ITable) => {
 
 	const {
 
@@ -54,32 +69,12 @@ const Table = ({ isBulk,
 		headerGroups,
 		rows,
 		prepareRow,
-		selectedFlatRows,
-
-		// Naviagation Functions
-		nextPage,
-		previousPage,
-		gotoPage,
-	
-		state: { selectedRowIds, pageIndex } 
+		// @ts-ignore
+		selectedFlatRows,	
 
 	} = useTable({
 		columns,
-		data,
-		// useControlledState: state => {
-		// 	return useMemo(
-		// 	  () => ({
-		// 		...state,
-		// 		data
-		// 		pageIndex: pagination?.pageNo - 1,
-		// 	  }),
-		// 	  [state, pagination?.pageNo]
-		// 	)
-		// },
-		initialState: { 
-			pageIndex: pagination?.pageNo - 1, 
-			pageSize: pagination?.pageSize,
-		}
+		data
 	},
 
 	useSortBy,
@@ -93,6 +88,7 @@ const Table = ({ isBulk,
           id: 'selection',
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
+		  // @ts-ignore
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <div className="form-check mb-0">
               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
@@ -102,7 +98,10 @@ const Table = ({ isBulk,
           // to the render a checkbox
           Cell: ({ row }) => (
             <div className="form-check mb-0">
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              <IndeterminateCheckbox {
+				// @ts-ignore
+				...row.getToggleRowSelectedProps()
+				} />
             </div>
           ),
         },
@@ -110,130 +109,105 @@ const Table = ({ isBulk,
       ])
     });
 
-	const handlePrevPage = () =>  { 
-		setPage(prev => prev - 1);
-		previousPage();
-	}
-	const handleNextPage = () => { 
-		setPage(prev => prev + 1);
-		nextPage();
-	}
+	const handlePrevPage = useCallback(() => setPage((prev: number) => prev - 1),[pageNumber, pageSize])
+	const handleNextPage = useCallback(() => setPage((prev: number) => prev + 1),[pageNumber, pageSize]);
+
 	const handlePageSize = (e: ChangeEvent<HTMLSelectElement>) => { 
 		const newPageSize = Number(e.target.value);
-		if(newPageSize > (pagination?.totalItems / newPageSize)) {
+		if(newPageSize > (pagination.totalItems / newPageSize)) {
 			setPage(1);
 		}
 		setPageSize(newPageSize);
 	}
 	const handleGoToPage = (e: ChangeEvent<HTMLInputElement>) => {
 		const newPageNumber = Number(e.target.value);
-		if(	newPageNumber > pagination?.totalPages || 
+		if(	newPageNumber > pagination.totalPages || 
 			newPageNumber <= 0 ) {
 				return;
 		}
 		setPage(newPageNumber);
 	}
 
-	
-
 	return (
 		<>
-			{loading && <Loader />}
+
 			<div className="d-flex align-items-center justify-content-between mb-2">
 					
-				<div className="d-flex justify-content-between mt-3" data-list>
-
-					<div className="d-flex justify-content-between align-items-center">
-						<button className="btn btn-sm btn-falcon-default me-1"
-								type="button" 
-								title="Previous"
-								onClick={handlePrevPage} disabled={!pagination?.hasPrevious}>
-							<span className="fas fa-chevron-left"></span>
-						</button>
-						<button className="btn btn-sm btn-falcon-default me-1" 
-								type="button" 
-								title="Previous"
-								onClick={handleNextPage} disabled={!pagination?.hasNext}>
-							<span className="fas fa-chevron-right"></span>
-						</button>
-					</div>
-
-
-
-					<div className="d-flex align-items-center m-1">
-						<strong>
-							Page {pagination?.pageNo} of {pagination?.totalPages}
-						</strong>
-					</div>
-
-					<div className="d-flex align-items-center justify-content-between">
-						<span>
-							<span className="m-1">| Go to page:</span>
-							<Form.Control
-								type="number"
-								min={1}
-								max={pagination?.totalPages}
-								defaultValue={pageIndex + 1}
-								onChange={handleGoToPage}
-								style={{ width: '100px', display: 'inline-block' }}
-								className="m-1"
-							/>
-						</span>
-						<Form.Select
-							style={{ width: '140px' }}
-							defaultValue={pagination?.pageSize}
-							onChange={handlePageSize}
-						>
-							{[1,5, 10,15,20,30,40,50].map(pageSize => (
-								<option key={pageSize} value={pageSize}>
-									Show {pageSize}
-								</option>
-							))}
-						</Form.Select>
-					</div>
-
-				</div>
+				<TablePagination
+					loading={loading as boolean}
+				    pagination={pagination}
+					pageNumber={pageNumber}
+					pageSize={pageSize}
+					handlePrevPage={handlePrevPage}
+					handleNextPage={handleNextPage}
+					handleGoToPage={handleGoToPage}
+					handlePageSize={handlePageSize}
+				/>
 				
-				<TableOptions />
+				<TableOptions>
+					{ renderTableOptions && renderTableOptions() }
+				</TableOptions>
 			
 			</div>
 
 			<div className="table-responsive scrollbar">
-					<table className="table mb-0" {...getTableProps()}>
-						<thead className="text-black bg-200">
+				<table className="table mb-0" {...getTableProps()}>
+					<thead className="text-black bg-200">
 						{headerGroups.map(headerGroup => (
 							<tr {...headerGroup.getHeaderGroupProps()}>
-								{headerGroup.headers.map(column => (
-									<th className="align-middle" {...column.getHeaderProps(column.getSortByToggleProps())}>
-										{column.render('Header')}
-										<span className="sort-arrow">
-											{column.isSorted
-											? column.isSortedDesc
-												? ' ⬇'
-												: ' ⬆'
-											: ''}
-										</span>
-									</th>
-								))}
+								{headerGroup.headers.map(column => {
+									// If Options Column Show No Sort
+									if(column.id === 'options') {
+										return (
+											<th className="align-middle" {
+												// @ts-ignore
+												...column.getHeaderProps()}>
+												{column.render('Header')}
+											</th>
+										)
+									} 
+									return (
+										<th className="align-middle" {
+											// @ts-ignore
+											...column.getHeaderProps(column.getSortByToggleProps())}>
+											{column.render('Header')}
+											<span className="sort-arrow">
+												{
+													// @ts-ignore
+													column.isSorted ? column.isSortedDesc
+														? ' ⬇'
+														: ' ⬆'
+													: ''
+												}
+											</span>
+										</th>
+									)
+									}
+									)}
 							</tr>
 						))}
-						</thead>
-						<tbody {...getTableBodyProps()}>
-								{
-									data ?
-									rows.map((row, i) => {
-										prepareRow(row);
-										return (
-											<tr {...row.getRowProps()}>
-												{row.cells.map(cell => {
-													return <td className="align-middle" {...cell.getCellProps()}>{cell.render('Cell')}</td>
-												})}
-											</tr>
-										)
-									}) : 'Loading'
-								}
-						</tbody>
-					</table>
+					</thead>
+					<tbody {...getTableBodyProps()}>
+							{
+								data ?
+								rows.map((row, i) => {
+									prepareRow(row);
+									return (
+										<tr {...row.getRowProps()}>
+											{row.cells.map(cell => {
+												if(cell.column.id === 'options') {
+													return <td className="align-middle" {...cell.getCellProps()}>
+														{renderRowActions && renderRowActions() }
+													</td>
+												}
+												return <td className="align-middle" {...cell.getCellProps()}>{cell.render('Cell')}</td>
+											})}
+										</tr>
+									)
+								}) : 'Loading'
+							}
+					</tbody>
+				</table>
 			</div>
 		</>
    	)

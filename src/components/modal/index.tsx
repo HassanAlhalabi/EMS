@@ -13,7 +13,7 @@ const PopUp = (props: ModalProps & PopUpExtra) => {
       centered
       {...props}
     >
-      <Modal.Header className="bg-light" closeButton >
+      <Modal.Header className="bg-light" closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           {props.title}
         </Modal.Title>
@@ -29,7 +29,7 @@ const PopUp = (props: ModalProps & PopUpExtra) => {
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
-        <Button onClick={props.onEnter}>Do It</Button>
+        <Button>Do It</Button>
       </Modal.Footer>
     </Modal>
   )

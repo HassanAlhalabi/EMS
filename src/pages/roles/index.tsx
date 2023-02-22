@@ -1,12 +1,13 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import RSTable from "../../components/rstable";
+import { usePagination, useRowSelect, useSortBy } from "react-table";
 import Table from "../../components/table"
-import { useGet } from "../../hooks";
 import { get } from "../../http";
 
-const USERS_INITIAL_STATE = {
-  users: []
+const ROLES_INITIAL_STATE = {
+    data: {
+        roles: []
+    }
 }
 
 const RolesPage = () => {
@@ -14,20 +15,20 @@ const RolesPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
 
-  // const { data, isLoading, isFetching } = useGet('/User/GetAllUsers', page, pageSize);
   const { data, isLoading, isFetching } = useQuery(
                                             ['/Role/GetAllRoles', page, pageSize], 
-                                            () => get(`/User/GetAllRoles?page=${page}&pageSize=${pageSize}`),
+                                            () => get(`/Role/GetAllRoles?page=${page}&pageSize=${pageSize}`),
                                             {
-                                              initialData: USERS_INITIAL_STATE,
-                                              keepPreviousData: true,
+                                                // @ts-ignore
+                                                initialData: ROLES_INITIAL_STATE,
+                                                keepPreviousData: true,
                                             });
 
     const columns = useMemo(
         () => [
             {
                 Header: 'Role Name',
-                accessor: 'roleName',
+                accessor: 'name',
             },
             {
                 Header: 'Options',
@@ -37,19 +38,24 @@ const RolesPage = () => {
         []
     )
 
-  const users = useMemo(
-    () => data.users,
-    [data, isFetching, isLoading]
+  const roles = useMemo(
+    () => {
+        if(data && data.data.roles) {
+            return  data.data.roles
+        }
+        return [];
+    },
+    [data, isFetching, isLoading, page]
   );
 
   return  <Table  columns={columns} 
-                  data={users} 
-                  loading={isLoading || isFetching} 
+                  data={roles} 
+                  loading={isLoading || isFetching}
+                  pageNumber={page}
+                  pageSize={pageSize}
                   setPage={setPage}
                   setPageSize={setPageSize}
-                  pageSize={pageSize}
-                  pagination={data?.paginationInfo} />
-  // return <RSTable />
+                  pagination={data?.data.paginationInfo} />
 
 }
 

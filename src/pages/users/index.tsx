@@ -1,23 +1,26 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import RSTable from "../../components/rstable";
 import Table from "../../components/table"
-import { useGet } from "../../hooks";
 import { get } from "../../http";
 
 const USERS_INITIAL_STATE = {
-  users: []
+  data: {
+      users: [],
+      paginationInfo: {
+    }
+  }
 }
 
 const UsersPage = () => {
 
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(15);
+  const [pageSize, setPageSize] = useState(1);
 
   const { data, isLoading, isFetching } = useQuery(
                                             ['/User/GetAllUsers', page, pageSize], 
                                             () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}`),
                                             {
+                                              // @ts-ignore
                                               initialData: USERS_INITIAL_STATE,
                                               keepPreviousData: true,
                                             });
@@ -57,17 +60,18 @@ const UsersPage = () => {
 	 )
 
   const users = useMemo(
-    () => data.users,
+    () => (data?.data.users),
     [data, isFetching, isLoading]
   );
 
   return  <Table  columns={columns} 
                   data={users} 
                   loading={isLoading || isFetching} 
+                  pageNumber={page}
+                  pageSize={pageSize}
                   setPage={setPage}
                   setPageSize={setPageSize}
-                  pageSize={pageSize}
-                  pagination={data?.paginationInfo} />
+                  pagination={data?.data.paginationInfo} />
   // return <RSTable />
 
 }

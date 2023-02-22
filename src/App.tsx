@@ -31,15 +31,6 @@ function App() {
         <Suspense fallback={<Loader />}>
           <Routes>
             {renderRoutes(routes)}
-              {/* <Route path='/' element={<ProtectedRoute>
-                                          <Main />
-                                        </ProtectedRoute>}>
-                <Route index path='/' element={<div>Dashboard</div>} />
-                <Route path='/users' element={<UsersPage />} />
-                <Route path='/roles' element={<RolesPage />} />
-              </Route>
-              <Route path='/sign-in' element={<SignIn />} />
-              <Route path='*' element={<SignIn />} /> */}
           </Routes>
         </Suspense>
       </BrowserRouter>
