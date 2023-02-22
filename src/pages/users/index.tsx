@@ -72,7 +72,6 @@ const UsersPage = () => {
                   setPage={setPage}
                   setPageSize={setPageSize}
                   pagination={data?.data.paginationInfo} />
-  // return <RSTable />
 
 }
 

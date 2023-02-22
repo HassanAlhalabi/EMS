@@ -7,7 +7,7 @@ import { signInValidation } from "../../../schema/sign-in";
 import { useContext } from 'react';
 import { AuthContext } from "../../../contexts/auth-context";
 import { useNavigate } from "react-router-dom";
-import { setCookie } from "../../../util";
+import { printAxiosError, setCookie } from "../../../util";
 import { updateHTTPClient } from "../../../http";
 
 const INITIAL_VALUES = {
@@ -53,7 +53,7 @@ const SignIn = () => {
         updateHTTPClient();
         navigate('/');
       } catch(error) {
-        const err = error as AxiosError;
+        return;
       }
     }
  
@@ -141,7 +141,7 @@ const SignIn = () => {
               {/* <small>11 mins ago</small> */}
             </Toast.Header>
             <Toast.Body>
-              { (error as AxiosError).response?.data[0] }
+              { printAxiosError(error) }
             </Toast.Body>
           </Toast>
         </ToastContainer>

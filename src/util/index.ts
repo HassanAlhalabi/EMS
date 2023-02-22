@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { AxiosError } from 'axios';
 
 export const setCookie = <T>(key: string, data: T, time?: number) => {
     if(time) {
@@ -25,4 +26,11 @@ export const isAuthUser = () => {
         return true;
     }
     return false;
+}
+
+export const printAxiosError = (error: unknown) => {
+    const err = error as AxiosError;
+    if(err.response) { 
+        return (err.response.data as string[])[0];
+    }
 }
