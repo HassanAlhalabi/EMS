@@ -2,13 +2,13 @@ import {ChangeEvent,
 		forwardRef, 
 		MutableRefObject, 
 		Ref, 
-		useCallback, 
 		useEffect, 
 		useRef } from "react";
 import { useRowSelect, 
 		 useTable, 
 		 usePagination, 
 		 useSortBy } from "react-table";
+import { Role } from "../../types/roles";
 import TableOptions from "./table-options"
 import TablePagination from "./table-pagination"
 import { IndeterminateCheckboxProps, ITable } from "./types";
@@ -49,6 +49,7 @@ const IndeterminateCheckbox = forwardRef<HTMLInputElement, IndeterminateCheckbox
 )
 
 const Table = ({ 	isBulk, 
+					hasSort,
 				 	columns, 
 				 	data, 
 				 	loading, 
@@ -57,13 +58,21 @@ const Table = ({ 	isBulk,
 				 	pageSize,
 				 	setPageSize, 
 				 	setPage,
-				 	getBulkIds,
 					renderTableOptions,
-					renderRowActions 
+					renderRowActions,
+					fetchData,
 				} : ITable) => {
+	
+	
+	let  plugins = [useSortBy, usePagination, useRowSelect];
+	if(!isBulk) {
+		plugins = plugins.filter(plugin => plugin !== useRowSelect)
+	}
+	if(!hasSort) {
+		plugins = plugins.filter(plugin => plugin !== useSortBy)
+	}
 
 	const {
-
 		getTableProps,
 		getTableBodyProps,
 		headerGroups,
@@ -77,41 +86,41 @@ const Table = ({ 	isBulk,
 		data
 	},
 
-	useSortBy,
-	usePagination,
-	useRowSelect,
+	...plugins,
 
 	hooks => {
-      hooks.visibleColumns.push(columns => [
-        // Let's make a column for selection
-        {
-          id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-		  // @ts-ignore
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div className="form-check mb-0">
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }) => (
-            <div className="form-check mb-0">
-              <IndeterminateCheckbox {
-				// @ts-ignore
-				...row.getToggleRowSelectedProps()
-				} />
-            </div>
-          ),
-        },
-        ...columns,
-      ])
+		if(isBulk) {
+			hooks.visibleColumns.push(columns => [
+				// Let's make a column for selection
+				{
+				  id: 'selection',
+				  // The header can use the table's getToggleAllRowsSelectedProps method
+				  // to render a checkbox
+				  // @ts-ignore
+				  Header: ({ getToggleAllRowsSelectedProps }) => (
+					<div className="form-check mb-0">
+					  <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+					</div>
+				  ),
+				  // The cell can use the individual row's getToggleRowSelectedProps method
+				  // to the render a checkbox
+				  Cell: ({ row }) => (
+					<div className="form-check mb-0">
+					  <IndeterminateCheckbox {
+						// @ts-ignore
+						...row.getToggleRowSelectedProps()
+						} />
+					</div>
+				  ),
+				},
+				...columns,
+			])
+		}
     });
 
-	const handlePrevPage = useCallback(() => setPage((prev: number) => prev - 1),[pageNumber, pageSize])
-	const handleNextPage = useCallback(() => setPage((prev: number) => prev + 1),[pageNumber, pageSize]);
-
+	// Pagination Actions
+	const handlePrevPage = () => setPage((prev: number) => prev - 1);
+	const handleNextPage = () => setPage((prev: number) => prev + 1)
 	const handlePageSize = (e: ChangeEvent<HTMLSelectElement>) => { 
 		const newPageSize = Number(e.target.value);
 		if(newPageSize > (pagination.totalItems / newPageSize)) {
@@ -169,7 +178,7 @@ const Table = ({ 	isBulk,
 									return (
 										<th className="align-middle" {
 											// @ts-ignore
-											...column.getHeaderProps(column.getSortByToggleProps())}>
+											...column.getHeaderProps(hasSort && column.getSortByToggleProps())}>
 											{column.render('Header')}
 											<span className="sort-arrow">
 												{
@@ -197,7 +206,7 @@ const Table = ({ 	isBulk,
 											{row.cells.map(cell => {
 												if(cell.column.id === 'options') {
 													return <td className="align-middle" {...cell.getCellProps()}>
-														{renderRowActions && renderRowActions() }
+														{renderRowActions && renderRowActions((cell.row.original as Role).id) }
 													</td>
 												}
 												return <td className="align-middle" {...cell.getCellProps()}>{cell.render('Cell')}</td>

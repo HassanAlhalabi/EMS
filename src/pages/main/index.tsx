@@ -6,10 +6,10 @@ import { LayoutContextProvider } from "../../contexts/layout-context"
 const Main = () => {
   return (
     <LayoutContextProvider>
-        <LayoutHolder>
-            <Drawer />
-            <MainContent />
-        </LayoutHolder>
+      <LayoutHolder>
+          <Drawer />
+          <MainContent />
+      </LayoutHolder>
     </LayoutContextProvider>
   )
 }

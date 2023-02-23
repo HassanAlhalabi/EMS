@@ -1,5 +1,7 @@
 import Cookies from "js-cookie";
 import { AxiosError } from 'axios';
+import jwt_decode from "jwt-decode";
+import { IDecodedToken } from "../types/token";
 
 export const setCookie = <T>(key: string, data: T, time?: number) => {
     if(time) {
@@ -28,9 +30,29 @@ export const isAuthUser = () => {
     return false;
 }
 
-export const printAxiosError = (error: unknown) => {
+export const getAxiosError = (error: unknown) => {
     const err = error as AxiosError;
     if(err.response) { 
         return (err.response.data as string[])[0];
     }
+}
+
+export const getClaimsMap = () => {
+    var decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
+    const claimsMap = new Map();
+    decodedToken.Claims.map((claim: string) => {
+        const claimTitle = claim.split('.')[1];
+        const claimType = claim.split('.')[2];
+        if(claimsMap.has(claimTitle)) {
+            const oldClaims = claimsMap.get(claimTitle);
+            claimsMap.set(claimTitle, [...oldClaims, claimType]);
+            return;
+        }
+        return claimsMap.set(claimTitle, [ claimType ])
+    });
+    return claimsMap;
+}
+
+export const capitalize = (word: string) => {
+    return word.charAt(0) + word.slice(1).toLowerCase();
 }

@@ -6,6 +6,7 @@ export interface ITable {
 	columns: readonly Column<{}>[],
 	data:  any,
 	isBulk?: boolean,
+	hasSort?: boolean,
 	loading?: boolean,
 	pageNumber?: number,
 	pageSize: number, 
@@ -14,7 +15,8 @@ export interface ITable {
 	pagination: PaginationInfo,
 	getBulkIds?: () => string[]
 	renderTableOptions?: () => ReactNode,
-	renderRowActions?: () => ReactNode
+	renderRowActions?: (id: string) => ReactNode,
+	fetchData?: () => void
 }
 
 export interface IndeterminateCheckboxProps {

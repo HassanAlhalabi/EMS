@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { Form, Row, Spinner, Col, Toast, ToastContainer } from "react-bootstrap"
 import Feedback from "../../../components/feedback";
@@ -7,7 +6,7 @@ import { signInValidation } from "../../../schema/sign-in";
 import { useContext } from 'react';
 import { AuthContext } from "../../../contexts/auth-context";
 import { useNavigate } from "react-router-dom";
-import { printAxiosError, setCookie } from "../../../util";
+import { getAxiosError, setCookie } from "../../../util";
 import { updateHTTPClient } from "../../../http";
 
 const INITIAL_VALUES = {
@@ -141,7 +140,7 @@ const SignIn = () => {
               {/* <small>11 mins ago</small> */}
             </Toast.Header>
             <Toast.Body>
-              { printAxiosError(error) }
+              { getAxiosError(error) }
             </Toast.Body>
           </Toast>
         </ToastContainer>

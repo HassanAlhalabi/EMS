@@ -2,13 +2,9 @@
 import { Suspense } from 'react';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import './assets/css/theme.min.css';
+import "react-toastify/dist/ReactToastify.css";
 import './assets/css/user.css';
 import Loader from './components/loader';
-import ProtectedRoute from './components/protected-route';
-import SignIn from './pages/auth/sign-in';
-import Main from './pages/main';
-import RolesPage from './pages/roles';
-import UsersPage from './pages/users';
 import { routes } from './routes';
 import { IRoute } from './types/routes';
 

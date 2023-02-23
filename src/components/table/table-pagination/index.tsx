@@ -20,13 +20,13 @@ const TablePagination = ({
 			<button className="btn btn-sm btn-falcon-default me-1"
 					type="button" 
 					title="Previous"
-					onClick={handlePrevPage} disabled={!pagination.hasPrevious || loading}>
+					onClick={handlePrevPage} disabled={!pagination?.hasPrevious || loading}>
 				<span className="fas fa-chevron-left"></span>
 			</button>
 			<button className="btn btn-sm btn-falcon-default me-1" 
 					type="button" 
 					title="Previous"
-					onClick={handleNextPage} disabled={!pagination.hasNext || loading}>
+					onClick={handleNextPage} disabled={!pagination?.hasNext || loading}>
 				<span className="fas fa-chevron-right"></span>
 			</button>
 		</div>
@@ -57,7 +57,7 @@ const TablePagination = ({
 				value={pageSize}
 				onChange={handlePageSize}
 			>
-				{[1, 5, 10,15,20,30,40,50].map(pageSize => (
+				{[5,10,15,20,30,40,50].map(pageSize => (
 					<option key={pageSize} value={pageSize}>
 						Show {pageSize}
 					</option>

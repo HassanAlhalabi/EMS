@@ -4,6 +4,7 @@ import { QueryClient, QueryFunction } from 'react-query';
 import { QueryClientProvider } from 'react-query'
 import App from './App'
 import { AuthProvider } from './contexts/auth-context'
+import { LayoutContextProvider } from './contexts/layout-context';
 import { baseURL, get } from './http';
 
 
