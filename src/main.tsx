@@ -5,6 +5,7 @@ import { QueryClientProvider } from 'react-query'
 import App from './App'
 import { AuthProvider } from './contexts/auth-context'
 import { LayoutContextProvider } from './contexts/layout-context';
+import { LocalizeProvider } from './contexts/localize-context';
 import { baseURL, get } from './http';
 
 
@@ -29,10 +30,14 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </AuthProvider>
+    <LayoutContextProvider>
+      <LocalizeProvider>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </AuthProvider>
+      </LocalizeProvider>
+    </LayoutContextProvider>
   </React.StrictMode>,
 )

@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { Form, Row, Spinner, Col, Toast, ToastContainer } from "react-bootstrap"
+import { Form, Row, Spinner, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback";
 import { usePost } from "../../../hooks"
 import { signInValidation } from "../../../schema/sign-in";
@@ -8,6 +8,7 @@ import { AuthContext } from "../../../contexts/auth-context";
 import { useNavigate } from "react-router-dom";
 import { getAxiosError, setCookie } from "../../../util";
 import { updateHTTPClient } from "../../../http";
+import { toast } from "react-toastify";
 
 const INITIAL_VALUES = {
   name: '',
@@ -52,7 +53,7 @@ const SignIn = () => {
         updateHTTPClient();
         navigate('/');
       } catch(error) {
-        return;
+        toast.error(getAxiosError(error));
       }
     }
  
@@ -130,21 +131,6 @@ const SignIn = () => {
           </div>
         </div>
       </div>
-      {
-        (isError) && 
-        <ToastContainer className="p-3" position="top-start">
-          <Toast show={isError} delay={3000} autohide bg='danger' className="text-white">
-            <Toast.Header>
-              <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-              <strong className="me-auto">Login Faild</strong>
-              {/* <small>11 mins ago</small> */}
-            </Toast.Header>
-            <Toast.Body>
-              { getAxiosError(error) }
-            </Toast.Body>
-          </Toast>
-        </ToastContainer>
-      }
     </div>
   )
 }

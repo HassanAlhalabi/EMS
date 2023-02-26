@@ -40,7 +40,7 @@ export const routes = [
                 element: <Roles />
             },
         ],
-        element: <Main />
+        element: <ProtectedRoute><Main /></ProtectedRoute>
     },
     {
         id: 'main',

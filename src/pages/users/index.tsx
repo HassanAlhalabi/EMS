@@ -9,6 +9,7 @@ import { PAGINATION_INFO } from "../../constants";
 import { usePost } from "../../hooks";
 import { get } from "../../http";
 import { addUserValidation } from "../../schema/user";
+import UserForm from "./user-form";
 
 const USERS_INITIAL_STATE = {
   data: {
@@ -136,53 +137,7 @@ const UsersPage = () => {
                     onHide={() => setModalShow(false)}
                     confirmText="Add Role"
                     handleConfirm={formik.handleSubmit}>
-                    <Form noValidate validated={formik.dirty}>
-                        <Form.Group className="mb-3">
-                            <Form.Control
-                                size="lg"
-                                required
-                                type="text" 
-                                placeholder="User Name"
-                                name="userName"
-                                value={formik.values.userName} 
-                                onChange={formik.handleChange} />
-                            <Feedback type="invalid">
-                                {formik.errors.userName}
-                            </Feedback>
-                        </Form.Group> 
-                        <Row>
-                          <Col>
-                            <Form.Group className="mb-3">
-                              <Form.Control
-                                  size="lg"
-                                  required
-                                  type="text" 
-                                  placeholder="First Name"
-                                  name="firstName"
-                                  value={formik.values.firstName} 
-                                  onChange={formik.handleChange} />
-                              <Feedback type="invalid">
-                                  {formik.errors.firstName}
-                              </Feedback>
-                            </Form.Group>
-                          </Col>
-                          <Col>
-                            <Form.Group className="mb-3">
-                              <Form.Control
-                                  size="lg"
-                                  required
-                                  type="text" 
-                                  placeholder="First Name"
-                                  name="firstName"
-                                  value={formik.values.firstName} 
-                                  onChange={formik.handleChange} />
-                              <Feedback type="invalid">
-                                  {formik.errors.firstName}
-                              </Feedback>
-                            </Form.Group>
-                          </Col>
-                        </Row>  
-                  </Form>
+                    <UserForm formik={formik} />
               </PopUp>
               </>
 }

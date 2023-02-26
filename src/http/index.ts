@@ -6,7 +6,8 @@ export const baseURL = 'http://alimakhlouf222-001-site1.btempurl.com/api';
 let HTTPclient = axios.create({
   baseURL,
   headers: {
-      Authorization : getCookie("EMSUser") && `Bearer ${getCookie("EMSUser").token}`,
+      'Authorization' : getCookie("EMSUser") && `Bearer ${getCookie("EMSUser").token}`,
+      'Accept-Language': getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN'
     }
 });
 
@@ -14,7 +15,8 @@ export const updateHTTPClient = () => {
   HTTPclient = axios.create({
     baseURL,
     headers: {
-        Authorization : getCookie("EMSUser") && `Bearer ${getCookie("EMSUser").token}`,
+        'Authorization' : getCookie("EMSUser") && `Bearer ${getCookie("EMSUser").token}`,
+        'Accept-Language': getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN'
       }
   });
 }
@@ -39,4 +41,4 @@ HTTPclient.interceptors.response.use(function (response) {
     return Promise.reject(error);
   });
 
-export const { get, post, put } = HTTPclient;
+export const { get, post, put, delete: deleteReq } = HTTPclient;

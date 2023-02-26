@@ -1,4 +1,5 @@
 import { Button, Modal, ModalProps, Spinner } from "react-bootstrap";
+import { ButtonVariant } from "react-bootstrap/esm/types";
 import { capitalize } from "../../util";
 import Loader from "../loader";
 
@@ -6,6 +7,7 @@ interface PopUpExtra {
     title?: string,
     handleConfirm?: () => void,
     confirmText?: string,
+    confirmButtonVariant?: ButtonVariant,
     actionLoading?: boolean,
     children?: React.ReactNode,
 }
@@ -18,7 +20,6 @@ const PopUp = (props: ModalProps & PopUpExtra) => {
       centered
       {...props}
     >
-      {props.actionLoading && <Loader />}
       <Modal.Header className="bg-light" closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           {props.title}
@@ -29,7 +30,8 @@ const PopUp = (props: ModalProps & PopUpExtra) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="default" onClick={props.onHide}>Close</Button>
-        <Button onClick={props.handleConfirm} style={{textTransform: 'capitalize'}}>
+        <Button variant={props.confirmButtonVariant} 
+                onClick={props.handleConfirm} style={{textTransform: 'capitalize'}}>
           {props.confirmText ? capitalize(props.confirmText) : 'Ok'}
         </Button>
       </Modal.Footer>

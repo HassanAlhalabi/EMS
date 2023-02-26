@@ -4,6 +4,7 @@ import { getClaimsMap } from "../../../util";
 import { FormikHook } from '../../../types/formik/index';
 
 const RoleForm = ({formik}:{formik: FormikHook}) => {
+	console.log(formik.values)
   return (
     <Form noValidate validated={formik.dirty}>
         <Form.Group className="mb-3">

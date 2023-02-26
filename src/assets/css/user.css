@@ -29,3 +29,7 @@ table tr td:last-of-type {
 .was-validated .invalid-feedback {
     display: block;
 }
+
+.screen-loader {
+    background-color: #FFFFFF66;
+}
