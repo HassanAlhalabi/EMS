@@ -11,6 +11,7 @@ import RoleForm from "./role-form";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../util";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
+import { Role } from "../../types/roles";
 
 const INITIAL_VALUES: {name: string, roleClaims: string[]} = {
     name: '',
@@ -132,7 +133,8 @@ const RolesPage = () => {
     }
 
     return  <>
-                <Table  columns={columns} 
+                <Table<Role>  
+                        columns={columns} 
                         data={roles} 
                         loading={isLoading || isFetching}
                         isBulk={false}
@@ -152,13 +154,13 @@ const RolesPage = () => {
                                     </button>
                                 </>
                         }} 
-                        renderRowActions={(roleId: string) => {
+                        renderRowActions={(data) => {
                             return  <>
                                         <button className="btn btn-falcon-info btn-sm m-1" 
                                                 type="button" 
                                                 onClick={() => {
                                                         setAction(ACTION_TYPES.update)
-                                                        setRoleId(roleId);
+                                                        setRoleId(data.id);
                                                 }}>        
                                             <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                                         </button>
@@ -166,7 +168,7 @@ const RolesPage = () => {
                                                 type="button" 
                                                 onClick={() => {
                                                         setAction(ACTION_TYPES.delete);
-                                                        setRoleId(roleId);
+                                                        setRoleId(data.id);
                                                 }}>        
                                             <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                                         </button>

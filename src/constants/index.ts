@@ -18,5 +18,6 @@ export const PAGINATION_INFO = {
 export const ACTION_TYPES = {
     add:    'ADD',
     update: 'UPDATE',
-    delete: 'DELETE'
+    delete: 'DELETE',
+    toggle: 'TOGGLE'
 }

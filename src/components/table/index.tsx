@@ -4,11 +4,12 @@ import {ChangeEvent,
 		Ref, 
 		useEffect, 
 		useRef } from "react";
+import { Tab } from "react-bootstrap";
 import { useRowSelect, 
 		 useTable, 
 		 usePagination, 
 		 useSortBy } from "react-table";
-import { Role } from "../../types/roles";
+import TableLoader from "../table-loader";
 import TableOptions from "./table-options"
 import TablePagination from "./table-pagination"
 import { IndeterminateCheckboxProps, ITable } from "./types";
@@ -48,7 +49,7 @@ const IndeterminateCheckbox = forwardRef<HTMLInputElement, IndeterminateCheckbox
 	}
 )
 
-const Table = ({ 	isBulk, 
+const Table = <T extends unknown>({ 	isBulk, 
 					hasSort,
 				 	columns, 
 				 	data, 
@@ -60,8 +61,7 @@ const Table = ({ 	isBulk,
 				 	setPage,
 					renderTableOptions,
 					renderRowActions,
-					fetchData,
-				} : ITable) => {
+				} : ITable<T>) => {
 	
 	
 	let  plugins = [useSortBy, usePagination, useRowSelect];
@@ -158,8 +158,10 @@ const Table = ({ 	isBulk,
 				</TableOptions>
 			
 			</div>
-
 			<div className="table-responsive scrollbar">
+				{
+					data.length === 0 && <TableLoader />
+				} 	
 				<table className="table mb-0" {...getTableProps()}>
 					<thead className="text-black bg-200">
 						{headerGroups.map(headerGroup => (
@@ -196,26 +198,34 @@ const Table = ({ 	isBulk,
 							</tr>
 						))}
 					</thead>
-					<tbody {...getTableBodyProps()}>
-							{
-								data ?
-								rows.map((row, i) => {
-									prepareRow(row);
-									return (
-										<tr {...row.getRowProps()}>
-											{row.cells.map(cell => {
-												if(cell.column.id === 'options') {
-													return <td className="align-middle" {...cell.getCellProps()}>
-														{renderRowActions && renderRowActions((cell.row.original as Role).id) }
+					{
+						data.length !== 0 && 
+						<tbody {...getTableBodyProps()}>
+						{
+							rows.map((row, i) => {
+								prepareRow(row);
+								return (
+									<tr {...row.getRowProps()}>
+										{row.cells.map(cell => {
+											if(cell.column.id === 'options') {
+												return 	<td className="align-middle" {...cell.getCellProps()}>
+															{	
+																renderRowActions && 
+																renderRowActions(cell.row.original as T) 
+															}
+														</td>
+											}
+											return 	<td className="align-middle" 
+														{...cell.getCellProps()}>
+															{cell.render('Cell')}
 													</td>
-												}
-												return <td className="align-middle" {...cell.getCellProps()}>{cell.render('Cell')}</td>
-											})}
-										</tr>
-									)
-								}) : 'Loading'
-							}
+										})}
+									</tr>
+								)
+							})
+						}
 					</tbody>
+					}
 				</table>
 			</div>
 		</>

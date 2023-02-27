@@ -20,14 +20,13 @@ export const usePost = <T>(path: string, data: T) => {
 
 }
 
-export const usePut = <T>(path: string, data: T) => {
+export const usePut = <T>(path: string, data?: T) => {
 
     const mutationFn = async () => await put(path, data);
     
     return useMutation(mutationFn);
 
 }
-
 
 export const useDelete = (path: string, id: string) => {
 

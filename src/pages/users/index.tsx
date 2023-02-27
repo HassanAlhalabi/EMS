@@ -1,15 +1,19 @@
 import { useFormik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, ChangeEvent } from 'react';
+import { Form } from "react-bootstrap";
+
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import PopUp from "../../components/popup";
+import SwitchInput from "../../components/switch-input/index.";
+
 import Table from "../../components/table"
-import { ACTION_TYPES, PAGINATION_INFO, USERS_TYPES } from "../../constants";
+import { ACTION_TYPES, PAGINATION_INFO } from "../../constants";
 import { useDelete, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
 import { addUserValidation } from "../../schema/user";
-import { NewUser } from "../../types/users";
+import { NewUser, User } from "../../types/users";
 import { capitalize, getAxiosError } from "../../util";
 import UserForm from "./user-form";
 
@@ -26,7 +30,7 @@ const INITIAL_VALUES: NewUser = {
   lastName: '',
   email: '',
   phoneNumber: "",
-  type: USERS_TYPES.employee
+  type: ''
 }
 
 const UsersPage = () => {
@@ -46,32 +50,33 @@ const UsersPage = () => {
                                               keepPreviousData: true,
                                             });
 
-  const { data: User, 
-            isLoading: loadingUser, 
-            isFetching: fetchingUser,
-            refetch: refetchUser,
-            } = useQuery(
-                            ['/User/GetUser', userId], 
-                            () => get(`/User/GetUser/${userId}`),
-                            {
-                                // @ts-ignore
-                                enabled: false,   
-                        onSuccess: data => formik.setValues({
-                          roleId: data.data.roleId ,
-                          firstName: data.data.firstName ,
-                          lastName: data.data.lastName ,
-                          email: data.data.email ,
-                          phoneNumber: data.data.phoneNumber ,
-                          type: data.data.type 
-                  })              
-            });
+  const { data: user, 
+          refetch: refetchUser,
+        } = useQuery(
+                    ['/User/GetUser', userId], 
+                    () => get(`/User/GetUser/${userId}`),
+                    {
+                        // @ts-ignore
+                        enabled: false,   
+                onSuccess: data => formik.setValues({
+                  roleId: data.data.role.id ,
+                  firstName: data.data.firstName ,
+                  lastName: data.data.lastName ,
+                  email: data.data.email ,
+                  phoneNumber: data.data.phoneNumber ,
+                  type: data.data.type 
+          })              
+        });
 
   useEffect(() => {
     if(userId && action === ACTION_TYPES.update) {
       refetchUser();
     }
+    if(userId && action === ACTION_TYPES.toggle) {
+      handleUserAction();
+    }
     () => setUserId(null);
-  },[userId])
+  },[userId]);
 
   const columns = useMemo(
 		() => [
@@ -101,7 +106,7 @@ const UsersPage = () => {
       },
       {
         Header: 'Role',
-        accessor: 'roleId',
+        accessor: 'role',
       },
       {
         Header: 'Options',
@@ -123,34 +128,37 @@ const UsersPage = () => {
   })
 
   const reset = () => {
-    setAction(null), formik.resetForm(), setUserId(null)
+    setAction(null); 
+    formik.resetForm();
+    setUserId(null)
   }
-  
 
   const { mutateAsync , 
-    isLoading: postLoading, 
-    isError, error } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
-                                {
-                                  roleId: formik.values.roleId ,
-                                  firstName: formik.values.firstName ,
-                                  lastName: formik.values.lastName ,
-                                  email: formik.values.email ,
-                                  phoneNumber: formik.values.phoneNumber ,
-                                  type: formik.values.type 
-                                }) :
-                                                action === ACTION_TYPES.update ? 
-                                                usePut('/User/PutUser', 
-                                {
-                                  id: userId,
-                                  roleId: formik.values.roleId ,
-                                  firstName: formik.values.firstName ,
-                                  lastName: formik.values.lastName ,
-                                  email: formik.values.email ,
-                                  phoneNumber: formik.values.phoneNumber ,
-                                  type: formik.values.type 
-                                }) : useDelete('/User',userId as string);
-  
-    const handleUserAction = async () => {
+          isLoading: postLoading
+        } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
+              {
+                roleId: formik.values.roleId ,
+                firstName: formik.values.firstName ,
+                lastName: formik.values.lastName ,
+                email: formik.values.email ,
+                phoneNumber: formik.values.phoneNumber ,
+                type: formik.values.type 
+              }) :
+                              action === ACTION_TYPES.update ? 
+                              usePut('/User/PutUser', 
+      {
+        id: userId,
+        roleId: formik.values.roleId ,
+        firstName: formik.values.firstName ,
+        lastName: formik.values.lastName ,
+        email: formik.values.email,
+        phoneNumber: formik.values.phoneNumber ,
+        type: formik.values.type 
+      }) : action === ACTION_TYPES.delete ? 
+                useDelete('/User',userId as string)
+             :  usePut(`/User/ToggleActivation/${userId}`);
+
+  const handleUserAction = async () => {
 
        // Not Valid ... Do Nothing
        if(!formik.isValid && action !== ACTION_TYPES.delete) {
@@ -173,58 +181,69 @@ const UsersPage = () => {
     }
   }
 
-  return  <>
-          <Table  columns={columns} 
-                  data={users} 
-                  isBulk={true}
-                  hasSort={true}
-                  loading={isLoading || isFetching} 
-                  pageNumber={page}
-                  pageSize={pageSize}
-                  setPage={setPage}
-                  setPageSize={setPageSize}
-                  pagination={data?.data.paginationInfo}
-                  fetchData={refetch} 
-                  renderTableOptions={() => {
-                    return  <>
-                                <button 	className="btn btn-falcon-success btn-sm" 
-                          type="button" 
-                          onClick={() => setAction(ACTION_TYPES.add)}>        
-                                    <span className="fas fa-plus"></span>
-                                    <span className="ms-1">New</span>
-                                </button>
-                            </>
-                    }} 
-                    renderRowActions={(roleId: string) => {
-                        return  <>
-                                    <button className="btn btn-falcon-info btn-sm m-1" 
-                                            type="button" 
-                                            onClick={() => {
-                                                    setAction(ACTION_TYPES.update)
-                                                    setUserId(roleId);
-                                            }}>        
-                                        <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
-                                    <button className="btn btn-falcon-danger btn-sm m-1" 
-                                            type="button" 
-                                            onClick={() => {
-                                                    setAction(ACTION_TYPES.delete);
-                                                    setUserId(roleId);
-                                            }}>        
-                                        <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
-                                </>
-                    }}/>
+  const handleToggleUser = async (e: ChangeEvent<HTMLInputElement>) => {
+    setAction(ACTION_TYPES.toggle);
+    setUserId(e.target.value);
+  }
 
-            <PopUp  title={`${action && capitalize(action as string)} User`}
-								show={action !== null}
-								onHide={() => { reset() } }
-								confirmText={`${action} User`}
-								confirmButtonVariant={
-									action === ACTION_TYPES.delete ? 'danger' : "primary"
-								}
-								handleConfirm={handleUserAction}
-								actionLoading={postLoading}
+  return  <>
+            <Table<User>  
+              columns={columns} 
+              data={users} 
+              isBulk={true}
+              hasSort={true}
+              loading={isLoading} 
+              pageNumber={page}
+              pageSize={pageSize}
+              setPage={setPage}
+              setPageSize={setPageSize}
+              pagination={data?.data.paginationInfo}
+              fetchData={refetch} 
+              renderTableOptions={() => {
+                                    return  <>
+                                              <button 	className="btn btn-falcon-success btn-sm" 
+                                                type="button" 
+                                                onClick={() => setAction(ACTION_TYPES.add)}>        
+                                                  <span className="fas fa-plus"></span>
+                                                  <span className="ms-1">New</span>
+                                              </button>
+                                            </>
+                                    }} 
+              renderRowActions={(user) => {
+                  return  <div className="d-flex align-items-center">
+                            <button className="btn btn-falcon-info btn-sm m-1" 
+                                    type="button" 
+                                    onClick={() => {
+                                            setAction(ACTION_TYPES.update)
+                                            setUserId(user.id);
+                                    }}>        
+                                <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
+                            </button>
+                            <button className="btn btn-falcon-danger btn-sm m-1" 
+                                    type="button" 
+                                    onClick={() => {
+                                            setAction(ACTION_TYPES.delete);
+                                            setUserId(user.id);
+                                    }}>        
+                                <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                            </button>
+                            <SwitchInput 
+                              checked={user.isActive} 
+                              value={user.id} 
+                              onChange={handleToggleUser} />
+                        </div>
+              }}/>
+
+              <PopUp  
+                title={`${action && capitalize(action as string)} User`}
+                show={action !== null && action !== ACTION_TYPES.toggle}
+                onHide={() => { reset() } }
+                confirmText={`${action} User`}
+                confirmButtonVariant={
+                  action === ACTION_TYPES.delete ? 'danger' : "primary"
+                }
+                handleConfirm={handleUserAction}
+                actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)

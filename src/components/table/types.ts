@@ -1,8 +1,9 @@
 import { ChangeEvent, Dispatch, SetStateAction, ReactNode } from 'react';
 import { Column } from "react-table";
 import { PaginationInfo } from "../../types";
+import { Role } from '../../types/roles';
 
-export interface ITable {
+export interface ITable<T> {
 	columns: readonly Column<{}>[],
 	data:  any,
 	isBulk?: boolean,
@@ -15,7 +16,7 @@ export interface ITable {
 	pagination: PaginationInfo,
 	getBulkIds?: () => string[]
 	renderTableOptions?: () => ReactNode,
-	renderRowActions?: (id: string) => ReactNode,
+	renderRowActions?: (data: T) => ReactNode,
 	fetchData?: () => void
 }
 

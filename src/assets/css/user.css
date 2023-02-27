@@ -22,8 +22,7 @@
 
 table th:last-child,
 table tr td:last-of-type {
-    display: flex !important;
-    justify-content: center !important;
+ 
 }
 
 .was-validated .invalid-feedback {
@@ -56,4 +55,29 @@ table tr td:last-of-type {
 
 .screen-loader {
     background-color: #FFFFFF66;
+}
+
+.switch-input {
+    padding: 0px 3px;
+}
+
+.switch-input 
+.form-switch 
+.form-check-input {
+    width: 40px;
+    height: 20px;
+}
+
+.switch-input 
+.form-switch 
+.form-check-input:checked {
+    background-color: #42ba96;
+    border-color: #42ba96;
+}
+
+.switch-input 
+.form-switch 
+.form-check-input:focus {
+    border-color: #42ba96;
+    box-shadow: 0 0 0 0.25rem #42ba9633;
 }
