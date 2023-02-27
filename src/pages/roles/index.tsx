@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useMemo, useState, useEffect, useContext } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useQuery } from "react-query";
 import PopUp from "../../components/popup";
 import Table from "../../components/table"
@@ -10,7 +10,7 @@ import { roleValidation } from "../../schema/roles";
 import RoleForm from "./role-form";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../util";
-import { LayoutContext } from "../../contexts/layout-context";
+import { useScreenLoader } from "../../hooks/useScreenLoader";
 
 const INITIAL_VALUES: {name: string, roleClaims: string[]} = {
     name: '',
@@ -19,13 +19,13 @@ const INITIAL_VALUES: {name: string, roleClaims: string[]} = {
 
 const RolesPage = () => {
 
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(15);
-  const [action, setAction] = useState<string | null>(null);
-  const [roleId, setRoleId] = useState<string | null>(null);
-  const { toggleScreenLoader } = useContext(LayoutContext);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(15);
+    const [action, setAction] = useState<string | null>(null);
+    const [roleId, setRoleId] = useState<string | null>(null);
+    const { toggleScreenLoader } = useScreenLoader();
 
-  const formik = useFormik({
+    const formik = useFormik({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleRoleAction(),
 		validationSchema: roleValidation
@@ -52,14 +52,14 @@ const RolesPage = () => {
                         {
                             // @ts-ignore
                             enabled: false,   
-									 onSuccess: data => formik.setValues({
-										name: data.data.name,
-										roleClaims: data.data.roleClaims
-							})              
-			});
+                            onSuccess: data => formik.setValues({
+                                name: data.data.name,
+                                roleClaims: data.data.roleClaims
+						    })              
+			            });
 				
 	useEffect(() => {
-		if(roleId) {
+		if(roleId && action === ACTION_TYPES.update) {
 			refetchRole();
 		}
 		() => setRoleId(null);
@@ -90,25 +90,26 @@ const RolesPage = () => {
     );
 
     const { mutateAsync , 
-				isLoading: postLoading, 
-				isError, error } = action === ACTION_TYPES.add ? usePost('/Role', 
-                                            {
-                                              name: formik.values.name,
-                                              roleClaims: formik.values.roleClaims
-                                            }) :
-														  action === ACTION_TYPES.update ? 
-														  usePut('/Role', 
-                                            {
-																id: roleId,
-                                              	name: formik.values.name,
-                                              	roleClaims: formik.values.roleClaims
-                                            }) : useDelete('/Role',roleId as string);
+            isLoading: postLoading, 
+            isError, error } = action === ACTION_TYPES.add ? usePost('/Role', 
+                                        {
+                                            name: formik.values.name,
+                                            roleClaims: formik.values.roleClaims
+                                        }) :
+                                                        action === ACTION_TYPES.update ? 
+                                                        usePut('/Role', 
+                                        {
+                                                            id: roleId,
+                                            name: formik.values.name,
+                                            roleClaims: formik.values.roleClaims
+                                        }) : useDelete('/Role',roleId as string);
 
     
       const handleRoleAction = async () => {
-    
+
         // Not Valid ... Do Nothing
-        if(!formik.isValid) {
+        if(!formik.isValid && action !== ACTION_TYPES.delete) {
+            console.log(formik.isValid)
             formik.validateForm();
             return;
         };
@@ -180,7 +181,7 @@ const RolesPage = () => {
 								confirmButtonVariant={
 									action === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
-								handleConfirm={formik.handleSubmit}
+								handleConfirm={handleRoleAction}
 								actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 

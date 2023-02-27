@@ -1,55 +1,119 @@
-import { Form } from "react-bootstrap"
+import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
-import { FormikHook } from "../../../types/formik"
+import { USERS_TYPES } from "../../../constants"
+import { useQuery } from 'react-query';
+import { get } from "../../../http";
+import { FormikProps } from "formik";
+import { NewUser } from "../../../types/users";
 
-const UserForm = ({formik}:{formik: FormikHook}) => {
+const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
+
+    const { data } = useQuery(
+                            ['/Role/GetRolesList'], 
+                        () => get(`/Role/GetRolesList`));
+
   return (
-    <Form noValidate validated={formik.dirty}>
+    <Form noValidate validated={formik.dirty} autoComplete="off">
+        <Row>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        size="lg"
+                        required
+                        type="text" 
+                        placeholder="First Name"
+                        name="firstName"
+                        value={formik.values.firstName} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.firstName as string}
+                    </Feedback>
+                </Form.Group>
+            </Col>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        size="lg"
+                        required
+                        type="text" 
+                        placeholder="Last Name"
+                        name="lastName"
+                        value={formik.values.lastName} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.lastName as string}
+                    </Feedback>
+                </Form.Group>
+            </Col>
+        </Row>  
         <Form.Group className="mb-3">
             <Form.Control
                 size="lg"
                 required
-                type="text" 
-                placeholder="User Name"
-                name="userName"
-                value={formik.values.userName} 
+                type="email" 
+                placeholder="Email"
+                name="email"
+                value={formik.values.email as string} 
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
-                {formik.errors.userName}
+                {formik.errors.email as string}
             </Feedback>
         </Form.Group> 
-        <Row>
-        <Col>
-            <Form.Group className="mb-3">
+        <Form.Group className="mb-3">
             <Form.Control
                 size="lg"
                 required
-                type="text" 
-                placeholder="First Name"
-                name="firstName"
-                value={formik.values.firstName} 
+                type="tel" 
+                placeholder="Phone Number"
+                name="phoneNumber"
+                value={formik.values.phoneNumber as string} 
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
-                {formik.errors.firstName}
-            </Feedback>
-            </Form.Group>
-        </Col>
-        <Col>
-            <Form.Group className="mb-3">
-            <Form.Control
+                {formik.errors.phoneNumber as string}
+            </Feedback> 
+        </Form.Group> 
+        <Form.Group className="mb-3">
+            <Form.Label htmlFor="type">
+                User Type:
+            </Form.Label>
+            <Form.Select
                 size="lg"
                 required
-                type="text" 
-                placeholder="First Name"
-                name="firstName"
-                value={formik.values.firstName} 
-                onChange={formik.handleChange} />
+                id="type"
+                name="type"
+                value={formik.values.type as string} 
+                onChange={formik.handleChange}>
+                {
+                    Object.entries(USERS_TYPES).map(([key, value]) => 
+                        <option key={key} value={key}>{value}</option>
+                    )
+                }
+            </Form.Select>            
             <Feedback type="invalid">
-                {formik.errors.firstName}
+                {formik.errors.type as string}
             </Feedback>
-            </Form.Group>
-        </Col>
-        </Row>  
+        </Form.Group> 
+        <Form.Group className="mb-3">
+            <Form.Label htmlFor="role">
+                User Role:
+            </Form.Label>
+            <Form.Select
+                size="lg"
+                required
+                id="role"
+                name="roleId"
+                value={formik.values.roleId as string} 
+                onChange={formik.handleChange}>
+                {
+                    data?.data.roles.map((role: {id: string, name:string} ) => 
+                        <option key={role.id} value={role.id}>{role.name}</option>
+                    )
+                }
+            </Form.Select>            
+            <Feedback type="invalid">
+                {formik.errors.roleId as string}
+            </Feedback>
+        </Form.Group> 
     </Form>
   )
 }

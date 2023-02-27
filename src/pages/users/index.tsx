@@ -1,14 +1,16 @@
 import { useFormik } from "formik";
-import { useMemo, useState } from "react";
-import { Row, Form, Col } from "react-bootstrap";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import Feedback from "../../components/feedback";
+import { toast } from "react-toastify";
 import PopUp from "../../components/popup";
 import Table from "../../components/table"
-import { PAGINATION_INFO } from "../../constants";
-import { usePost } from "../../hooks";
+import { ACTION_TYPES, PAGINATION_INFO, USERS_TYPES } from "../../constants";
+import { useDelete, usePost, usePut } from "../../hooks";
+import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
 import { addUserValidation } from "../../schema/user";
+import { NewUser } from "../../types/users";
+import { capitalize, getAxiosError } from "../../util";
 import UserForm from "./user-form";
 
 const USERS_INITIAL_STATE = {
@@ -18,21 +20,22 @@ const USERS_INITIAL_STATE = {
   }
 }
 
-const INITIAL_VALUES = {
-    roleId: '',
-    userName: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: "",
-    phoneNumber: "",
-    type: ""
-  }
+const INITIAL_VALUES: NewUser = {
+  roleId: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  phoneNumber: "",
+  type: USERS_TYPES.employee
+}
 
 const UsersPage = () => {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
+  const [action, setAction] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const { toggleScreenLoader } = useScreenLoader();
 
   const { data, isLoading, isFetching, refetch } = useQuery(
                                             ['/User/GetAllUsers', page, pageSize], 
@@ -42,6 +45,33 @@ const UsersPage = () => {
                                               initialData: USERS_INITIAL_STATE,
                                               keepPreviousData: true,
                                             });
+
+  const { data: User, 
+            isLoading: loadingUser, 
+            isFetching: fetchingUser,
+            refetch: refetchUser,
+            } = useQuery(
+                            ['/User/GetUser', userId], 
+                            () => get(`/User/GetUser/${userId}`),
+                            {
+                                // @ts-ignore
+                                enabled: false,   
+                        onSuccess: data => formik.setValues({
+                          roleId: data.data.roleId ,
+                          firstName: data.data.firstName ,
+                          lastName: data.data.lastName ,
+                          email: data.data.email ,
+                          phoneNumber: data.data.phoneNumber ,
+                          type: data.data.type 
+                  })              
+            });
+
+  useEffect(() => {
+    if(userId && action === ACTION_TYPES.update) {
+      refetchUser();
+    }
+    () => setUserId(null);
+  },[userId])
 
   const columns = useMemo(
 		() => [
@@ -70,6 +100,10 @@ const UsersPage = () => {
         accessor: 'type',
       },
       {
+        Header: 'Role',
+        accessor: 'roleId',
+      },
+      {
         Header: 'Options',
         accessor: 'options',
       }
@@ -82,33 +116,61 @@ const UsersPage = () => {
     [data, isFetching, isLoading]
   );
 
-  const [modalShow, setModalShow] = useState(false);
-
   const formik = useFormik({
       initialValues: INITIAL_VALUES,
-      onSubmit: () => handleAddUser(),
+      onSubmit: () => handleUserAction(),
       validationSchema: addUserValidation
   })
+
+  const reset = () => {
+    setAction(null), formik.resetForm(), setUserId(null)
+  }
   
+
   const { mutateAsync , 
-          isLoading: postLoaading, 
-          isError, 
-          error } = usePost('/User/PostUser', 
-                                          formik.values);
+    isLoading: postLoading, 
+    isError, error } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
+                                {
+                                  roleId: formik.values.roleId ,
+                                  firstName: formik.values.firstName ,
+                                  lastName: formik.values.lastName ,
+                                  email: formik.values.email ,
+                                  phoneNumber: formik.values.phoneNumber ,
+                                  type: formik.values.type 
+                                }) :
+                                                action === ACTION_TYPES.update ? 
+                                                usePut('/User/PutUser', 
+                                {
+                                  id: userId,
+                                  roleId: formik.values.roleId ,
+                                  firstName: formik.values.firstName ,
+                                  lastName: formik.values.lastName ,
+                                  email: formik.values.email ,
+                                  phoneNumber: formik.values.phoneNumber ,
+                                  type: formik.values.type 
+                                }) : useDelete('/User',userId as string);
   
-    const handleAddUser = async () => {
-  
-      // Not Valid ... Do Nothing
-      if(!formik.isValid) return;
-  
-      // If All Is Ok ... Do It
-      if(formik.isValid) {
-        try {
-          const mutationReq = await mutateAsync();
-        } catch(error) {
-          return;
-        }
+    const handleUserAction = async () => {
+
+       // Not Valid ... Do Nothing
+       if(!formik.isValid && action !== ACTION_TYPES.delete) {
+        formik.validateForm();
+        return;
+    };
+
+    // If All Is Ok ... Do It
+    if(formik.isValid) {
+      try {
+        toggleScreenLoader();
+        await mutateAsync();
+        refetch();
+        toast.success(`${capitalize(action as string)} User Done Successfully`)
+        reset();
+      } catch(error) {
+        toast.error(getAxiosError(error))
       }
+      toggleScreenLoader();
+    }
   }
 
   return  <>
@@ -125,20 +187,52 @@ const UsersPage = () => {
                   fetchData={refetch} 
                   renderTableOptions={() => {
                     return  <>
-                                <button className="btn btn-falcon-success btn-sm" type="button" onClick={() => setModalShow(true)}>        
-                                    <span className="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                                <button 	className="btn btn-falcon-success btn-sm" 
+                          type="button" 
+                          onClick={() => setAction(ACTION_TYPES.add)}>        
+                                    <span className="fas fa-plus"></span>
                                     <span className="ms-1">New</span>
                                 </button>
                             </>
-                    }} />
+                    }} 
+                    renderRowActions={(roleId: string) => {
+                        return  <>
+                                    <button className="btn btn-falcon-info btn-sm m-1" 
+                                            type="button" 
+                                            onClick={() => {
+                                                    setAction(ACTION_TYPES.update)
+                                                    setUserId(roleId);
+                                            }}>        
+                                        <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
+                                    </button>
+                                    <button className="btn btn-falcon-danger btn-sm m-1" 
+                                            type="button" 
+                                            onClick={() => {
+                                                    setAction(ACTION_TYPES.delete);
+                                                    setUserId(roleId);
+                                            }}>        
+                                        <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                                    </button>
+                                </>
+                    }}/>
 
-                  <PopUp  title={'Add Role'}
-                    show={modalShow}
-                    onHide={() => setModalShow(false)}
-                    confirmText="Add Role"
-                    handleConfirm={formik.handleSubmit}>
-                    <UserForm formik={formik} />
-              </PopUp>
+            <PopUp  title={`${action && capitalize(action as string)} User`}
+								show={action !== null}
+								onHide={() => { reset() } }
+								confirmText={`${action} User`}
+								confirmButtonVariant={
+									action === ACTION_TYPES.delete ? 'danger' : "primary"
+								}
+								handleConfirm={handleUserAction}
+								actionLoading={postLoading}
+                    >
+                        {(  action === ACTION_TYPES.add || 
+                            action === ACTION_TYPES.update)
+                                && <UserForm formik={formik} />}
+                        {action === ACTION_TYPES.delete && 
+                                    <>Are you Sure You Want to Delete This User</>
+                        }
+                </PopUp>
               </>
 }
 

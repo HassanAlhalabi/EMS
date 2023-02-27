@@ -1,3 +1,8 @@
+export interface NewRole {
+    name: string,
+    roleClaims: string[]
+}
+
 export interface RoleClaims {
     claimValue: string
 }

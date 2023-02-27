@@ -9,6 +9,7 @@ import { routes } from './routes';
 import { IRoute } from './types/routes';
 import { LayoutContext } from './contexts/layout-context';
 import { ToastContainer } from 'react-toastify';
+import { useScreenLoader } from './hooks/useScreenLoader';
 
 const renderRoutes = (routes: IRoute[]) => {
   return routes.map(route => {
@@ -23,7 +24,7 @@ const renderRoutes = (routes: IRoute[]) => {
 
 function App() {
 
-  const { isScreenLoading } = useContext(LayoutContext);
+  const { isScreenLoading } = useScreenLoader();
 
   return (
     <div className="App position-relative">

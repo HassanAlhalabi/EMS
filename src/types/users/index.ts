@@ -1,6 +1,13 @@
 import { Role } from "../roles";
 
-
+export interface NewUser {
+    roleId: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    phoneNumber: string,
+    type: string
+}
 
 export interface User {
     id: string,

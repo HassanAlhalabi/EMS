@@ -30,6 +30,30 @@ table tr td:last-of-type {
     display: block;
 }
 
+.was-validated .form-control:valid:not(:focus), .form-control.is-valid,
+.was-validated .form-select:valid:not(:focus), .form-select.is-valid {
+    border-color: #d8e2ef;
+    box-shadow: unset;
+}
+
+.was-validated .form-control:invalid:not(:focus), .form-control.is-invalid,
+.was-validated .form-select:invalid:not(:focus), .form-select.is-valid {
+    border-color: #d8e2ef;
+    box-shadow: unset;
+}
+
+.dark .was-validated .form-control:valid:not(:focus), .form-control.is-valid,
+.dark .was-validated .form-select:valid:not(:focus), .form-select.is-valid {
+    border-color: #344050;
+    box-shadow: unset;
+}
+
+.dark .was-validated .form-control:invalid:not(:focus), .form-control.is-invalid,
+.dark .was-validated .form-select:invalid:not(:focus), .form-select.is-valid {
+    border-color: #344050;
+    box-shadow: unset;
+}
+
 .screen-loader {
     background-color: #FFFFFF66;
 }

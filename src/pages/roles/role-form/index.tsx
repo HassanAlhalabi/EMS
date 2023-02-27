@@ -1,10 +1,10 @@
 import { Row, Col, Form, FormLabel, Accordion } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { getClaimsMap } from "../../../util";
-import { FormikHook } from '../../../types/formik/index';
+import { FormikProps } from 'formik';
+import { NewRole } from "../../../types/roles";
 
-const RoleForm = ({formik}:{formik: FormikHook}) => {
-	console.log(formik.values)
+const RoleForm = ({formik}:{formik: FormikProps<NewRole>}) => {
   return (
     <Form noValidate validated={formik.dirty}>
         <Form.Group className="mb-3">
