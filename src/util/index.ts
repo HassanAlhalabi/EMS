@@ -56,3 +56,5 @@ export const getClaimsMap = () => {
 export const capitalize = (word: string) => {
     return word.charAt(0) + word.slice(1).toLowerCase();
 }
+
+export const splitCamel = (word: string) => word.replace(/([a-z])([A-Z])/g, '$1 $2');

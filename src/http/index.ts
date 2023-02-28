@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getCookie } from "../util";
 
-export const baseURL = 'http://alimakhlouf222-001-site1.btempurl.com/api';
+// export const baseURL = 'http://alimakhlouf222-001-site1.btempurl.com/api';
+export const baseURL = 'http://universitysys-001-site1.gtempurl.com/api';
 
 let HTTPclient = axios.create({
   baseURL,
@@ -11,24 +12,15 @@ let HTTPclient = axios.create({
     }
 });
 
-export const updateHTTPClient = () => {
-  HTTPclient = axios.create({
-    baseURL,
-    headers: {
-        'Authorization' : getCookie("EMSUser") && `Bearer ${getCookie("EMSUser").token}`,
-        'Accept-Language': getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN'
-      }
-  });
-}
-
 // // Request interceptor
-// axios.interceptors.request.use(function (config) {
-//     // Do something before request is sent
-//     return config;
-//   }, function (error) {
-//     // Do something with request error
-//     return Promise.reject(error);
-//   });
+axios.interceptors.request.use(function (config) {
+    config.headers['Authorization'] = `Bearer ${getCookie("EMSUser").token}`;
+    config.headers['Accept-Language'] = getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN';
+    return config;
+  }, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  });
 
 // Response interceptor
 HTTPclient.interceptors.response.use(function (response) {

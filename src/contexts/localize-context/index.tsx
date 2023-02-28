@@ -1,5 +1,4 @@
 import { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
-import { updateHTTPClient } from '../../http';
 import { getCookie, setCookie } from '../../util';
 
 type SystemLang = 'AR' | 'EN';
@@ -18,7 +17,6 @@ export const LocalizeProvider = ({children}:{children: ReactNode}) => {
     const handleCurrentLang = useCallback((newLang: SystemLang) => { 
         setCurrentLang(newLang);
         setCookie('EMSSystemLang',newLang);
-        updateHTTPClient();
     },[]);
 
     // Initialize Language

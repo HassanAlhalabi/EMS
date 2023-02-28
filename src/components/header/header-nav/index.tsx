@@ -26,11 +26,11 @@ const HeaderNav = () => {
         </div>
       </Link>
 
-      <ul className="navbar-nav align-items-center d-none d-lg-block">
+      {/* <ul className="navbar-nav align-items-center d-none d-lg-block">
         <li className="nav-item">
             <HeaderSearch />
         </li>
-      </ul>
+      </ul> */}
 
       <HeaderProfile />
 

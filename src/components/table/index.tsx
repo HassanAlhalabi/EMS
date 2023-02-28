@@ -4,14 +4,15 @@ import {ChangeEvent,
 		Ref, 
 		useEffect, 
 		useRef } from "react";
-import { Tab } from "react-bootstrap";
 import { useRowSelect, 
 		 useTable, 
 		 usePagination, 
 		 useSortBy } from "react-table";
 import TableLoader from "../table-loader";
+import NoDataCard from "./no-data-card";
 import TableOptions from "./table-options"
 import TablePagination from "./table-pagination"
+import TableSearch from "./table-search";
 import { IndeterminateCheckboxProps, ITable } from "./types";
 
 const useCombinedRefs = (...refs: (Ref<HTMLInputElement> | MutableRefObject<undefined>)[]): 
@@ -51,6 +52,7 @@ const IndeterminateCheckbox = forwardRef<HTMLInputElement, IndeterminateCheckbox
 
 const Table = <T extends unknown>({ 	isBulk, 
 					hasSort,
+					hasSearch,
 				 	columns, 
 				 	data, 
 				 	loading, 
@@ -59,6 +61,8 @@ const Table = <T extends unknown>({ 	isBulk,
 				 	pageSize,
 				 	setPageSize, 
 				 	setPage,
+					searchKey,
+					setSearchKey,
 					renderTableOptions,
 					renderRowActions,
 				} : ITable<T>) => {
@@ -136,22 +140,33 @@ const Table = <T extends unknown>({ 	isBulk,
 		}
 		setPage(newPageNumber);
 	}
+	const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setSearchKey && setSearchKey(e.target.value)
+	} 
 
 	return (
 		<>
 
 			<div className="d-flex align-items-center justify-content-between mb-2">
-					
-				<TablePagination
-					loading={loading as boolean}
-				    pagination={pagination}
-					pageNumber={pageNumber}
-					pageSize={pageSize}
-					handlePrevPage={handlePrevPage}
-					handleNextPage={handleNextPage}
-					handleGoToPage={handleGoToPage}
-					handlePageSize={handlePageSize}
-				/>
+					<div className="d-flex align-items-center justify-content-between">
+						<TablePagination
+							loading={loading as boolean}
+							pagination={pagination}
+							pageNumber={pageNumber}
+							pageSize={pageSize}
+							handlePrevPage={handlePrevPage}
+							handleNextPage={handleNextPage}
+							handleGoToPage={handleGoToPage}
+							handlePageSize={handlePageSize}
+						/>
+						{
+							hasSearch &&
+							<TableSearch
+								searchKey={searchKey as string}
+								handleSearchChange={handleSearchChange}
+							/>
+						}
+					</div>
 				
 				<TableOptions>
 					{ renderTableOptions && renderTableOptions() }
@@ -160,73 +175,79 @@ const Table = <T extends unknown>({ 	isBulk,
 			</div>
 			<div className="table-responsive scrollbar">
 				{
-					data.length === 0 && <TableLoader />
+					(data.length === 0 && loading ) && <TableLoader />
 				} 	
-				<table className="table mb-0" {...getTableProps()}>
-					<thead className="text-black bg-200">
-						{headerGroups.map(headerGroup => (
-							<tr {...headerGroup.getHeaderGroupProps()}>
-								{headerGroup.headers.map(column => {
-									// If Options Column Show No Sort
-									if(column.id === 'options') {
+				{
+					(data.length === 0 && !loading ) && <NoDataCard />
+				} 
+				{
+					(data.length !== 0) &&
+					<table className="table mb-0" {...getTableProps()}>
+						<thead className="text-black bg-200">
+							{headerGroups.map(headerGroup => (
+								<tr {...headerGroup.getHeaderGroupProps()}>
+									{headerGroup.headers.map(column => {
+										// If Options Column Show No Sort
+										if(column.id === 'options') {
+											return (
+												<th className="align-middle" {
+													// @ts-ignore
+													...column.getHeaderProps()}>
+													{column.render('Header')}
+												</th>
+											)
+										} 
 										return (
 											<th className="align-middle" {
 												// @ts-ignore
-												...column.getHeaderProps()}>
+												...column.getHeaderProps(hasSort && column.getSortByToggleProps())}>
 												{column.render('Header')}
+												<span className="sort-arrow">
+													{
+														// @ts-ignore
+														column.isSorted ? column.isSortedDesc
+															? ' ⬇'
+															: ' ⬆'
+														: ''
+													}
+												</span>
 											</th>
 										)
-									} 
-									return (
-										<th className="align-middle" {
-											// @ts-ignore
-											...column.getHeaderProps(hasSort && column.getSortByToggleProps())}>
-											{column.render('Header')}
-											<span className="sort-arrow">
-												{
-													// @ts-ignore
-													column.isSorted ? column.isSortedDesc
-														? ' ⬇'
-														: ' ⬆'
-													: ''
-												}
-											</span>
-										</th>
-									)
-									}
-									)}
-							</tr>
-						))}
-					</thead>
-					{
-						data.length !== 0 && 
-						<tbody {...getTableBodyProps()}>
+										}
+										)}
+								</tr>
+							))}
+						</thead>
 						{
-							rows.map((row, i) => {
-								prepareRow(row);
-								return (
-									<tr {...row.getRowProps()}>
-										{row.cells.map(cell => {
-											if(cell.column.id === 'options') {
-												return 	<td className="align-middle" {...cell.getCellProps()}>
-															{	
-																renderRowActions && 
-																renderRowActions(cell.row.original as T) 
-															}
+							data.length !== 0 && 
+							<tbody {...getTableBodyProps()}>
+							{
+								rows.map((row, i) => {
+									prepareRow(row);
+									return (
+										<tr {...row.getRowProps()}>
+											{row.cells.map(cell => {
+												if(cell.column.id === 'options') {
+													return 	<td className="align-middle" {...cell.getCellProps()}>
+																{	
+																	renderRowActions && 
+																	renderRowActions(cell.row.original as T) 
+																}
+															</td>
+												}
+												return 	<td className="align-middle" 
+															{...cell.getCellProps()}>
+																{cell.render('Cell')}
 														</td>
-											}
-											return 	<td className="align-middle" 
-														{...cell.getCellProps()}>
-															{cell.render('Cell')}
-													</td>
-										})}
-									</tr>
-								)
-							})
+											})}
+										</tr>
+									)
+								})
+							}
+						</tbody>
 						}
-					</tbody>
-					}
-				</table>
+					</table>
+				}
 			</div>
 		</>
    	)

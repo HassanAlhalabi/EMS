@@ -1,6 +1,5 @@
 import { useFormik } from "formik";
 import { useEffect, useMemo, useState, ChangeEvent } from 'react';
-import { Form } from "react-bootstrap";
 
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
@@ -8,7 +7,7 @@ import PopUp from "../../components/popup";
 import SwitchInput from "../../components/switch-input/index.";
 
 import Table from "../../components/table"
-import { ACTION_TYPES, PAGINATION_INFO } from "../../constants";
+import { ACTION_TYPES } from "../../constants";
 import { useDelete, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
@@ -16,13 +15,6 @@ import { addUserValidation } from "../../schema/user";
 import { NewUser, User } from "../../types/users";
 import { capitalize, getAxiosError } from "../../util";
 import UserForm from "./user-form";
-
-const USERS_INITIAL_STATE = {
-  data: {
-      users: [],
-      paginationInfo: PAGINATION_INFO
-  }
-}
 
 const INITIAL_VALUES: NewUser = {
   roleId: '',
@@ -37,17 +29,21 @@ const UsersPage = () => {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
+  const [searchKey, setSearchKey] = useState<string>('');
   const [action, setAction] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
 
-  const { data, isLoading, isFetching, refetch } = useQuery(
-                                            ['/User/GetAllUsers', page, pageSize], 
-                                            () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}`),
+  const { data, 
+          status,
+          isLoading, 
+          isFetching, 
+          refetch } = useQuery(
+                                            ['/User/GetAllUsers', page, pageSize, searchKey], 
+                                            () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                                             {
-                                              // @ts-ignore
-                                              initialData: USERS_INITIAL_STATE,
                                               keepPreviousData: true,
+                                              enabled: false
                                             });
 
   const { data: user, 
@@ -77,6 +73,18 @@ const UsersPage = () => {
     }
     () => setUserId(null);
   },[userId]);
+
+  useEffect(() => {
+    let searchTimeout: number; 
+    if(searchKey) {
+      searchTimeout = setTimeout(() => {
+        refetch();
+      },600);
+      return () => clearTimeout(searchTimeout);;
+    }
+    refetch();
+    return () => clearTimeout(searchTimeout);
+  },[page,pageSize,searchKey])
 
   const columns = useMemo(
 		() => [
@@ -117,7 +125,7 @@ const UsersPage = () => {
 	 )
 
   const users = useMemo(
-    () => (data?.data.users),
+    () => (isLoading || status === 'idle') ? [] : (data?.data.users),
     [data, isFetching, isLoading]
   );
 
@@ -190,24 +198,26 @@ const UsersPage = () => {
             <Table<User>  
               columns={columns} 
               data={users} 
-              isBulk={true}
-              hasSort={true}
+              isBulk
+              hasSort
+              hasSearch
               loading={isLoading} 
               pageNumber={page}
               pageSize={pageSize}
               setPage={setPage}
               setPageSize={setPageSize}
               pagination={data?.data.paginationInfo}
+              searchKey={searchKey}
+              setSearchKey={setSearchKey}
               fetchData={refetch} 
               renderTableOptions={() => {
-                                    return  <>
-                                              <button 	className="btn btn-falcon-success btn-sm" 
-                                                type="button" 
-                                                onClick={() => setAction(ACTION_TYPES.add)}>        
-                                                  <span className="fas fa-plus"></span>
-                                                  <span className="ms-1">New</span>
-                                              </button>
-                                            </>
+                                    return  <button 	className="btn btn-falcon-success btn-sm" 
+                                              type="button" 
+                                              onClick={() => setAction(ACTION_TYPES.add)}>        
+                                                <span className="fas fa-plus"></span>
+                                                <span className="ms-1">New</span>
+                                            </button>
+                                           
                                     }} 
               renderRowActions={(user) => {
                   return  <div className="d-flex align-items-center">
@@ -231,7 +241,7 @@ const UsersPage = () => {
                               checked={user.isActive} 
                               value={user.id} 
                               onChange={handleToggleUser} />
-                        </div>
+                          </div>
               }}/>
 
               <PopUp  

@@ -7,7 +7,6 @@ import { useContext } from 'react';
 import { AuthContext } from "../../../contexts/auth-context";
 import { useNavigate } from "react-router-dom";
 import { getAxiosError, setCookie } from "../../../util";
-import { updateHTTPClient } from "../../../http";
 import { toast } from "react-toastify";
 
 const INITIAL_VALUES = {
@@ -50,7 +49,6 @@ const SignIn = () => {
           setCookie('EMSUser', user);
         }
         setAuthUser(true);
-        updateHTTPClient();
         navigate('/');
       } catch(error) {
         toast.error(getAxiosError(error));

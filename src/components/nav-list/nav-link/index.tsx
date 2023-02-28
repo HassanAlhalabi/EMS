@@ -1,11 +1,11 @@
 import { Children, ReactNode, useState } from "react";
-import { Collapse } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Collapse, NavItem } from "react-bootstrap";
+import { Link, To } from "react-router-dom";
 
 interface INavLink {
     faIcon: string,
     title: string,
-    link: string,
+    link?: To,
     children?: ReactNode,
 }
 
@@ -16,10 +16,10 @@ const NavLink = ({faIcon,title,link, children}:INavLink) => {
 
     const toggleMenuList = () => setExpanded(prev => !prev);
 
-    return (
+    return isParent ? (
         <li className="nav-item">
-            <Link  className={`nav-link ${isParent ? 'dropdown-indicator' : '' } ${expanded ? '' : 'collapesed'}`} 
-                to={link} 
+            <a className={`nav-link dropdown-indicator ${expanded ? '' : 'collapesed'}`} 
+                href="#"
                 role="button" 
                 aria-expanded={expanded && isParent}
                 aria-controls="dashboard"
@@ -30,17 +30,25 @@ const NavLink = ({faIcon,title,link, children}:INavLink) => {
                     </span>
                     <span className="nav-link-text ps-1">{title}</span>
                 </div>
-            </Link>
-            {
-            isParent &&
-            <Collapse in={expanded}>
-                <ul className='nav' id="dashboard">
-                    {children}
-                </ul>
-            </Collapse>
-            }
+            </a>
+            <li className="nav-item ps-2">
+                <Collapse in={expanded}>
+                    <ul className='nav' id="dashboard">
+                        {children}
+                    </ul>
+                </Collapse>
             </li>
-    )
+    </li>) : (  <Link  
+                    className={`nav-link`} 
+                    to={link ? link : '/'} 
+                    role="button">
+                    <div className="d-flex align-items-center">
+                        <span className="nav-link-icon">
+                            <span className={faIcon}></span>
+                        </span>
+                        <span className="nav-link-text ps-1">{title}</span>
+                    </div>
+                </Link>)
 }
 
 export default NavLink

@@ -1,12 +1,13 @@
 import { lazy } from "react"
 import ProtectedRoute from "../components/protected-route";
-import DashboardPage from '../pages/dashboard/index';
 
 const Main      = lazy(() => import('../pages/main'));
 const SignIn    = lazy(() => import('../pages/auth/sign-in'));
 const Dashboard = lazy(() => import('../pages/dashboard'));
 const Users     = lazy(() => import('../pages/users'));
 const Roles     = lazy(() => import('../pages/roles'));
+const Faculties = lazy(() => import('../pages/faculties'));
+const FacultyForm = lazy(() => import('../pages/faculties/faculty-form-stepper'));
 
 export const routes = [
     {
@@ -39,6 +40,38 @@ export const routes = [
                 childRoutes: null,
                 element: <Roles />
             },
+            {
+                id: 'faculties',
+                name: 'Faculties',
+                path: '/faculties',
+                isIndex: true,
+                childRoutes: null,
+                element: <Faculties />
+            },
+            {
+                id: 'faculty-form',
+                name: 'Add/Update Faculty',
+                path: '/faculty-form/:id?',
+                isIndex: true,
+                childRoutes: null,
+                element: <FacultyForm />
+            },
+            {
+                id: 'books',
+                name: 'Books',
+                path: '/books',
+                isIndex: true,
+                childRoutes: null,
+                element: <Faculties />
+            },
+            {
+                id: 'books-categories',
+                name: 'Categories',
+                path: '/books-categories',
+                isIndex: true,
+                childRoutes: null,
+                element: <Faculties />
+            },
         ],
         element: <ProtectedRoute><Main /></ProtectedRoute>
     },
@@ -64,7 +97,7 @@ export const routes = [
         path: '*',
         isIndex: false,
         childRoutes: null,
-        element: <SignIn />
+        element: <Main />
     }
 ]
 

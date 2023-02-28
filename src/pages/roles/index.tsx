@@ -22,6 +22,7 @@ const RolesPage = () => {
 
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(15);
+    const [searchKey, setSearchKey] = useState('');
     const [action, setAction] = useState<string | null>(null);
     const [roleId, setRoleId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
@@ -37,7 +38,7 @@ const RolesPage = () => {
             isFetching,
             refetch } = useQuery(
                             ['/Role/GetAllRoles', page, pageSize], 
-                            () => get(`/Role/GetAllRoles?page=${page}&pageSize=${pageSize}`),
+                            () => get(`/Role/GetAllRoles?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                             {
                                 // @ts-ignore
                                 keepPreviousData: true,
@@ -58,6 +59,18 @@ const RolesPage = () => {
                                 roleClaims: data.data.roleClaims
 						    })              
 			            });
+
+    useEffect(() => {
+        let searchTimeout: number; 
+        if(searchKey) {
+            searchTimeout = setTimeout(() => {
+            refetch();
+            },600);
+            return () => clearTimeout(searchTimeout);;
+        }
+        refetch();
+        return () => clearTimeout(searchTimeout);
+        },[page,pageSize,searchKey])
 				
 	useEffect(() => {
 		if(roleId && action === ACTION_TYPES.update) {
@@ -110,7 +123,6 @@ const RolesPage = () => {
 
         // Not Valid ... Do Nothing
         if(!formik.isValid && action !== ACTION_TYPES.delete) {
-            console.log(formik.isValid)
             formik.validateForm();
             return;
         };
@@ -134,46 +146,49 @@ const RolesPage = () => {
 
     return  <>
                 <Table<Role>  
-                        columns={columns} 
-                        data={roles} 
-                        loading={isLoading || isFetching}
-                        isBulk={false}
-                        hasSort={false}
-                        pageNumber={page}
-                        pageSize={pageSize}
-                        setPage={setPage}
-                        setPageSize={setPageSize}
-                        pagination={data?.data.paginationInfo}
-                        renderTableOptions={() => {
+                    columns={columns} 
+                    hasSearch
+                    data={roles} 
+                    loading={isLoading || isFetching}
+                    isBulk={false}
+                    hasSort={false}
+                    pageNumber={page}
+                    pageSize={pageSize}
+                    setPage={setPage}
+                    setPageSize={setPageSize}
+                    searchKey={searchKey}
+                    setSearchKey={setSearchKey}
+                    pagination={data?.data.paginationInfo}
+                    renderTableOptions={() => {
+                    return  <>
+                                <button 	className="btn btn-falcon-success btn-sm" 
+                                                        type="button" 
+                                                        onClick={() => setAction(ACTION_TYPES.add)}>        
+                                    <span className="fas fa-plus"></span>
+                                    <span className="ms-1">New</span>
+                                </button>
+                            </>
+                    }} 
+                    renderRowActions={(data) => {
                         return  <>
-                                    <button 	className="btn btn-falcon-success btn-sm" 
-															type="button" 
-															onClick={() => setAction(ACTION_TYPES.add)}>        
-                                        <span className="fas fa-plus"></span>
-                                        <span className="ms-1">New</span>
+                                    <button className="btn btn-falcon-info btn-sm m-1" 
+                                            type="button" 
+                                            onClick={() => {
+                                                    setAction(ACTION_TYPES.update)
+                                                    setRoleId(data.id);
+                                            }}>        
+                                        <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
+                                    </button>
+                                    <button className="btn btn-falcon-danger btn-sm m-1" 
+                                            type="button" 
+                                            onClick={() => {
+                                                    setAction(ACTION_TYPES.delete);
+                                                    setRoleId(data.id);
+                                            }}>        
+                                        <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                                     </button>
                                 </>
-                        }} 
-                        renderRowActions={(data) => {
-                            return  <>
-                                        <button className="btn btn-falcon-info btn-sm m-1" 
-                                                type="button" 
-                                                onClick={() => {
-                                                        setAction(ACTION_TYPES.update)
-                                                        setRoleId(data.id);
-                                                }}>        
-                                            <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                                        </button>
-                                        <button className="btn btn-falcon-danger btn-sm m-1" 
-                                                type="button" 
-                                                onClick={() => {
-                                                        setAction(ACTION_TYPES.delete);
-                                                        setRoleId(data.id);
-                                                }}>        
-                                            <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                                        </button>
-                                    </>
-                        }}
+                    }}
                 />
 
                 <PopUp  title={`${action && capitalize(action as string)} Role`}

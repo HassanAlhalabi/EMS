@@ -1,5 +1,4 @@
 import { createContext, useState, ReactNode, useEffect } from 'react';
-import { updateHTTPClient } from '../../http';
 import { getCookie } from '../../util';
 
 const AUTH_INITIAL_VALUE = {
@@ -19,7 +18,6 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
         const user = getCookie('EMSUser');
         if(user) {
             handleAuthUser(true);
-            updateHTTPClient();
         }
     },[])
 

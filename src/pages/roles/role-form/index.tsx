@@ -1,6 +1,6 @@
 import { Row, Col, Form, FormLabel, Accordion } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
-import { getClaimsMap } from "../../../util";
+import { getClaimsMap, splitCamel } from "../../../util";
 import { FormikProps } from 'formik';
 import { NewRole } from "../../../types/roles";
 
@@ -30,7 +30,7 @@ const RoleForm = ({formik}:{formik: FormikProps<NewRole>}) => {
                     <Col key={claim[0]} md="4" className="mb-3">
                         <Accordion>
                             <Accordion.Item eventKey="0">
-                                <Accordion.Header>{claim[0]}</Accordion.Header>
+                                <Accordion.Header>{splitCamel(claim[0])}</Accordion.Header>
                                 <Accordion.Body>
                                     {claim[1].map((claimType: string) => 
                                         <Form.Group key={claimType}>

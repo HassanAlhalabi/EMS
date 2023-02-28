@@ -14,9 +14,9 @@ const TablePagination = ({
 	
 
   return (
-    <div className="d-flex justify-content-between mt-3" data-list>
+    <div className="d-flex justify-content-between flex-wrap" data-list>
 
-		<div className="d-flex justify-content-between align-items-center">
+		<div className="d-flex justify-content-between align-items-center  flex-wrap">
 			<button className="btn btn-sm btn-falcon-default me-1"
 					type="button" 
 					title="Previous"
