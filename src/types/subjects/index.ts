@@ -3,10 +3,9 @@ export interface NewSubject {
     nameEn: string,
     descriptionAr: string,
     descriptionEn: string,
-    image: string,
     subjectTypeId: string,
     superSubjectId: string | null,
-    facultySubjects: string[]
+    facultiesIds: string[]
 }
 
 export interface SuperSubject {
@@ -22,4 +21,19 @@ export interface Subject {
     descriptionAr: string
     descriptionEn: string
     superSubject: SuperSubject
+}
+
+export interface SubjectType {
+    id: string,
+    name: string,
+    description: string,
+    maxHours: number
+}
+
+export interface NewSubjectType {
+    nameAr: string,
+    nameEn: string,
+    descriptionAr?: string,
+    descriptionEn?: string,
+    maxHours: number
 }

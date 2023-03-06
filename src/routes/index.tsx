@@ -9,6 +9,7 @@ const Roles             = lazy(() => import('../pages/roles'));
 const Faculties         = lazy(() => import('../pages/faculties'));
 const FacultyForm       = lazy(() => import('../pages/faculties/faculty-form-stepper'));
 const Subjects          = lazy(() => import('../pages/subjects'));
+const SubjectsTypes          = lazy(() => import('../pages/subjects-types'));
 const Books             = lazy(() => import('../pages/library/books'));
 const BooksCategories   = lazy(() => import('../pages/library/categories'));
 
@@ -66,6 +67,14 @@ export const routes = [
                 isIndex: false,
                 childRoutes: null,
                 element: <Subjects />
+            },
+            {
+                id: 'subjects-types',
+                name: 'Subjects Types',
+                path: '/subjects-types',
+                isIndex: false,
+                childRoutes: null,
+                element: <SubjectsTypes />
             },
             {
                 id: 'books',

@@ -22,7 +22,7 @@
 
 table th:last-child,
 table tr td:last-of-type {
- 
+ text-align: center;
 }
 
 .was-validated .invalid-feedback {

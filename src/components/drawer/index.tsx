@@ -49,6 +49,7 @@ const Drawer = () => {
             <NavListLabel title='University Management' />
             <NavLink title="Faculties" faIcon="fas fa-university" link="faculties" />
             <NavLink title="Subjects" faIcon="fas fa-chalkboard-teacher" link="subjects" />
+            <NavLink title="Subjects Types" faIcon="fas fa-chalkboard-teacher" link="subjects-types" />
             <NavLink title="Library" faIcon="fas fa-archive">
               <NavLink title="Books" faIcon="fas fa-book" link="books" />
               <NavLink title="Categories" faIcon="fas fa-list-alt" link="books-categories" />

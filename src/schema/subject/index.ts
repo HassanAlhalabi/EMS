@@ -1,9 +1,19 @@
-import { array, object, string } from "yup";
+import { array, number, object, string } from "yup";
 
 export const subjectValidation = object({
-    titleAr: string().required('Arabic Name Is Required'),
-    titleEn: string().required('English Name Is Required'),
-    image: string().nullable(),
+    nameAr: string().required('Arabic Name Is Required'),
+    nameEn: string().required('English Name Is Required'),
+    descriptionAr: string().nullable(),
+    descriptionEn: string().nullable(),
+    subjectTypeId: string().required('Subject Type Name Is Required'),
     superSubjectId: string().nullable(),
-    facultySubjects: array().of(string()).nullable()
+    facultiesIds: array().of(string()).required('Faculties Are Required')
+})
+
+export const subjectTypeValidation = object({
+    nameAr: string().required('Arabic Name Is Required'),
+    nameEn: string().required('English Name Is Required'),
+    descriptionAr: string().nullable(),
+    descriptionEn: string().nullable(),
+    maxHours: number().required('Max Hours Is Required')
 })

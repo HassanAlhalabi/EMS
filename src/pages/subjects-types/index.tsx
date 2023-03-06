@@ -6,21 +6,19 @@ import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
 import { useDelete, usePost, usePut } from "../../hooks";
 import { get } from "../../http";
-import { subjectValidation } from "../../schema/subject";
+import { subjectTypeValidation } from "../../schema/subject";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../util";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { NewSubject, Subject } from "../../types/subjects";
-import SubjectForm from "./subject-form";
+import {  NewSubjectType, Subject } from "../../types/subjects";
+import SubjectTypeForm from "./subject-type-form";
 
 const INITIAL_VALUES = {
     nameAr: '',
     nameEn: '',
-    descriptionAr: "",
-    descriptionEn: "",
-    subjectTypeId: '',
-    superSubjectId: null,
-    facultiesIds: []
+    descriptionAr: '',
+    descriptionEn: '',
+    maxHours: 1
 }
 
 const SubjectsPage = () => {
@@ -32,18 +30,18 @@ const SubjectsPage = () => {
     const [subjectId, setSubjectId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
 
-    const formik = useFormik<NewSubject>({
+    const formik = useFormik<NewSubjectType>({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleSubjectAction(),
-		validationSchema: subjectValidation
+		validationSchema: subjectTypeValidation
 	})
 
     const { data, 
             isLoading, 
             isFetching,
             refetch } = useQuery(
-                            ['/Subject/GetAllSubjects', page, pageSize], 
-                            () => get(`/Subject/GetAllSubjects?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
+                            ['/SubjectType/GetAllSubjectTypes', page, pageSize], 
+                            () => get(`/SubjectType/GetAllSubjectTypes?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                             {
                                 keepPreviousData: true,
                             });
@@ -53,12 +51,16 @@ const SubjectsPage = () => {
 				isFetching: fetchingSubject,
 				refetch: refetchSubject,
 			 } = useQuery(
-                        ['/Subject/GetSubject', subjectId], 
-                        () => get(`/Subject/GetSubject/${subjectId}`),
+                        ['/SubjectType/GetFullSubjectType', subjectId], 
+                        () => get(`/SubjectType/GetFullSubjectType/${subjectId}`),
                         {
-                            // @ts-ignore
                             enabled: false,   
-                            onSuccess: data => {}              
+                            onSuccess: data => {
+                                console.log(data.data)
+                                // formik.setValues({
+
+                                // })
+                            }              
 			            });
 
     useEffect(() => {
@@ -83,8 +85,12 @@ const SubjectsPage = () => {
     const columns = useMemo(
         () => [
             {
-                Header: 'Subject Name',
+                Header: 'Name',
                 accessor: 'name',
+            },
+            {
+                Header: 'Max Hours',
+                accessor: 'maxHours',
             },
             {
                 Header: 'Options',
@@ -96,8 +102,8 @@ const SubjectsPage = () => {
 
     const subjects = useMemo(
         () => {
-            if(data && data.data.subjects) {
-                return  data.data.subjects
+            if(data && data.data.subjectTypes) {
+                return  data.data.subjectTypes
             }
             return [];
         },
@@ -106,10 +112,10 @@ const SubjectsPage = () => {
 
     const { mutateAsync , 
             isLoading: postLoading, 
-            isError, error } = action === ACTION_TYPES.add ? usePost('/Subject', formik.values) :
+            isError, error } = action === ACTION_TYPES.add ? usePost('/SubjectType', formik.values) :
                                             action === ACTION_TYPES.update ? 
-                                            usePut('/Subject', 
-                                        {}) : useDelete('/Subject',subjectId as string);
+                                            usePut('/SubjectType', 
+                                        {}) : useDelete('/SubjectType',subjectId as string);
 
     
       const handleSubjectAction = async () => {
@@ -184,10 +190,10 @@ const SubjectsPage = () => {
                     }}
                 />
 
-                <PopUp  title={`${action && capitalize(action as string)} Subject`}
+                <PopUp  title={`${action && capitalize(action as string)} Subject Type`}
 								show={action !== null}
 								onHide={() => { setAction(null), formik.resetForm(), setSubjectId(null) } }
-								confirmText={`${action} Subject`}
+								confirmText={`${action} Subject Type`}
 								confirmButtonVariant={
 									action === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
@@ -196,7 +202,7 @@ const SubjectsPage = () => {
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
-                                && <SubjectForm formik={formik} />}
+                                && <SubjectTypeForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
                                     <>Are you Sure You Want to Delete This Subject</>
                         }

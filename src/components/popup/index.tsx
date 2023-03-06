@@ -31,7 +31,9 @@ const PopUp = (props: ModalProps & PopUpExtra) => {
       <Modal.Footer>
         <Button variant="default" onClick={props.onHide}>Close</Button>
         <Button variant={props.confirmButtonVariant} 
-                onClick={props.handleConfirm} style={{textTransform: 'capitalize'}}>
+                onClick={props.handleConfirm} 
+                style={{textTransform: 'capitalize'}}
+                className="btn btn-falcon-primary">
           {props.confirmText ? capitalize(props.confirmText) : 'Ok'}
         </Button>
       </Modal.Footer>

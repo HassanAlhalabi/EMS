@@ -1,23 +1,9 @@
 import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
-import { useQuery } from 'react-query';
-import { get } from "../../../http";
 import { FormikProps } from "formik";
-import { NewSubject, SubjectType } from "../../../types/subjects";
+import { NewSubjectType } from "../../../types/subjects";
 
-const SubjectForm = ({formik}:{formik: FormikProps<NewSubject>}) => {
-
-    const { data: faculties } = useQuery(
-                            ['/Faculty/GetAllFaculties'], 
-                        () => get(`/Faculty/GetAllFaculties`));
-
-    const { data: subjects } = useQuery(
-                            ['/Subject/GetAllSubjects'], 
-                        () => get(`/Subject/GetAllSubjects`));
-
-    const { data: subjectTypes } = useQuery(
-                            ['/SubjectType/GetAllSubjectTypes'], 
-                        () => get(`/SubjectType/GetAllSubjectTypes`));
+const SubjectTypeForm = ({formik}:{formik: FormikProps<NewSubjectType>}) => {
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -80,29 +66,20 @@ const SubjectForm = ({formik}:{formik: FormikProps<NewSubject>}) => {
             </Feedback> 
         </Form.Group> 
         <Form.Group className="mb-3">
-            <Form.Label htmlFor="type">
-                Subject Type:
-            </Form.Label>
-            <Form.Select
+            <Form.Control
                 size="lg"
                 required
-                id="type"
-                name="type"
-                value={formik.values.subjectTypeId as string} 
-                onChange={formik.handleChange}>
-                    <option key="no-value" value=""></option>
-                {
-                    subjectTypes?.data.faculties.map((subjectType: SubjectType) => 
-                        <option key={subjectType.id} value={subjectType.id}>{subjectType.name}</option>
-                    )
-                }
-            </Form.Select>            
+                type="number" 
+                placeholder="Max Hours"
+                name="maxHours"
+                value={formik.values.maxHours} 
+                onChange={formik.handleChange} />
             <Feedback type="invalid">
-                {formik.errors.subjectTypeId as string}
+                {formik.errors.maxHours}
             </Feedback>
-        </Form.Group> 
+        </Form.Group>
     </Form>
   )
 }
 
-export default SubjectForm
+export default SubjectTypeForm
