@@ -1,13 +1,16 @@
 import { lazy } from "react"
 import ProtectedRoute from "../components/protected-route";
 
-const Main      = lazy(() => import('../pages/main'));
-const SignIn    = lazy(() => import('../pages/auth/sign-in'));
-const Dashboard = lazy(() => import('../pages/dashboard'));
-const Users     = lazy(() => import('../pages/users'));
-const Roles     = lazy(() => import('../pages/roles'));
-const Faculties = lazy(() => import('../pages/faculties'));
-const FacultyForm = lazy(() => import('../pages/faculties/faculty-form-stepper'));
+const Main              = lazy(() => import('../pages/main'));
+const SignIn            = lazy(() => import('../pages/auth/sign-in'));
+const Dashboard         = lazy(() => import('../pages/dashboard'));
+const Users             = lazy(() => import('../pages/users'));
+const Roles             = lazy(() => import('../pages/roles'));
+const Faculties         = lazy(() => import('../pages/faculties'));
+const FacultyForm       = lazy(() => import('../pages/faculties/faculty-form-stepper'));
+const Subjects          = lazy(() => import('../pages/subjects'));
+const Books             = lazy(() => import('../pages/library/books'));
+const BooksCategories   = lazy(() => import('../pages/library/categories'));
 
 export const routes = [
     {
@@ -28,7 +31,7 @@ export const routes = [
                 id: 'users',
                 name: 'Users',
                 path: '/users',
-                isIndex: true,
+                isIndex: false,
                 childRoutes: null,
                 element: <Users />
             },
@@ -36,7 +39,7 @@ export const routes = [
                 id: 'roles',
                 name: 'Roles',
                 path: '/roles',
-                isIndex: true,
+                isIndex: false,
                 childRoutes: null,
                 element: <Roles />
             },
@@ -44,7 +47,7 @@ export const routes = [
                 id: 'faculties',
                 name: 'Faculties',
                 path: '/faculties',
-                isIndex: true,
+                isIndex: false,
                 childRoutes: null,
                 element: <Faculties />
             },
@@ -52,9 +55,17 @@ export const routes = [
                 id: 'faculty-form',
                 name: 'Add/Update Faculty',
                 path: '/faculty-form/:id?',
-                isIndex: true,
+                isIndex: false,
                 childRoutes: null,
                 element: <FacultyForm />
+            },
+            {
+                id: 'subjects',
+                name: 'Subjects',
+                path: '/subjects',
+                isIndex: false,
+                childRoutes: null,
+                element: <Subjects />
             },
             {
                 id: 'books',
@@ -62,7 +73,7 @@ export const routes = [
                 path: '/books',
                 isIndex: true,
                 childRoutes: null,
-                element: <Faculties />
+                element: <Books />
             },
             {
                 id: 'books-categories',
@@ -70,7 +81,7 @@ export const routes = [
                 path: '/books-categories',
                 isIndex: true,
                 childRoutes: null,
-                element: <Faculties />
+                element: <BooksCategories />
             },
         ],
         element: <ProtectedRoute><Main /></ProtectedRoute>

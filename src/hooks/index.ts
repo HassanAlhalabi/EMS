@@ -28,6 +28,14 @@ export const usePut = <T>(path: string, data?: T) => {
 
 }
 
+export const usePutByPath = <T>(path: string) => {
+
+    const mutationFn = async () => await put(path);
+    
+    return useMutation(mutationFn);
+
+}
+
 export const useDelete = (path: string, id: string) => {
 
     const mutationFn = async () => await deleteReq(`${path}/${id}`);

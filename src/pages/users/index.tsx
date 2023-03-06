@@ -145,7 +145,7 @@ const UsersPage = () => {
           isLoading: postLoading
         } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
               {
-                roleId: formik.values.roleId ,
+                roleId:formik.values.type === 'Student' ? null : formik.values.roleId  ,
                 firstName: formik.values.firstName ,
                 lastName: formik.values.lastName ,
                 email: formik.values.email ,
@@ -168,8 +168,8 @@ const UsersPage = () => {
 
   const handleUserAction = async () => {
 
-       // Not Valid ... Do Nothing
-       if(!formik.isValid && action !== ACTION_TYPES.delete) {
+      // Not Valid ... Do Nothing
+    if(!formik.isValid && action !== ACTION_TYPES.delete) {
         formik.validateForm();
         return;
     };

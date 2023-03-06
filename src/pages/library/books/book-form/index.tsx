@@ -1,9 +1,9 @@
-import { FormikProps, FieldArray } from "formik"
-import { Form, Row, Col, Button } from "react-bootstrap"
-import Feedback from "../../../../components/feedback"
-import { NewSpec } from "../../../../types/faculties"
+import { Form, Row, Col } from "react-bootstrap"
+import { FormikProps } from "formik";
+import { NewBook } from "../../../../types/books";
+import Feedback from "../../../../components/feedback";
+const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
 
-const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
@@ -13,12 +13,11 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
                         size="lg"
                         required
                         type="text" 
-                        placeholder="Arabic Name"
+                        placeholder="Arabic Title"
                         name="nameAr"
                         value={formik.values.nameAr} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
-                        
                         {formik.errors.nameAr as string}
                     </Feedback>
                 </Form.Group>
@@ -29,7 +28,7 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
                         size="lg"
                         required
                         type="text" 
-                        placeholder="English Name"
+                        placeholder="English Title"
                         name="nameEn"
                         value={formik.values.nameEn} 
                         onChange={formik.handleChange} />
@@ -39,11 +38,42 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
                 </Form.Group>
             </Col>
         </Row>  
+        <Row>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        size="lg"
+                        required
+                        type="text" 
+                        placeholder="Arabic Author Name"
+                        name="authorNameAr"
+                        value={formik.values.authorNameAr} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.authorNameAr as string}
+                    </Feedback>
+                </Form.Group>
+            </Col>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        size="lg"
+                        required
+                        type="text" 
+                        placeholder="English Author Name"
+                        name="authorNameEn"
+                        value={formik.values.authorNameEn} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.authorNameEn as string}
+                    </Feedback>
+                </Form.Group>
+            </Col>
+        </Row>  
         <Form.Group className="mb-3">
             <Form.Control
-                size="lg"
                 as="textarea"
-                required
+                size="lg"
                 type="text" 
                 placeholder="Arabic Description"
                 name="descriptionAr"
@@ -57,7 +87,6 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
             <Form.Control
                 as="textarea"
                 size="lg"
-                required
                 type="text" 
                 placeholder="English Description"
                 name="descriptionEn"
@@ -65,17 +94,10 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
                 {formik.errors.descriptionEn as string}
-            </Feedback>
+            </Feedback> 
         </Form.Group> 
-        <button
-            onClick={(e) => { e.preventDefault(); formik.handleSubmit()} } 
-            className={`btn btn-falcon-success px-5 px-sm-6`} 
-            type="button"
-            >
-            Add Speciality <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>
-        </button>
     </Form>
   )
 }
 
-export default SpecsForm
+export default BookForm

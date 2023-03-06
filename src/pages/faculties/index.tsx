@@ -18,8 +18,8 @@ const FacultiesPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [searchKey, setSearchKey] = useState<string>('');
-  const [facultyId, setFacultyId] = useState(null);
   const { toggleScreenLoader } = useScreenLoader();
+  const [facultyId, setFacultyId] = useState<string | null>(null);
 
   const { data, 
           status,
@@ -45,15 +45,17 @@ const FacultiesPage = () => {
     return () => clearTimeout(searchTimeout);
   },[page,pageSize,searchKey])
 
+  useEffect(() => {
+    if(facultyId) {
+      handleFacultyToggle();
+    }
+  },[facultyId])
+
   const columns = useMemo(
 		() => [
       {
         Header: 'Faculty Name',
-        accessor: 'facultyName',
-      },
-      {
-        Header: 'Phone Number',
-        accessor: 'phoneNumber',
+        accessor: 'name',
       },
       {
         Header: 'Options',
@@ -64,11 +66,9 @@ const FacultiesPage = () => {
 	 )
 
   const facultys = useMemo(
-    () => (isLoading || status === 'idle') ? [] : (data?.data.facultyResponses),
+    () => (isLoading || status === 'idle') ? [] : (data?.data.faculties),
     [data, isFetching, isLoading]
   );
-
-  const reset = () => setFacultyId(null)
 
   const { mutateAsync , 
           isLoading: postLoading
@@ -79,12 +79,12 @@ const FacultiesPage = () => {
         toggleScreenLoader();
         await mutateAsync();
         refetch();
+        setFacultyId(null);
         toast.success(`Activate Faculty Done Successfully`)
-        reset();
       } catch(error) {
         toast.error(getAxiosError(error))
       }
-
+      toggleScreenLoader();
   }
 
 
@@ -114,15 +114,15 @@ const FacultiesPage = () => {
                                     }} 
               renderRowActions={(faculty) => {
                   return  <div className="d-flex align-items-center">
-                            <button className="btn btn-falcon-info btn-sm m-1" 
-                                    type="button" 
-                                    onClick={() => {}}>        
+                            <Link className="btn btn-falcon-info btn-sm m-1" 
+                                    type="button"
+                                    to={`/faculty-form/${faculty.id}`}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                            </button>
+                            </Link>
                             <SwitchInput 
                               checked={faculty.isActive} 
                               value={faculty.id} 
-                              onChange={handleFacultyToggle} />
+                              onChange={() => { setFacultyId(faculty.id) }} />
                           </div>
               }}/>
 

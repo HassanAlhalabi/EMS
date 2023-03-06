@@ -104,28 +104,31 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                 </Form.Group> 
             </Col>
             <Col>
-                <Form.Group className="mb-3">
-                    <Form.Label htmlFor="role">
-                        User Role:
-                    </Form.Label>
-                    <Form.Select
-                        size="lg"
-                        required
-                        id="role"
-                        name="roleId"
-                        value={formik.values.roleId as string} 
-                        onChange={formik.handleChange}>
-                            <option key="no-value" value=""></option>
-                        {
-                            data?.data.roles.map((role: {id: string, name:string} ) => 
-                                <option key={role.id} value={role.id}>{role.name}</option>
-                            )
-                        }
-                    </Form.Select>            
-                    <Feedback type="invalid">
-                        {formik.errors.roleId as string}
-                    </Feedback>
-                </Form.Group>
+            {
+                formik.values.type !== 'Student' &&
+                    <Form.Group className="mb-3">
+                        <Form.Label htmlFor="role">
+                            User Role:
+                        </Form.Label>
+                        <Form.Select
+                            size="lg"
+                            required
+                            id="role"
+                            name="roleId"
+                            value={formik.values.roleId as string} 
+                            onChange={formik.handleChange}>
+                                <option key="no-value" value=""></option>
+                            {
+                                data?.data.roles.map((role: {id: string, name:string} ) => 
+                                    <option key={role.id} value={role.id}>{role.name}</option>
+                                )
+                            }
+                        </Form.Select>            
+                        <Feedback type="invalid">
+                            {formik.errors.roleId as string}
+                        </Feedback>
+                    </Form.Group>
+            }
             </Col>
         </Row> 
     </Form>

@@ -4,12 +4,11 @@ import { PaneHeadProps } from './pane-head';
 
 interface FormWizardProps {
     headers: PaneHeadProps[]
-    children: ReactNode[]
+    children: ReactNode[],
+    currentTab: number,
 }
 
-const FormWizard = ({children, headers}: FormWizardProps) => {
-
-    const [currentTab, setCurrentTab] = useState(0);
+const FormWizard = ({children, headers, currentTab}: FormWizardProps) => {
     
     const updatedHeaders: PaneHeadProps[] = useMemo(() => {
         return headers.map((header: PaneHeadProps, index: number) => {
@@ -32,8 +31,6 @@ const FormWizard = ({children, headers}: FormWizardProps) => {
         })
     },[currentTab])
 
-    const handleChangeTab = (tabNumber: number) => setCurrentTab(tabNumber);
-
     return (
         <div className="theme-wizard h-100 mb-5">
 
@@ -51,13 +48,13 @@ const FormWizard = ({children, headers}: FormWizardProps) => {
                 <div className="tab-content">
                     {
                         children.map((child: ReactNode, index: number) => 
-                        <div key={index} className={`tab-pane px-sm-3 px-md-5 ${index === currentTab ? 'active' : ''}`} role="tabpane">
-                            {child}
-                        </div>)
+                            <div key={index} className={`tab-pane px-sm-3 px-md-5 ${index === currentTab ? 'active' : ''}`} role="tabpane">
+                                {child}
+                            </div>)
                     }
                 </div>
             </div>
-
+{/* 
             <div className="card-footer">
                 <div className="px-sm-3 px-md-5">
                     <ul className="pager wizard list-inline mb-0">                         
@@ -68,22 +65,18 @@ const FormWizard = ({children, headers}: FormWizardProps) => {
                             </button>
                         </li>
                         <li className="next">
-                            <button onClick={() => handleChangeTab(currentTab + 1)} 
+                            <button
+                                disabled={disableNext}
+                                onClick={() => handleChangeTab(currentTab + 1)} 
                                     className={`btn btn-primary px-5 px-sm-6 ${currentTab > children.length - 2 && 'd-none' }`} type="submit">
                                 Next <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
                             </button>
                         </li>
-                        {
-                            currentTab === (children.length - 1) && 
-                            <button onClick={() => {}} 
-                                    className={`btn btn-success px-5 px-sm-6`} type="submit">
-                                Add 
-                            </button>
-                        }
                     </ul>
 
                 </div>
-            </div>
+            </div> */}
+
         </div>
     )
 }

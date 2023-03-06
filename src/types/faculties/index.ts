@@ -5,11 +5,11 @@ export interface NewFaculty {
     nameEn: string,
     descriptionAr: string,
     descriptionEn: string,
-    minCountToSubject: number | null,
-    maxStudCountInGroup: number | null,
+    minCountToSubject: number,
+    maxStudCountInGroup: number,
 }
 
-export interface NewSpecs {
+export interface NewSpec {
     nameAr: string,
     nameEn: string,
     descriptionAr: string,
@@ -24,4 +24,12 @@ export interface Faculty {
     isActive: boolean
     minCountToSubject:	number
     maxStudCountInGroup:	number
+}
+
+export interface NewHall {
+    nameAr: string,
+    nameEn: string,
+    descriptionAr: string,
+    descriptionEn: string,
+    maxCount: number
 }

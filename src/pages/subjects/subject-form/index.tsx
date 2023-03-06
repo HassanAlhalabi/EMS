@@ -1,9 +1,17 @@
-import { FormikProps, FieldArray } from "formik"
-import { Form, Row, Col, Button } from "react-bootstrap"
-import Feedback from "../../../../components/feedback"
-import { NewSpec } from "../../../../types/faculties"
+import { Form, Row, Col } from "react-bootstrap"
+import Feedback from "../../../components/feedback"
+import { USERS_TYPES } from "../../../constants"
+import { useQuery } from 'react-query';
+import { get } from "../../../http";
+import { FormikProps } from "formik";
+import { NewSubject } from "../../../types/subjects";
 
-const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
+const SubjectForm = ({formik}:{formik: FormikProps<NewSubject>}) => {
+
+    const { data } = useQuery(
+                            ['/Role/GetRolesList'], 
+                        () => get(`/Role/GetRolesList`));
+
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
@@ -14,12 +22,11 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
                         required
                         type="text" 
                         placeholder="Arabic Name"
-                        name="nameAr"
-                        value={formik.values.nameAr} 
+                        name="titleAr"
+                        value={formik.values.titleAr} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
-                        
-                        {formik.errors.nameAr as string}
+                        {formik.errors.titleAr as string}
                     </Feedback>
                 </Form.Group>
             </Col>
@@ -30,22 +37,22 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
                         required
                         type="text" 
                         placeholder="English Name"
-                        name="nameEn"
-                        value={formik.values.nameEn} 
+                        name="titleEn"
+                        value={formik.values.titleEn} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
-                        {formik.errors.nameEn as string}
+                        {formik.errors.titleEn as string}
                     </Feedback>
                 </Form.Group>
             </Col>
         </Row>  
-        <Form.Group className="mb-3">
+        {/* <Form.Group className="mb-3">
             <Form.Control
-                size="lg"
                 as="textarea"
+                size="lg"
                 required
                 type="text" 
-                placeholder="Arabic Description"
+                placeholder="Email"
                 name="descriptionAr"
                 value={formik.values.descriptionAr as string} 
                 onChange={formik.handleChange} />
@@ -59,23 +66,16 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
                 size="lg"
                 required
                 type="text" 
-                placeholder="English Description"
+                placeholder="descriptionEn"
                 name="descriptionEn"
                 value={formik.values.descriptionEn as string} 
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
                 {formik.errors.descriptionEn as string}
-            </Feedback>
-        </Form.Group> 
-        <button
-            onClick={(e) => { e.preventDefault(); formik.handleSubmit()} } 
-            className={`btn btn-falcon-success px-5 px-sm-6`} 
-            type="button"
-            >
-            Add Speciality <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>
-        </button>
+            </Feedback> 
+        </Form.Group>  */}
     </Form>
   )
 }
 
-export default SpecsForm
+export default SubjectForm

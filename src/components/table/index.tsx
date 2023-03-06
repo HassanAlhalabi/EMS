@@ -123,22 +123,22 @@ const Table = <T extends unknown>({ 	isBulk,
     });
 
 	// Pagination Actions
-	const handlePrevPage = () => setPage((prev: number) => prev - 1);
-	const handleNextPage = () => setPage((prev: number) => prev + 1)
+	const handlePrevPage = () => setPage && setPage((prev: number) => prev - 1);
+	const handleNextPage = () => setPage && setPage((prev: number) => prev + 1)
 	const handlePageSize = (e: ChangeEvent<HTMLSelectElement>) => { 
 		const newPageSize = Number(e.target.value);
-		if(newPageSize > (pagination.totalItems / newPageSize)) {
-			setPage(1);
+		if(pagination && newPageSize > (pagination.totalItems / newPageSize)) {
+			setPage && setPage(1);
 		}
-		setPageSize(newPageSize);
+		setPageSize && setPageSize(newPageSize);
 	}
 	const handleGoToPage = (e: ChangeEvent<HTMLInputElement>) => {
 		const newPageNumber = Number(e.target.value);
-		if(	newPageNumber > pagination.totalPages || 
+		if(pagination && newPageNumber > pagination.totalPages || 
 			newPageNumber <= 0 ) {
 				return;
 		}
-		setPage(newPageNumber);
+		setPage && setPage(newPageNumber);
 	}
 	const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchKey && setSearchKey(e.target.value)
@@ -149,16 +149,19 @@ const Table = <T extends unknown>({ 	isBulk,
 
 			<div className="d-flex align-items-center justify-content-between mb-2">
 					<div className="d-flex align-items-center justify-content-between">
-						<TablePagination
+						{
+							pagination &&
+							<TablePagination
 							loading={loading as boolean}
 							pagination={pagination}
 							pageNumber={pageNumber}
-							pageSize={pageSize}
+							pageSize={pageSize as number}
 							handlePrevPage={handlePrevPage}
 							handleNextPage={handleNextPage}
 							handleGoToPage={handleGoToPage}
 							handlePageSize={handlePageSize}
 						/>
+						}
 						{
 							hasSearch &&
 							<TableSearch

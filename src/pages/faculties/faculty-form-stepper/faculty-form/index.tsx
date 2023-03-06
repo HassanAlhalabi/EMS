@@ -38,38 +38,34 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                 </Form.Group>
             </Col>
         </Row>  
-        <Row>
-            <Col>
-                <Form.Group className="mb-3">
-                    <Form.Control
-                        size="lg"
-                        required
-                        type="text" 
-                        placeholder="Arabic Description"
-                        name="descriptionAr"
-                        value={formik.values.descriptionAr as string} 
-                        onChange={formik.handleChange} />
-                    <Feedback type="invalid">
-                        {formik.errors.descriptionAr as string}
-                    </Feedback>
-                </Form.Group> 
-            </Col>
-            <Col>
-                <Form.Group className="mb-3">
-                    <Form.Control
-                        size="lg"
-                        required
-                        type="text" 
-                        placeholder="Arabic Description"
-                        name="descriptionEn"
-                        value={formik.values.descriptionEn as string} 
-                        onChange={formik.handleChange} />
-                    <Feedback type="invalid">
-                        {formik.errors.descriptionEn as string}
-                    </Feedback>
-                </Form.Group> 
-            </Col>
-        </Row> 
+        <Form.Group className="mb-3">
+            <Form.Control
+                as='textarea'
+                size="lg"
+                required
+                type="text" 
+                placeholder="Arabic Description"
+                name="descriptionAr"
+                value={formik.values.descriptionAr as string} 
+                onChange={formik.handleChange} />
+            <Feedback type="invalid">
+                {formik.errors.descriptionAr as string}
+            </Feedback>
+        </Form.Group> 
+        <Form.Group className="mb-3">
+            <Form.Control
+                as="textarea"
+                size="lg"
+                required
+                type="text" 
+                placeholder="English Description"
+                name="descriptionEn"
+                value={formik.values.descriptionEn as string} 
+                onChange={formik.handleChange} />
+            <Feedback type="invalid">
+                {formik.errors.descriptionEn as string}
+            </Feedback>
+        </Form.Group> 
         <Row>
             <Col>
                 <Form.Group className="mb-3">
@@ -80,7 +76,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                         min={1} 
                         placeholder="Minimum Student Count"
                         name="minCountToSubject"
-                        value={formik.values.minCountToSubject as number} 
+                        value={formik.values.minCountToSubject} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.minCountToSubject as string}
@@ -95,12 +91,25 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                         type="number" 
                         placeholder="Maximum Students Number in a Class"
                         name="maxStudCountInGroup"
-                        value={formik.values.maxStudCountInGroup as number} 
+                        value={formik.values.maxStudCountInGroup} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.maxStudCountInGroup as string}
                     </Feedback>
                 </Form.Group> 
+            </Col>
+        </Row>
+        <Row className="mt-3">
+            <Col>
+            </Col>
+            <Col className="d-flex justify-content-end">
+                <button
+                    disabled={!formik.isValid || !formik.dirty}
+                    onClick={(e) => { e.preventDefault(); formik.handleSubmit()} } 
+                    className={`btn btn-primary px-5 px-sm-6`} 
+                    type="submit">
+                    Next <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
+                </button>
             </Col>
         </Row>
     </Form>
