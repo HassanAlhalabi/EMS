@@ -19,7 +19,7 @@ const INITIAL_VALUES = {
     descriptionAr: "",
     descriptionEn: "",
     subjectTypeId: '',
-    superSubjectId: null,
+    superSubjectId: '',
     facultiesIds: []
 }
 
@@ -48,12 +48,12 @@ const SubjectsPage = () => {
                                 keepPreviousData: true,
                             });
 
-    const { data: subject, 
-				isLoading: loadingSubject, 
-				isFetching: fetchingSubject,
-				refetch: refetchSubject,
-			 } = useQuery(
-                        ['/Subject/GetSubject', subjectId], 
+    const   {   data: subject, 
+                isLoading: loadingSubject, 
+                isFetching: fetchingSubject,
+                refetch: refetchSubject,
+            } = useQuery(
+                            ['/Subject/GetSubject', subjectId], 
                         () => get(`/Subject/GetSubject/${subjectId}`),
                         {
                             // @ts-ignore
@@ -106,7 +106,8 @@ const SubjectsPage = () => {
 
     const { mutateAsync , 
             isLoading: postLoading, 
-            isError, error } = action === ACTION_TYPES.add ? usePost('/Subject', formik.values) :
+            isError, error } = action === ACTION_TYPES.add ? 
+                                            usePost('/Subject', formik.values) :
                                             action === ACTION_TYPES.update ? 
                                             usePut('/Subject', 
                                         {}) : useDelete('/Subject',subjectId as string);

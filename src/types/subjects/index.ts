@@ -4,7 +4,7 @@ export interface NewSubject {
     descriptionAr: string,
     descriptionEn: string,
     subjectTypeId: string,
-    superSubjectId: string | null,
+    superSubjectId: string,
     facultiesIds: string[]
 }
 

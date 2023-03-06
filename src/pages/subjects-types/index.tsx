@@ -55,12 +55,7 @@ const SubjectsPage = () => {
                         () => get(`/SubjectType/GetFullSubjectType/${subjectId}`),
                         {
                             enabled: false,   
-                            onSuccess: data => {
-                                console.log(data.data)
-                                // formik.setValues({
-
-                                // })
-                            }              
+                            onSuccess: data => formik.setValues(data.data)            
 			            });
 
     useEffect(() => {
@@ -114,8 +109,10 @@ const SubjectsPage = () => {
             isLoading: postLoading, 
             isError, error } = action === ACTION_TYPES.add ? usePost('/SubjectType', formik.values) :
                                             action === ACTION_TYPES.update ? 
-                                            usePut('/SubjectType', 
-                                        {}) : useDelete('/SubjectType',subjectId as string);
+                                            usePut('/SubjectType',{
+                                                id: subjectId,
+                                                ...formik.values
+                                            }) : useDelete('/SubjectType',subjectId as string);
 
     
       const handleSubjectAction = async () => {
@@ -132,7 +129,7 @@ const SubjectsPage = () => {
             toggleScreenLoader();
             await mutateAsync();
             refetch();
-            toast.success(`${capitalize(action as string)} Subject Done Successfully`)
+            toast.success(`${capitalize(action as string)} Subject Type Done Successfully`)
             setAction(null);
 			setSubjectId(null);
             formik.resetForm();

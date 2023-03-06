@@ -4,20 +4,31 @@ import { useQuery } from 'react-query';
 import { get } from "../../../http";
 import { FormikProps } from "formik";
 import { NewSubject, SubjectType } from "../../../types/subjects";
+import { Faculty } from "../../../types/faculties";
+import { useState, ChangeEvent } from 'react';
 
 const SubjectForm = ({formik}:{formik: FormikProps<NewSubject>}) => {
 
+    const [facultyId, setFacultyId] = useState<string | null>(null);
+    const [subjectId, setSubjectId] = useState<string | null>(null);
+
     const { data: faculties } = useQuery(
-                            ['/Faculty/GetAllFaculties'], 
-                        () => get(`/Faculty/GetAllFaculties`));
+                            ['/Faculty/GetDropDownFaculties'], 
+                        () => get(`/Faculty/GetDropDownFaculties`));
 
     const { data: subjects } = useQuery(
-                            ['/Subject/GetAllSubjects'], 
-                        () => get(`/Subject/GetAllSubjects`));
+                            ['/Subject/GetDropDownSubjects', facultyId ], 
+                        () => get(`/Subject/GetDropDownSubjects?FacultyId=${facultyId}`),{
+                            enabled: false
+                        });
 
     const { data: subjectTypes } = useQuery(
-                            ['/SubjectType/GetAllSubjectTypes'], 
-                        () => get(`/SubjectType/GetAllSubjectTypes`));
+                            ['/SubjectType/GetDropDownSubjectTypes'], 
+                        () => get(`/SubjectType/GetDropDownSubjectTypes`));
+
+        const handleAddFacultySubject = () => {
+
+        }
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -86,13 +97,13 @@ const SubjectForm = ({formik}:{formik: FormikProps<NewSubject>}) => {
             <Form.Select
                 size="lg"
                 required
-                id="type"
-                name="type"
+                id="subjectTypeId"
+                name="subjectTypeId"
                 value={formik.values.subjectTypeId as string} 
                 onChange={formik.handleChange}>
                     <option key="no-value" value=""></option>
                 {
-                    subjectTypes?.data.faculties.map((subjectType: SubjectType) => 
+                    subjectTypes?.data.map((subjectType: {id: string, name: string}) => 
                         <option key={subjectType.id} value={subjectType.id}>{subjectType.name}</option>
                     )
                 }
@@ -101,6 +112,57 @@ const SubjectForm = ({formik}:{formik: FormikProps<NewSubject>}) => {
                 {formik.errors.subjectTypeId as string}
             </Feedback>
         </Form.Group> 
+        <Row>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="type">
+                        Faculties:
+                    </Form.Label>
+                    <Form.Select
+                        size="lg"
+                        id=""
+                        name="facultyId"
+                        value={facultyId} 
+                        onChange={(e: ChangeEvent<HTMLSelectElement>) => setFacultyId(e.target.value)}>
+                            <option key="no-value" value=""></option>
+                        {
+                            faculties?.data.map((faculty: {id: string, name: string}) => 
+                                <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
+                            )
+                        }
+                    </Form.Select>            
+                    <Feedback type="invalid">
+                        {formik.errors.facultiesIds}
+                    </Feedback>
+                </Form.Group>
+            </Col>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="superSubjectId">
+                        Pre-request Subject:             
+                    </Form.Label>
+                    <Form.Select
+                        size="lg"
+                        id="superSubjectId"
+                        name="superSubjectId"
+                        value={subjectId} 
+                        onChange={(e: ChangeEvent<HTMLSelectElement>) => setFacultyId(e.target.value)}>
+                            <option key="no-value" value=""></option>
+                        {
+                            subjects?.data.map((subject: {id: string, name: string}) => 
+                                <option key={subject.id} value={subject.id}>{subject.name}</option>
+                            )
+                        }
+                    </Form.Select>            
+                    <Feedback type="invalid">
+                        {formik.errors.superSubjectId as string}
+                    </Feedback>
+                </Form.Group>
+            </Col>
+        </Row>
+        <button className="btn btn-success">
+                Add Faculty Pre-Requested Subject <i className="fa fa-plus"></i>
+        </button>
     </Form>
   )
 }
