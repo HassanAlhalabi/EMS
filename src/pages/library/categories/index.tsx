@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, usePost, usePut } from "../../../hooks";
+import { useDelete, usePost, usePostFormData, usePut } from "../../../hooks";
 import { get } from "../../../http";
 import { bookCategoryValidation } from "../../../schema/book/book-category";
 import { toast } from "react-toastify";
@@ -16,8 +16,8 @@ import CategoryForm from "./category-form";
 const INITIAL_VALUES = {
     nameAr: '',
     nameEn: '',
-    image: 'img_url',
-    superCategoryId: null
+    image: null,
+    superCategoryId: ''
 }
 
 const CategoriesPage = () => {
@@ -50,12 +50,13 @@ const CategoriesPage = () => {
 				isFetching: fetchingCategory,
 				refetch: refetchCategory,
 			 } = useQuery(
-                        ['/Category/GetCategory', categoryId], 
-                        () => get(`/Category/GetCategory/${categoryId}`),
+                        ['/Category/GetFullCategory', categoryId], 
+                        () => get(`/Category/GetFullCategory/${categoryId}`),
                         {
-                            // @ts-ignore
                             enabled: false,   
-                            onSuccess: data => {}             
+                            onSuccess: data => {
+                                formik.setValues(data.data)
+                            }             
 			            });
 
     useEffect(() => {
@@ -91,10 +92,10 @@ const CategoriesPage = () => {
         []
     )
 
-    const categorys = useMemo(
+    const categories = useMemo(
         () => {
-            if(data && data.data.categorys) {
-                return  data.data.categorys
+            if(data && data.data.categories) {
+                return  data.data.categories
             }
             return [];
         },
@@ -103,8 +104,7 @@ const CategoriesPage = () => {
 
     const { mutateAsync , 
             isLoading: postLoading, 
-            isError, error } = action === ACTION_TYPES.add ? usePost('/Category', 
-                                        formik.values) :
+            isError, error } = action === ACTION_TYPES.add ? usePostFormData('/Category',formik.values) :
                                                         action === ACTION_TYPES.update ? 
                                                         usePut('/Category', 
                                         {
@@ -142,7 +142,7 @@ const CategoriesPage = () => {
                 <Table<BookCategory>  
                     columns={columns} 
                     hasSearch
-                    data={categorys} 
+                    data={categories} 
                     loading={isLoading || isFetching}
                     isBulk={false}
                     hasSort={false}

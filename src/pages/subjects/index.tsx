@@ -19,8 +19,7 @@ const INITIAL_VALUES = {
     descriptionAr: "",
     descriptionEn: "",
     subjectTypeId: '',
-    superSubjectId: '',
-    facultiesIds: []
+    facultySubjects: []
 }
 
 const SubjectsPage = () => {
@@ -53,13 +52,26 @@ const SubjectsPage = () => {
                 isFetching: fetchingSubject,
                 refetch: refetchSubject,
             } = useQuery(
-                            ['/Subject/GetSubject', subjectId], 
-                        () => get(`/Subject/GetSubject/${subjectId}`),
+                            ['/Subject/GetFullSubject', subjectId], 
+                        () => get(`/Subject/GetFullSubject/${subjectId}`),
                         {
                             // @ts-ignore
                             enabled: false,   
-                            onSuccess: data => {}              
-			            });
+                            onSuccess: data => {
+                                formik.setValues({
+                                    ...data.data,
+                                    subjectTypeId: data.data.subjectType.id,
+                                    facultySubjects: data.data.facultySubjects.map(fs => {
+                                        return {
+                                            facultyId: fs.faculty.id,
+                                            facultyName: fs.faculty.nameEn,
+                                            superSubjectId: fs.superSubject ? fs.superSubject.id : null,
+                                            superSubjectName: fs.superSubject ? fs.superSubject.nameEn : null,
+                                        }
+                                    })
+                                })
+                            }              
+			            });                   
 
     useEffect(() => {
         let searchTimeout: number; 
@@ -109,8 +121,10 @@ const SubjectsPage = () => {
             isError, error } = action === ACTION_TYPES.add ? 
                                             usePost('/Subject', formik.values) :
                                             action === ACTION_TYPES.update ? 
-                                            usePut('/Subject', 
-                                        {}) : useDelete('/Subject',subjectId as string);
+                                            usePut('/Subject', {
+                                                ...formik.values
+                                            }) : 
+                                            useDelete('/Subject',subjectId as string);
 
     
       const handleSubjectAction = async () => {
@@ -197,7 +211,7 @@ const SubjectsPage = () => {
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
-                                && <SubjectForm formik={formik} />}
+                                && <SubjectForm formik={formik} loading={loadingSubject || fetchingSubject} />}
                         {action === ACTION_TYPES.delete && 
                                     <>Are you Sure You Want to Delete This Subject</>
                         }

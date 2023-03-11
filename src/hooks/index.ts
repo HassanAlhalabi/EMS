@@ -20,9 +20,45 @@ export const usePost = <T>(path: string, data: T) => {
 
 }
 
+export const usePostFormData = <T>(path: string, data: T) => {
+
+    const formData = new FormData();
+    Object.entries(data as Object).map(([key, value]) => {
+        formData.append(key, value)
+    })
+
+    const mutationFn = async () => await post(path, formData, {
+        headers: {
+            'Accept' : '*/*',
+            "Content-Type" : 'multipart/form-data'
+        }
+    });
+    
+    return useMutation(mutationFn);
+
+}
+
 export const usePut = <T>(path: string, data?: T) => {
 
     const mutationFn = async () => await put(path, data);
+    
+    return useMutation(mutationFn);
+
+}
+
+export const usePutFormData = <T>(path: string, data: T) => {
+
+    const formData = new FormData();
+    Object.entries(data as Object).map(([key, value]) => {
+        formData.append(key, value)
+    })
+
+    const mutationFn = async () => await put(path, formData, {
+        headers: {
+            'Accept' : '*/*',
+            "Content-Type" : 'multipart/form-data'
+        }
+    });
     
     return useMutation(mutationFn);
 

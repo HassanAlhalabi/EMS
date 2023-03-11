@@ -1,8 +1,59 @@
 import { Form, Row, Col } from "react-bootstrap"
 import { FormikProps } from "formik";
-import { NewBook } from "../../../../types/books";
+import { BookCategory, NewBook } from "../../../../types/books";
 import Feedback from "../../../../components/feedback";
+import { ChangeEvent, SetStateAction, useState } from "react";
+import { useQuery } from "react-query";
+import { get } from "../../../../http";
+import CategoryBox from "../../../../components/category-box";
+
+type SelectedCategory = {id: string, name: string}
+
 const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
+
+    const [selectedCategories, setSelectedCategories] = useState<SelectedCategory[]>([]);
+
+    const handleCategorySelect = (event: ChangeEvent<HTMLSelectElement>) => {
+        
+        const { target: { value } }  = event  
+        
+        if(!value) return;
+
+        const categoryExists = selectedCategories.find(cat => cat.id === value);
+        if(categoryExists) return;
+
+        formik.setFieldValue('categoryId',[...formik.values.categoryId, value])
+        setSelectedCategories((prev: SetStateAction<SelectedCategory[]>) => {
+            return [...prev, 
+                    {   
+                        id: value,
+                        name: event.target.options[event.target.selectedIndex].textContent,
+                    }]
+        })
+
+        event.target.value = ''
+
+    }
+
+    const handleRemoveCategory = (categoryId: string) => {
+        setSelectedCategories(prev => {
+            return [...prev.filter(cat => cat.id !== categoryId)]
+        })
+        formik.setFieldValue('categoryId',[...formik.values.categoryId.filter(cat => cat !== categoryId)])
+    }
+
+    const { data } = useQuery(
+                        ['/Category/GetAllCategories', 1, 9999999], 
+                        () => get(`/Category/GetAllCategories?page=1&pageSize=9999999`),
+                        {
+                            keepPreviousData: true,
+                        });
+
+    const handleBookImageFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if(event?.target?.files) {
+            formik.setFieldValue('Cover' , event.target.files[0])
+        }
+    }
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -96,6 +147,50 @@ const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
                 {formik.errors.descriptionEn as string}
             </Feedback> 
         </Form.Group> 
+        <Form.Group className="mb-3">
+            <Form.Control
+                size="lg"
+                type="file" 
+                placeholder="Book Cover Image"
+                name="cover"
+                onChange={handleBookImageFieldChange} />
+            <Feedback type="invalid">
+                {formik.errors.cover as string}
+            </Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+            <Form.Label htmlFor="CategoryId">
+                Select Book Categories
+            </Form.Label>
+            <Form.Select
+                size="lg"
+                id="categoryId"
+                placeholder="Book Categories"
+                name="categoryId"
+                onChange={handleCategorySelect}>
+                    <option key="no-value" value=""></option>
+                        {
+                            data?.data.categories.map((category: BookCategory) => 
+                                <option key={category.id} value={category.id}>{category.name}</option>
+                            )
+                        }
+                </Form.Select>
+            <Feedback type="invalid">
+                {formik.errors.categoryId as string}
+            </Feedback> 
+        </Form.Group>
+        <div>
+            {
+                selectedCategories.map((category: SelectedCategory) => {
+                    return  <CategoryBox key={category.id} pill>
+                                {category.name} 
+                                <span className="fa fa-trash fa-sm text-danger cursor-pointer ms-2 ps-2" 
+                                        onClick={() => handleRemoveCategory(category.id)}
+                                ></span> 
+                            </CategoryBox>
+                })
+            }
+        </div>
     </Form>
   )
 }

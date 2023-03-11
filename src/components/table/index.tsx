@@ -8,6 +8,7 @@ import { useRowSelect,
 		 useTable, 
 		 usePagination, 
 		 useSortBy } from "react-table";
+import Image from 'react-bootstrap/Image'
 import TableLoader from "../table-loader";
 import NoDataCard from "./no-data-card";
 import TableOptions from "./table-options"
@@ -230,6 +231,11 @@ const Table = <T extends unknown>({ 	isBulk,
 									return (
 										<tr {...row.getRowProps()}>
 											{row.cells.map(cell => {
+												if(cell.column.id === 'image') {
+													return 	<td className="align-middle" {...cell.getCellProps()}>
+																<Image thumbnail roundedCircle src={cell.row.original.image} />
+															</td>
+												}
 												if(cell.column.id === 'options') {
 													return 	<td className="align-middle" {...cell.getCellProps()}>
 																{	

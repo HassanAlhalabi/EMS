@@ -1,11 +1,15 @@
+export interface FacultySubject {
+    facultyId: string
+    superSubjectId: string | null
+}
+
 export interface NewSubject {
     nameAr: string,
     nameEn: string,
     descriptionAr: string,
     descriptionEn: string,
     subjectTypeId: string,
-    superSubjectId: string,
-    facultiesIds: string[]
+    facultySubjects: FacultySubject[]
 }
 
 export interface SuperSubject {

@@ -6,8 +6,10 @@ export const subjectValidation = object({
     descriptionAr: string().nullable(),
     descriptionEn: string().nullable(),
     subjectTypeId: string().required('Subject Type Name Is Required'),
-    superSubjectId: string().nullable(),
-    facultiesIds: array().of(string()).required('Faculties Are Required')
+    facultySubjects: array().of(object({
+        facultyId: string().required('Faculty Is Required'),
+        superSubjectId: string().nullable()
+    })).required('Faculties Are Required')
 })
 
 export const subjectTypeValidation = object({

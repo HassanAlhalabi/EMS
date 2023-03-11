@@ -11,27 +11,27 @@ import { ACTION_TYPES } from "../../constants";
 import { useDelete, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
-import { addUserValidation } from "../../schema/user";
-import { NewUser, User } from "../../types/users";
+import { addDepartmentValidation } from "../../schema/department";
+import { NewDepartment, Department } from "../../types/departments";
 import { capitalize, getAxiosError } from "../../util";
-import UserForm from "./user-form";
+import DepartmentForm from "./department-form";
 
-const INITIAL_VALUES: NewUser = {
-  roleId: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  phoneNumber: "",
-  type: ''
+const INITIAL_VALUES: NewDepartment = {
+  nameAr:	'',
+  nameEn:	'',
+  descriptionAr: '',
+  descriptionEn: '',
+  facultiesIds: [],
+  usersIds: []
 }
 
-const UsersPage = () => {
+const DepartmentsPage = () => {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [searchKey, setSearchKey] = useState<string>('');
   const [action, setAction] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [departmentId, setDepartmentId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
 
   const { data, 
@@ -39,40 +39,32 @@ const UsersPage = () => {
           isLoading, 
           isFetching, 
           refetch } = useQuery(
-                                            ['/User/GetAllUsers', page, pageSize, searchKey], 
-                                            () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
+                                            ['/Department/GetAllDepartments', page, pageSize, searchKey], 
+                                            () => get(`/Department/GetAllDepartments?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                                             {
                                               keepPreviousData: true,
                                               enabled: false
                                             });
 
-  const { data: user, 
-          refetch: refetchUser,
+  const { data: department, 
+          refetch: refetchDepartment,
         } = useQuery(
-                    ['/User/GetUser', userId], 
-                    () => get(`/User/GetUser/${userId}`),
+                    ['/Department/GetFullDepartment', departmentId], 
+                    () => get(`/Department/GetFullDepartment/${departmentId}`),
                     {
-                        // @ts-ignore
                         enabled: false,   
-                onSuccess: data => formik.setValues({
-                  roleId: data.data.role.id ,
-                  firstName: data.data.firstName ,
-                  lastName: data.data.lastName ,
-                  email: data.data.email ,
-                  phoneNumber: data.data.phoneNumber ,
-                  type: data.data.type 
-          })              
+                        onSuccess: data => formik.setValues(data.data)              
         });
 
   useEffect(() => {
-    if(userId && action === ACTION_TYPES.update) {
-      refetchUser();
+    if(departmentId && action === ACTION_TYPES.update) {
+      refetchDepartment();
     }
-    if(userId && action === ACTION_TYPES.toggle) {
-      handleUserAction();
+    if(departmentId && action === ACTION_TYPES.toggle) {
+      handleDepartmentAction();
     }
-    () => setUserId(null);
-  },[userId]);
+    () => setDepartmentId(null);
+  },[departmentId]);
 
   useEffect(() => {
     let searchTimeout: number; 
@@ -89,32 +81,12 @@ const UsersPage = () => {
   const columns = useMemo(
 		() => [
       {
-        Header: 'User Name',
-        accessor: 'userName',
+        Header: 'Department Name',
+        accessor: 'name',
       },
       {
-        Header: 'First Name',
-        accessor: 'firstName',
-      },
-      {
-        Header: 'Last Name',
-        accessor: 'lastName',
-      },
-      {
-        Header: 'Email',
-        accessor: 'email',
-      },
-      {
-        Header: 'Phone Number',
-        accessor: 'phoneNumber',
-      },
-      {
-        Header: 'Type',
-        accessor: 'type',
-      },
-      {
-        Header: 'Role',
-        accessor: 'role',
+        Header: 'Description',
+        accessor: 'description',
       },
       {
         Header: 'Options',
@@ -124,40 +96,37 @@ const UsersPage = () => {
 		[]
 	 )
 
-  const users = useMemo(
-    () => (isLoading || status === 'idle') ? [] : (data?.data.users),
+  const departments = useMemo(
+    () => (isLoading || status === 'idle') ? [] : (data?.data.departments),
     [data, isFetching, isLoading]
   );
 
   const formik = useFormik({
       initialValues: INITIAL_VALUES,
-      onSubmit: () => handleUserAction(),
-      validationSchema: addUserValidation
+      onSubmit: () => handleDepartmentAction(),
+      validationSchema: addDepartmentValidation
   })
 
   const reset = () => {
     setAction(null); 
     formik.resetForm();
-    setUserId(null)
+    setDepartmentId(null)
   }
 
   const { mutateAsync , 
           isLoading: postLoading
-        } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
-              {
-                ...formik.values,
-                roleId:formik.values.type === 'Student' ? null : formik.values.roleId  ,
-              }) :
-                              action === ACTION_TYPES.update ? 
-                              usePut('/User/PutUser', 
-      {
-        id: userId,
+        } = action === ACTION_TYPES.add ? usePost('/Department', 
+              formik.values) :
+              action === ACTION_TYPES.update ? 
+              usePut('/Department', 
+{
+        id: departmentId,
        ...formik.values
       }) : action === ACTION_TYPES.delete ? 
-                useDelete('/User',userId as string)
-             :  usePut(`/User/ToggleActivation/${userId}`);
+                useDelete('/Department',departmentId as string)
+             :  usePut(`/Department/ToggleActivation/${departmentId}`);
 
-  const handleUserAction = async () => {
+  const handleDepartmentAction = async () => {
 
       // Not Valid ... Do Nothing
     if(!formik.isValid && action !== ACTION_TYPES.delete) {
@@ -171,7 +140,7 @@ const UsersPage = () => {
         toggleScreenLoader();
         await mutateAsync();
         refetch();
-        toast.success(`${capitalize(action as string)} User Done Successfully`)
+        toast.success(`${capitalize(action as string)} Department Done Successfully`)
         reset();
       } catch(error) {
         toast.error(getAxiosError(error))
@@ -180,15 +149,15 @@ const UsersPage = () => {
     }
   }
 
-  const handleToggleUser = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleToggleDepartment = async (e: ChangeEvent<HTMLInputElement>) => {
     setAction(ACTION_TYPES.toggle);
-    setUserId(e.target.value);
+    setDepartmentId(e.target.value);
   }
 
   return  <>
-            <Table<User>  
+            <Table<Department>  
               columns={columns} 
-              data={users} 
+              data={departments} 
               isBulk
               hasSort
               hasSearch
@@ -210,13 +179,13 @@ const UsersPage = () => {
                                             </button>
                                            
                                     }} 
-              renderRowActions={(user) => {
+              renderRowActions={(department) => {
                   return  <div className="d-flex align-items-center">
                             <button className="btn btn-falcon-info btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.update)
-                                            setUserId(user.id);
+                                            setDepartmentId(department.id);
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                             </button>
@@ -224,36 +193,36 @@ const UsersPage = () => {
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.delete);
-                                            setUserId(user.id);
+                                            setDepartmentId(department.id);
                                     }}>        
                                 <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                             </button>
-                            <SwitchInput 
-                              checked={user.isActive} 
-                              value={user.id} 
-                              onChange={handleToggleUser} />
+                            {/* <SwitchInput 
+                              checked={department.isActive} 
+                              value={department.id} 
+                              onChange={handleToggleDepartment} /> */}
                           </div>
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} User`}
+                title={`${action && capitalize(action as string)} Department`}
                 show={action !== null && action !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} User`}
+                confirmText={`${action} Department`}
                 confirmButtonVariant={
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
-                handleConfirm={handleUserAction}
+                handleConfirm={handleDepartmentAction}
                 actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
-                                && <UserForm formik={formik} />}
+                                && <DepartmentForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This User</>
+                                    <>Are you Sure You Want to Delete This Department</>
                         }
                 </PopUp>
               </>
 }
 
-export default UsersPage
+export default DepartmentsPage

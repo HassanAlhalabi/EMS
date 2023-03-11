@@ -1,8 +1,10 @@
+
+
 import { object, string } from "yup";
 
-export const bookCategoryValidation = object({
+export const addDepartmentValidation = object({
     nameAr: string().required('Arabic Name Is Required'),
     nameEn: string().required('English Name Is Required'),
-    image: string().required('Category Image Is Required'),
-    superCategoryId: string().nullable()
+    descriptionAr: string(),
+    descriptionEn: string(),
 })

@@ -6,11 +6,11 @@ export interface NewBook {
     authorNameEn: string,
     descriptionAr: string,
     descriptionEn: string,
-    cover: string,
-    categories: string[]
+    cover: File | null,
+    categoryId: string[]
 }
 
-export interface Book {
+export interface FullBook {
     id: string,
     nameAr: string,
     nameEn: string,
@@ -21,7 +21,22 @@ export interface Book {
     superCategoryId: string
 }
 
+export interface Book {
+    id: string,
+    name: string,
+    description: string,
+    cover: string,
+    authorName: string,
+    isActive: boolean
+}
+
 export interface BookCategory {
+    id: string
+    name: string,
+    imagePath: string,
+}
+
+export interface BookFullCategory {
     id: string
     nameAr: string,
     nameEn: string,
@@ -35,6 +50,6 @@ export interface BookCategory {
 export interface NewBookCategory {
     nameAr: string,
     nameEn: string,
-    image: string,
-    superCategoryId: string | null
+    image: File | null,
+    superCategoryId: string
 }

@@ -9,9 +9,11 @@ const Roles             = lazy(() => import('../pages/roles'));
 const Faculties         = lazy(() => import('../pages/faculties'));
 const FacultyForm       = lazy(() => import('../pages/faculties/faculty-form-stepper'));
 const Subjects          = lazy(() => import('../pages/subjects'));
-const SubjectsTypes          = lazy(() => import('../pages/subjects-types'));
+const SubjectsTypes     = lazy(() => import('../pages/subjects-types'));
 const Books             = lazy(() => import('../pages/library/books'));
 const BooksCategories   = lazy(() => import('../pages/library/categories'));
+const Departments       = lazy(() => import('../pages/departments'));
+const Semesters       = lazy(() => import('../pages/semesters'));
 
 export const routes = [
     {
@@ -80,7 +82,7 @@ export const routes = [
                 id: 'books',
                 name: 'Books',
                 path: '/books',
-                isIndex: true,
+                isIndex: false,
                 childRoutes: null,
                 element: <Books />
             },
@@ -88,9 +90,25 @@ export const routes = [
                 id: 'books-categories',
                 name: 'Categories',
                 path: '/books-categories',
-                isIndex: true,
+                isIndex: false,
                 childRoutes: null,
                 element: <BooksCategories />
+            },
+            {
+                id: 'departments',
+                name: 'Departments',
+                path: '/departments',
+                isIndex: false,
+                childRoutes: null,
+                element: <Departments />
+            },
+            {
+                id: 'semesters',
+                name: 'Semesters',
+                path: '/semesters',
+                isIndex: false,
+                childRoutes: null,
+                element: <Semesters />
             },
         ],
         element: <ProtectedRoute><Main /></ProtectedRoute>
@@ -121,14 +139,8 @@ export const routes = [
     }
 ]
 
-export const drawerMenu = [
+export const drawerUsersMenu = [
     [
-        {
-            id: 'dashboard',
-            name: 'Dashboard',
-            path: '/dashboard',
-            childRoutes: null,
-        },
         {
             id: 'users',
             name: 'Users',
@@ -140,6 +152,67 @@ export const drawerMenu = [
             name: 'Roles',
             path: '/roles',
             childRoutes: null,
+        },
+    ]
+]
+
+export const drawerUniversityManagmentMenu = [
+    [
+        {
+            id: 'faculties',
+            name: 'Faculties',
+            path: '/faculties',
+            isIndex: false,
+            childRoutes: null,
+            element: <Faculties />
+        },
+        {
+            id: 'faculty-form',
+            name: 'Add/Update Faculty',
+            path: '/faculty-form/:id?',
+            isIndex: false,
+            childRoutes: null,
+            element: <FacultyForm />
+        },
+        {
+            id: 'subjects',
+            name: 'Subjects',
+            path: '/subjects',
+            isIndex: false,
+            childRoutes: null,
+            element: <Subjects />
+        },
+        {
+            id: 'subjects-types',
+            name: 'Subjects Types',
+            path: '/subjects-types',
+            isIndex: false,
+            childRoutes: null,
+            element: <SubjectsTypes />
+        },
+        {
+            id: 'books',
+            name: 'Books',
+            path: '/books',
+            isIndex: false,
+            childRoutes: null,
+            element: <Books />
+        },
+        {
+            id: 'books-categories',
+            name: 'Categories',
+            path: '/books-categories',
+            isIndex: false,
+            childRoutes: null,
+            element: <BooksCategories />
+        },
+        {
+            id: 'departments',
+            name: 'Departments',
+            path: '/departments',
+            isIndex: false,
+            childRoutes: null,
+            element: <Departments />
         },
     ]
 ]

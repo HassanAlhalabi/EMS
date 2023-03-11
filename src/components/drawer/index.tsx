@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/img/icons/spot-illustrations/falcon.png';
 import { LayoutContext } from '../../contexts/layout-context';
-import { drawerMenu } from '../../routes';
+// import { drawerMenu } from '../../routes';
 import NavList from '../nav-list';
 import NavLink from '../nav-list/nav-link';
 import NavListLabel from '../nav-list/nav-list-label';
@@ -54,6 +54,8 @@ const Drawer = () => {
               <NavLink title="Books" faIcon="fas fa-book" link="books" />
               <NavLink title="Categories" faIcon="fas fa-list-alt" link="books-categories" />
             </NavLink>
+            <NavLink title="Departments" faIcon="fas fa-chalkboard-teacher" link="departments" />
+            <NavLink title="Semesters" faIcon="fas fa-calendar" link="semesters" />
 
             <NavListLabel title='Students Management' />
             <NavLink title="Users" faIcon="fas fa-users" link="users" />

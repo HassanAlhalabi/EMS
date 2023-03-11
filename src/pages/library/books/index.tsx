@@ -1,10 +1,10 @@
 import { useFormik } from "formik";
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, ChangeEvent } from 'react';
 import { useQuery } from "react-query";
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, usePost, usePut } from "../../../hooks";
+import { useDelete, usePostFormData, usePut, usePutFormData } from "../../../hooks";
 import { get } from "../../../http";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../../util";
@@ -12,16 +12,17 @@ import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { Book } from "../../../types/books";
 import { bookValidation } from "../../../schema/book";
 import BookForm from "./book-form";
+import SwitchInput from "../../../components/switch-input/index.";
 
 const INITIAL_VALUES = {
-    nameAr: '',
-    nameEn: '',
-    authorNameAr: '',
-    authorNameEn: '',
-    descriptionAr: '',
-    descriptionEn: '',
-    cover: '',
-    categories: []
+    NameAr: '',
+    NameEn: '',
+    AuthorNameAr: '',
+    AuthorNameEn: '',
+    DescriptionAr: '',
+    DescriptionEn: '',
+    Cover: '',
+    CategoryId: []
 }
 
 const BooksPage = () => {
@@ -46,19 +47,17 @@ const BooksPage = () => {
                             ['/Book/GetAllBooks', page, pageSize], 
                             () => get(`/Book/GetAllBooks?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                             {
-                                // @ts-ignore
                                 keepPreviousData: true,
                             });
 
     const { data: book, 
-				isLoading: loadingBook, 
-				isFetching: fetchingBook,
-				refetch: refetchBook,
-			 } = useQuery(
-                        ['/Book/GetBook', bookId], 
-                        () => get(`/Book/GetBook/${bookId}`),
+            isLoading: loadingBook, 
+            isFetching: fetchingBook,
+            refetch: refetchBook,
+			 } = useQuery<Book>(
+                        ['/Book/GetFullBook', bookId], 
+                        () => get(`/Book/GetFullBook/${bookId}`),
                         {
-                            // @ts-ignore
                             enabled: false,   
                             onSuccess: data => {}              
 			            });
@@ -79,11 +78,18 @@ const BooksPage = () => {
 		if(bookId && action === ACTION_TYPES.update) {
 			refetchBook();
 		}
+        if(bookId && action === ACTION_TYPES.toggle) {
+            handleBookAction();
+          }
 		() => setBookId(null);
 	},[bookId])
     
     const columns = useMemo(
         () => [
+            {
+                Header: 'Cover'    ,
+                accessor: 'image',
+            },
             {
                 Header: 'Book Title',
                 accessor: 'name',
@@ -103,7 +109,10 @@ const BooksPage = () => {
     const books = useMemo(
         () => {
             if(data && data.data.books) {
-                return  data.data.books
+                return  data.data.books.map((book: Book) => ({
+                    ...book,
+                    image: book.cover
+                }))
             }
             return [];
         },
@@ -112,24 +121,33 @@ const BooksPage = () => {
 
     const { mutateAsync , 
             isLoading: postLoading, 
-            isError, error } = action === ACTION_TYPES.add ? usePost('/Book', 
+            isError, error } = action === ACTION_TYPES.add ? usePostFormData('/Book', 
                                         formik.values) :
                                                         action === ACTION_TYPES.update ? 
-                                                        usePut('/Book', 
+                                                        usePutFormData('/Book', 
                                         {
                                             id: bookId,
                                             ...formik.values
-                                        }) : useDelete('/Book',bookId as string);
+                                        }) : action === ACTION_TYPES.delete ? 
+                                                useDelete('/Book',bookId as string) :
+                                                usePut(`/Book/ToggleActivation/${bookId}`);
 
     
+    const handleToggleBook= async (e: ChangeEvent<HTMLInputElement>) => {
+        setAction(ACTION_TYPES.toggle);
+        setBookId(e.target.value);
+    }
+
+    console.log(formik.values.Cover)
+
       const handleBookAction = async () => {
 
         // Not Valid ... Do Nothing
-        if(!formik.isValid && action !== ACTION_TYPES.delete) {
+        if((!formik.isValid) && action !== ACTION_TYPES.delete) {
             formik.validateForm();
             return;
         };
-    
+        
         // If All Is Ok ... Do It
         if(formik.isValid) {
           try {
@@ -173,7 +191,7 @@ const BooksPage = () => {
                             </>
                     }} 
                     renderRowActions={(data) => {
-                        return  <>
+                        return  <div className="d-flex justify-content-center align-items-center">
                                     <button className="btn btn-falcon-info btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
@@ -190,12 +208,16 @@ const BooksPage = () => {
                                             }}>        
                                         <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                                     </button>
-                                </>
+                                    <SwitchInput 
+                                        checked={data?.isActive} 
+                                        value={data?.id} 
+                                        onChange={handleToggleBook} />
+                                </div>
                     }}
                 />
 
                 <PopUp  title={`${action && capitalize(action as string)} Book`}
-								show={action !== null}
+								show={action !== null && action !== ACTION_TYPES.toggle}
 								onHide={() => { setAction(null), formik.resetForm(), setBookId(null) } }
 								confirmText={`${action} Book`}
 								confirmButtonVariant={

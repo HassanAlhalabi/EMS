@@ -11,27 +11,31 @@ import { ACTION_TYPES } from "../../constants";
 import { useDelete, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
-import { addUserValidation } from "../../schema/user";
-import { NewUser, User } from "../../types/users";
+import { addSemesterValidation } from "../../schema/semesters";
+import { NewSemester, Semester } from "../../types/semesters";
 import { capitalize, getAxiosError } from "../../util";
-import UserForm from "./user-form";
+import SemesterForm from "./semester-form";
 
-const INITIAL_VALUES: NewUser = {
-  roleId: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  phoneNumber: "",
-  type: ''
+const INITIAL_VALUES: NewSemester = {
+  nameAr:	'',
+  nameEn:	'',
+  collectingSuggestionsStartAt: '',
+  collectingSuggestionsEndAt: '',
+  reviewSuggestionsStartAt: '',
+  reviewSuggestionsEndAt: '',
+  subjectsRegistrationStartAt: '',
+  subjectsRegistrationEndAt: '',
+  semesterStartAt: '',
+  semesterEndAt: ''
 }
 
-const UsersPage = () => {
+const SemestersPage = () => {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [searchKey, setSearchKey] = useState<string>('');
   const [action, setAction] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [semesterId, setSemesterId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
 
   const { data, 
@@ -39,40 +43,32 @@ const UsersPage = () => {
           isLoading, 
           isFetching, 
           refetch } = useQuery(
-                                            ['/User/GetAllUsers', page, pageSize, searchKey], 
-                                            () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
+                                            ['/Semester/GetAllSemesters', page, pageSize, searchKey], 
+                                            () => get(`/Semester/GetAllSemesters?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                                             {
                                               keepPreviousData: true,
                                               enabled: false
                                             });
 
-  const { data: user, 
-          refetch: refetchUser,
+  const { data: semester, 
+          refetch: refetchSemester,
         } = useQuery(
-                    ['/User/GetUser', userId], 
-                    () => get(`/User/GetUser/${userId}`),
+                    ['/Semester/GetFullSemester', semesterId], 
+                    () => get(`/Semester/GetFullSemester/${semesterId}`),
                     {
-                        // @ts-ignore
                         enabled: false,   
-                onSuccess: data => formik.setValues({
-                  roleId: data.data.role.id ,
-                  firstName: data.data.firstName ,
-                  lastName: data.data.lastName ,
-                  email: data.data.email ,
-                  phoneNumber: data.data.phoneNumber ,
-                  type: data.data.type 
-          })              
+                        onSuccess: data => formik.setValues(data.data)              
         });
 
   useEffect(() => {
-    if(userId && action === ACTION_TYPES.update) {
-      refetchUser();
+    if(semesterId && action === ACTION_TYPES.update) {
+      refetchSemester();
     }
-    if(userId && action === ACTION_TYPES.toggle) {
-      handleUserAction();
+    if(semesterId && action === ACTION_TYPES.toggle) {
+      handleSemesterAction();
     }
-    () => setUserId(null);
-  },[userId]);
+    () => setSemesterId(null);
+  },[semesterId]);
 
   useEffect(() => {
     let searchTimeout: number; 
@@ -89,32 +85,12 @@ const UsersPage = () => {
   const columns = useMemo(
 		() => [
       {
-        Header: 'User Name',
-        accessor: 'userName',
+        Header: 'Semester Name',
+        accessor: 'name',
       },
       {
-        Header: 'First Name',
-        accessor: 'firstName',
-      },
-      {
-        Header: 'Last Name',
-        accessor: 'lastName',
-      },
-      {
-        Header: 'Email',
-        accessor: 'email',
-      },
-      {
-        Header: 'Phone Number',
-        accessor: 'phoneNumber',
-      },
-      {
-        Header: 'Type',
-        accessor: 'type',
-      },
-      {
-        Header: 'Role',
-        accessor: 'role',
+        Header: 'Description',
+        accessor: 'description',
       },
       {
         Header: 'Options',
@@ -124,40 +100,37 @@ const UsersPage = () => {
 		[]
 	 )
 
-  const users = useMemo(
-    () => (isLoading || status === 'idle') ? [] : (data?.data.users),
+  const semesters = useMemo(
+    () => (isLoading || status === 'idle') ? [] : (data?.data.semesters),
     [data, isFetching, isLoading]
   );
 
   const formik = useFormik({
       initialValues: INITIAL_VALUES,
-      onSubmit: () => handleUserAction(),
-      validationSchema: addUserValidation
+      onSubmit: () => handleSemesterAction(),
+      validationSchema: addSemesterValidation
   })
 
   const reset = () => {
     setAction(null); 
     formik.resetForm();
-    setUserId(null)
+    setSemesterId(null)
   }
 
   const { mutateAsync , 
           isLoading: postLoading
-        } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
-              {
-                ...formik.values,
-                roleId:formik.values.type === 'Student' ? null : formik.values.roleId  ,
-              }) :
-                              action === ACTION_TYPES.update ? 
-                              usePut('/User/PutUser', 
-      {
-        id: userId,
+        } = action === ACTION_TYPES.add ? usePost('/Semester', 
+              formik.values) :
+              action === ACTION_TYPES.update ? 
+              usePut('/Semester', 
+{
+        id: semesterId,
        ...formik.values
       }) : action === ACTION_TYPES.delete ? 
-                useDelete('/User',userId as string)
-             :  usePut(`/User/ToggleActivation/${userId}`);
+                useDelete('/Semester',semesterId as string)
+             :  usePut(`/Semester/ToggleActivation/${semesterId}`);
 
-  const handleUserAction = async () => {
+  const handleSemesterAction = async () => {
 
       // Not Valid ... Do Nothing
     if(!formik.isValid && action !== ACTION_TYPES.delete) {
@@ -171,7 +144,7 @@ const UsersPage = () => {
         toggleScreenLoader();
         await mutateAsync();
         refetch();
-        toast.success(`${capitalize(action as string)} User Done Successfully`)
+        toast.success(`${capitalize(action as string)} Semester Done Successfully`)
         reset();
       } catch(error) {
         toast.error(getAxiosError(error))
@@ -180,15 +153,15 @@ const UsersPage = () => {
     }
   }
 
-  const handleToggleUser = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleToggleSemester = async (e: ChangeEvent<HTMLInputElement>) => {
     setAction(ACTION_TYPES.toggle);
-    setUserId(e.target.value);
+    setSemesterId(e.target.value);
   }
 
   return  <>
-            <Table<User>  
+            <Table<Semester>  
               columns={columns} 
-              data={users} 
+              data={[]} 
               isBulk
               hasSort
               hasSearch
@@ -210,13 +183,13 @@ const UsersPage = () => {
                                             </button>
                                            
                                     }} 
-              renderRowActions={(user) => {
+              renderRowActions={(semester) => {
                   return  <div className="d-flex align-items-center">
                             <button className="btn btn-falcon-info btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.update)
-                                            setUserId(user.id);
+                                            setSemesterId(semester.id);
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                             </button>
@@ -224,36 +197,36 @@ const UsersPage = () => {
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.delete);
-                                            setUserId(user.id);
+                                            setSemesterId(semester.id);
                                     }}>        
                                 <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                             </button>
-                            <SwitchInput 
-                              checked={user.isActive} 
-                              value={user.id} 
-                              onChange={handleToggleUser} />
+                            {/* <SwitchInput 
+                              checked={semester.isActive} 
+                              value={semester.id} 
+                              onChange={handleToggleSemester} /> */}
                           </div>
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} User`}
+                title={`${action && capitalize(action as string)} Semester`}
                 show={action !== null && action !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} User`}
+                confirmText={`${action} Semester`}
                 confirmButtonVariant={
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
-                handleConfirm={handleUserAction}
+                handleConfirm={handleSemesterAction}
                 actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
-                                && <UserForm formik={formik} />}
+                                && <SemesterForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This User</>
+                                    <>Are you Sure You Want to Delete This Semester</>
                         }
                 </PopUp>
               </>
 }
 
-export default UsersPage
+export default SemestersPage
