@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, usePost, usePostFormData, usePut } from "../../../hooks";
+import { useDelete, usePost, usePostFormData, usePut, usePutFormData } from "../../../hooks";
 import { get } from "../../../http";
 import { bookCategoryValidation } from "../../../schema/book/book-category";
 import { toast } from "react-toastify";
@@ -106,7 +106,7 @@ const CategoriesPage = () => {
             isLoading: postLoading, 
             isError, error } = action === ACTION_TYPES.add ? usePostFormData('/Category',formik.values) :
                                                         action === ACTION_TYPES.update ? 
-                                                        usePut('/Category', 
+                                                        usePutFormData('/Category', 
                                         {
                                             id: categoryId,
                                             ...formik.values

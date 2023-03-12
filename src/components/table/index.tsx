@@ -233,7 +233,7 @@ const Table = <T extends unknown>({ 	isBulk,
 											{row.cells.map(cell => {
 												if(cell.column.id === 'image') {
 													return 	<td className="align-middle" {...cell.getCellProps()}>
-																<Image thumbnail roundedCircle src={cell.row.original.image} />
+																<Image className="table-thumbnail" thumbnail roundedCircle src={cell.row.original.image} />
 															</td>
 												}
 												if(cell.column.id === 'options') {

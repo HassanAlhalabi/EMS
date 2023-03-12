@@ -15,14 +15,14 @@ import BookForm from "./book-form";
 import SwitchInput from "../../../components/switch-input/index.";
 
 const INITIAL_VALUES = {
-    NameAr: '',
-    NameEn: '',
-    AuthorNameAr: '',
-    AuthorNameEn: '',
-    DescriptionAr: '',
-    DescriptionEn: '',
-    Cover: '',
-    CategoryId: []
+    nameAr: '',
+    nameEn: '',
+    authorNameAr: '',
+    authorNameEn: '',
+    descriptionAr: '',
+    descriptionEn: '',
+    cover: '',
+    categoryId: []
 }
 
 const BooksPage = () => {

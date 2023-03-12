@@ -20,6 +20,13 @@
     opacity: .5;
 }
 
+.table-thumbnail {
+    width: 60px;
+    height: 60px;
+    padding: 1px;
+    object-fit: cover;
+}
+
 table th:last-child,
 table tr td:last-of-type {
  text-align: center;
@@ -81,4 +88,45 @@ table tr td:last-of-type {
 .form-check-input:focus {
     border-color: #42ba96;
     box-shadow: 0 0 0 0.25rem #42ba9633;
+}
+
+.image-drop-button {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 150px;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #8f8f8f;
+    background-color: #344050;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 21px;
+    border-radius: 4px;
+}
+
+.image-drop-button i {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.image-item {
+    height: 150px;
+    display: flex;
+    width: fit-content;
+    position: relative;
+}
+
+.image-item .image-item__btn-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1px;
+    background-color: #344050cc;
+}
+
+.image-item .image-item__btn-wrapper i {
+    margin: 4px;
+    font-size: 18px;
+    font-weight: bold;
 }

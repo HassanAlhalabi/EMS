@@ -2,19 +2,10 @@ import { Form, Row, Col, Image } from "react-bootstrap"
 import { FormikProps } from "formik";
 import { BookCategory, NewBookCategory } from "../../../../types/books";
 import Feedback from "../../../../components/feedback";
-import { ChangeEvent } from "react";
 import { useQuery } from "react-query";
 import { get } from "../../../../http";
+import ImageUpload from "../../../../components/image-upload";
 const CategoryForm = ({formik}:{formik: FormikProps<NewBookCategory>}) => {
-
-    const handleCatImageFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if(event?.target?.files) {
-            formik.setValues({
-                ...formik.values,
-                image: event.target.files[0]
-            })
-        }
-    }
 
     const { data } = useQuery(
         ['/Category/GetAllCategories', 1, 9999999], 
@@ -22,6 +13,12 @@ const CategoryForm = ({formik}:{formik: FormikProps<NewBookCategory>}) => {
         {
             keepPreviousData: true,
     });
+
+    const handleSelectImage = (image: File) => formik.setFieldValue('image',image)
+
+    const handleDeletePreviewImage = () => formik.setFieldValue('imagePath','')
+
+    console.log(formik.values.image)
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -63,9 +60,9 @@ const CategoryForm = ({formik}:{formik: FormikProps<NewBookCategory>}) => {
             </Form.Label>
             <Form.Select
                 size="lg"
-                id="CategoryId"
-                placeholder="Book Categories"
-                name="categoryId"
+                id="superCategoryId"
+                placeholder="Parent Category"
+                name="superCategoryId"
                 value={formik.values.superCategoryId}
                 onChange={formik.handleChange}>
                     <option key="no-value" value=""></option>
@@ -80,20 +77,13 @@ const CategoryForm = ({formik}:{formik: FormikProps<NewBookCategory>}) => {
             </Feedback> 
         </Form.Group>
         <Form.Group className="mb-3">
-            <Form.Control
-                size="lg"
-                required
-                type="file" 
-                placeholder="Category Image"
-                name="image"
-                onChange={handleCatImageFieldChange} />
+            <ImageUpload    setSelectedImage={handleSelectImage} 
+                            previewImage={formik.values?.imagePath}
+                            handleDeletePreviewImage={handleDeletePreviewImage} />
             <Feedback type="invalid">
                 {formik.errors.image as string}
             </Feedback>
         </Form.Group>
-        <div className="single-img-preview">
-            <Image />
-        </div>
     </Form>
   )
 }
