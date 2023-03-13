@@ -7,7 +7,10 @@ export interface NewBook {
     descriptionAr: string,
     descriptionEn: string,
     cover: File | null,
-    categoryId: string[]
+    categoryId: string[],
+    imagePath?: string,
+    updateImage?: boolean,
+    attachment: File
 }
 
 export interface FullBook {
@@ -50,6 +53,8 @@ export interface BookFullCategory {
 export interface NewBookCategory {
     nameAr: string,
     nameEn: string,
-    image: File | null,
-    superCategoryId: string
+    image?: File | null,
+    superCategoryId: string,
+    imagePath?: string
+    updateImage?: boolean
 }

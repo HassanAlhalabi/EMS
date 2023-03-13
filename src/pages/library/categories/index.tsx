@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, usePost, usePostFormData, usePut, usePutFormData } from "../../../hooks";
+import { useDelete, usePostFormData, usePutFormData } from "../../../hooks";
 import { get } from "../../../http";
 import { bookCategoryValidation } from "../../../schema/book/book-category";
 import { toast } from "react-toastify";
@@ -55,7 +55,10 @@ const CategoriesPage = () => {
                         {
                             enabled: false,   
                             onSuccess: data => {
-                                formik.setValues(data.data)
+                                formik.setValues({
+                                    ...data.data,
+                                    superCategoryId: data.data.superCategoryId ? data.data.superCategoryId : ''
+                                })
                             }             
 			            });
 
@@ -80,6 +83,10 @@ const CategoriesPage = () => {
     
     const columns = useMemo(
         () => [
+            {
+                Header: 'Image',
+                accessor: 'thumbnail',
+            },
             {
                 Header: 'Category Name',
                 accessor: 'name',

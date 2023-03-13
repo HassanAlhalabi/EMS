@@ -59,7 +59,9 @@ const BooksPage = () => {
                         () => get(`/Book/GetFullBook/${bookId}`),
                         {
                             enabled: false,   
-                            onSuccess: data => {}              
+                            onSuccess: data => {
+                                
+                            }              
 			            });
 
     useEffect(() => {
@@ -88,7 +90,7 @@ const BooksPage = () => {
         () => [
             {
                 Header: 'Cover'    ,
-                accessor: 'image',
+                accessor: 'thumbnail',
             },
             {
                 Header: 'Book Title',
@@ -137,8 +139,6 @@ const BooksPage = () => {
         setAction(ACTION_TYPES.toggle);
         setBookId(e.target.value);
     }
-
-    console.log(formik.values.Cover)
 
       const handleBookAction = async () => {
 

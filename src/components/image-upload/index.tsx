@@ -5,7 +5,7 @@ import ImageUploading, { ImageListType } from "react-images-uploading";
 export interface ImageUpload {
   getImageFile?: (file: File) => File
   previewImage?: string,
-  setSelectedImage: (image: File) => void,
+  setSelectedImage: (image: File | null) => void,
   handleDeletePreviewImage: () => void
 }
 
@@ -23,6 +23,8 @@ const ImageUpload = ({setSelectedImage, previewImage,handleDeletePreviewImage}: 
       if(imageList[0].file) {
         setSelectedImage(imageList[0].file)
       }
+    } else {
+      setSelectedImage(null);
     }
     setImages(imageList as never[]);
   };

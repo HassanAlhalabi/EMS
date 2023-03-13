@@ -6,6 +6,7 @@ import { ChangeEvent, SetStateAction, useState } from "react";
 import { useQuery } from "react-query";
 import { get } from "../../../../http";
 import CategoryBox from "../../../../components/category-box";
+import ImageUpload from "../../../../components/image-upload";
 
 type SelectedCategory = {id: string, name: string}
 
@@ -49,11 +50,24 @@ const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
                             keepPreviousData: true,
                         });
 
-    const handleBookImageFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleBookAttachmentFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
         if(event?.target?.files) {
-            formik.setFieldValue('Cover' , event.target.files[0])
+            formik.setFieldValue('attachment' , event.target.files[0])
         }
     }
+
+    
+    const handleSelectImage = (image: File | null) => {
+        formik.setFieldValue('cover',image);
+        formik.setFieldValue('updateImage',true);
+        formik.setFieldValue('imagePath','');
+    } 
+
+    const handleDeletePreviewImage = () => {
+        formik.setFieldValue('updateImage',true);
+        formik.setFieldValue('imagePath','')
+    }
+
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -148,17 +162,6 @@ const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
             </Feedback> 
         </Form.Group> 
         <Form.Group className="mb-3">
-            <Form.Control
-                size="lg"
-                type="file" 
-                placeholder="Book Cover Image"
-                name="cover"
-                onChange={handleBookImageFieldChange} />
-            <Feedback type="invalid">
-                {formik.errors.cover as string}
-            </Feedback>
-        </Form.Group>
-        <Form.Group className="mb-3">
             <Form.Label htmlFor="CategoryId">
                 Select Book Categories
             </Form.Label>
@@ -179,7 +182,7 @@ const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
                 {formik.errors.categoryId as string}
             </Feedback> 
         </Form.Group>
-        <div>
+        <div className="mb-4">
             {
                 selectedCategories.map((category: SelectedCategory) => {
                     return  <CategoryBox key={category.id} pill>
@@ -191,6 +194,30 @@ const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
                 })
             }
         </div>
+        <Form.Group className="mb-3">
+            <Form.Label htmlFor="attachment">
+                File Attachment
+            </Form.Label>
+            <Form.Control
+                size="lg"
+                required
+                type="file" 
+                id="attachment"
+                placeholder="Book File"
+                name="attachment"
+                onChange={handleBookAttachmentFieldChange} />
+            <Feedback type="invalid">
+                {formik.errors.attachment as string}
+            </Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+            <ImageUpload    setSelectedImage={handleSelectImage} 
+                            previewImage={formik.values?.imagePath}
+                            handleDeletePreviewImage={handleDeletePreviewImage} />
+            <Feedback type="invalid">
+                {formik.errors.cover as string}
+            </Feedback>
+        </Form.Group>
     </Form>
   )
 }

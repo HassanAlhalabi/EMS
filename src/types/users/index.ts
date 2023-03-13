@@ -6,7 +6,13 @@ export interface NewUser {
     lastName: string,
     email: string,
     phoneNumber: string,
-    type: string
+    type: string,
+    contract: {
+        startAt: Date | string,
+        endAt: Date | string,
+        salary: number,
+        workDays: number[]
+    }
 }
 
 export interface User {

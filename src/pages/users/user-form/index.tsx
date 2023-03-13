@@ -1,16 +1,47 @@
 import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
-import { USERS_TYPES } from "../../../constants"
+import { USERS_TYPES, WORK_DAYS } from "../../../constants"
 import { useQuery } from 'react-query';
 import { get } from "../../../http";
 import { FormikProps } from "formik";
 import { NewUser } from "../../../types/users";
+import { useState, ChangeEvent } from 'react';
+import CategoryBox from "../../../components/category-box";
+    
 
 const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
     const { data } = useQuery(
                             ['/Role/GetRolesList'], 
                         () => get(`/Role/GetRolesList`));
+                        
+    const [workingDays, setWorkingDays] = useState<{id: number, name: string}[]>([])
+
+    const handleSelectedDays = (e: ChangeEvent<HTMLSelectElement>) => {
+
+        const newValue = { 
+            id: Number(e.target.value),
+            name: e.target.options[e.target.selectedIndex].textContent
+        }
+        
+        const isExisted = workingDays.find(day => day.id === newValue.id);
+        if(isExisted) return;
+
+        setWorkingDays(prev => [...prev, newValue]);
+
+        formik.setFieldValue('contract.workDays', [...formik.values.contract.workDays, Number(e.target.value)])
+
+        e.target.value = '';
+
+    }    
+    
+    const handleRemoveCategory = (id: number) => {
+        const newWorkingDays = workingDays.filter(day => day.id !== id)
+        setWorkingDays(newWorkingDays);
+        formik.setFieldValue('contract.workDays', formik.values.contract.workDays.filter(day => day !== id))
+    }
+
+    console.log(formik.values)
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -131,6 +162,102 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
             }
             </Col>
         </Row> 
+        <h4 className="mt-3">Contract Details:</h4>
+        <Row>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="contractStartAt">
+                        Start Date:
+                    </Form.Label>
+                    <Form.Control
+                        size="lg"
+                        type="date"
+                        required
+                        id="contractStartAt"
+                        name="contract.startAt"
+                        value={formik.values.contract.startAt as string} 
+                        onChange={formik.handleChange}>
+                    </Form.Control>            
+                    <Feedback type="invalid">
+                        {formik.errors?.contract?.startAt as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="contractEndAt">
+                        End Date:
+                    </Form.Label>
+                    <Form.Control
+                        size="lg"
+                        type="date"
+                        required
+                        id="contractEndAt"
+                        name="contract.endAt"
+                        value={formik.values.contract.endAt as string} 
+                        onChange={formik.handleChange}>
+                    
+                    </Form.Control>            
+                    <Feedback type="invalid">
+                        {formik.errors?.contract?.endAt as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="contractSalary">
+                        Salary:
+                    </Form.Label>
+                    <Form.Control
+                        size="lg"
+                        type="number"
+                        min="1"
+                        required
+                        id="contractSalary"
+                        name="contract.salary"
+                        value={formik.values.contract.salary} 
+                        onChange={formik.handleChange}>
+                    
+                    </Form.Control>            
+                    <Feedback type="invalid">
+                        {formik.errors?.contract?.salary as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+        </Row> 
+        <Form.Group className="mb-3">
+            <Form.Label htmlFor="role">
+                Working Days:
+            </Form.Label>
+            <Form.Select
+                size="lg"
+                required
+                id="working-days"
+                onChange={handleSelectedDays}
+                name="contract.workDays">
+                    <option value=""></option>
+                {
+                    Object.entries(WORK_DAYS).map(([key, value]) => {
+                        return <option value={value}>{key}</option>   
+                    })
+                }
+            </Form.Select>            
+            <Feedback type="invalid">
+                {formik.errors.roleId as string}
+            </Feedback>
+        </Form.Group>
+        <div className="mb-4">
+            {
+                workingDays.map((day) => {
+                    return  <CategoryBox key={day.id} pill>
+                                {day.name} 
+                                <span className="fa fa-trash fa-sm text-danger cursor-pointer ms-2 ps-2" 
+                                        onClick={() => handleRemoveCategory(day.id)}
+                                ></span> 
+                            </CategoryBox>
+                })
+            }
+        </div>
     </Form>
   )
 }

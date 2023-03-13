@@ -30,6 +30,7 @@
 table th:last-child,
 table tr td:last-of-type {
  text-align: center;
+ justify-content: center;
 }
 
 .was-validated .invalid-feedback {
@@ -115,6 +116,7 @@ table tr td:last-of-type {
     display: flex;
     width: fit-content;
     position: relative;
+    min-width: 20px
 }
 
 .image-item .image-item__btn-wrapper {

@@ -53,7 +53,10 @@ const DepartmentsPage = () => {
                     () => get(`/Department/GetFullDepartment/${departmentId}`),
                     {
                         enabled: false,   
-                        onSuccess: data => formik.setValues(data.data)              
+                        onSuccess: data => formik.setValues({
+                          ...data.data,
+                          facultiesIds: data.data.faculties.map(faculty => faculty.id)
+                        })              
         });
 
   useEffect(() => {

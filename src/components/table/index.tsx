@@ -164,7 +164,7 @@ const Table = <T extends unknown>({ 	isBulk,
 						/>
 						}
 						{
-							hasSearch &&
+							hasSearch && !loading &&
 							<TableSearch
 								searchKey={searchKey as string}
 								handleSearchChange={handleSearchChange}
@@ -231,13 +231,13 @@ const Table = <T extends unknown>({ 	isBulk,
 									return (
 										<tr {...row.getRowProps()}>
 											{row.cells.map(cell => {
-												if(cell.column.id === 'image') {
+												if(cell.column.id === 'thumbnail') {
 													return 	<td className="align-middle" {...cell.getCellProps()}>
-																<Image className="table-thumbnail" thumbnail roundedCircle src={cell.row.original.image} />
+																<Image className="table-thumbnail" thumbnail roundedCircle src={cell.row.original.thumbnail} />
 															</td>
 												}
 												if(cell.column.id === 'options') {
-													return 	<td className="align-middle" {...cell.getCellProps()}>
+													return 	<td className="align-middle d-flex text-align-center justify-content-center" {...cell.getCellProps()}>
 																{	
 																	renderRowActions && 
 																	renderRowActions(cell.row.original as T) 

@@ -24,7 +24,9 @@ export const usePostFormData = <T>(path: string, data: T) => {
 
     const formData = new FormData();
     Object.entries(data as Object).map(([key, value]) => {
-        formData.append(key, value)
+        if(value && value.length !== 0) {
+            formData.append(key, value)
+        }
     })
 
     const mutationFn = async () => await post(path, formData, {
@@ -50,7 +52,9 @@ export const usePutFormData = <T>(path: string, data: T) => {
 
     const formData = new FormData();
     Object.entries(data as Object).map(([key, value]) => {
-        formData.append(key, value)
+        if(value  && value.length !== 0) {
+            formData.append(key, value)
+        }
     })
 
     const mutationFn = async () => await put(path, formData, {

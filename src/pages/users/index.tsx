@@ -22,7 +22,13 @@ const INITIAL_VALUES: NewUser = {
   lastName: '',
   email: '',
   phoneNumber: "",
-  type: ''
+  type: '',
+  contract: {
+      startAt: '',
+      endAt: '',
+      salary: 0,
+      workDays: []
+  }
 }
 
 const UsersPage = () => {
@@ -52,16 +58,8 @@ const UsersPage = () => {
                     ['/User/GetUser', userId], 
                     () => get(`/User/GetUser/${userId}`),
                     {
-                        // @ts-ignore
                         enabled: false,   
-                onSuccess: data => formik.setValues({
-                  roleId: data.data.role.id ,
-                  firstName: data.data.firstName ,
-                  lastName: data.data.lastName ,
-                  email: data.data.email ,
-                  phoneNumber: data.data.phoneNumber ,
-                  type: data.data.type 
-          })              
+                        onSuccess: data => formik.setValues(data.data)                    
         });
 
   useEffect(() => {

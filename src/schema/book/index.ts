@@ -1,4 +1,4 @@
-import { array, object, string } from "yup";
+import { array, mixed, object, string,  } from "yup";
 
 export const bookValidation = object({
     nameAr: string().required('Arabic Name Is Required'),
@@ -7,6 +7,7 @@ export const bookValidation = object({
     authorNameEn: string().required('English Author Name Is Required'),
     descriptionEn: string().nullable(),
     descriptionAr: string().nullable(),
-    cover: string().nullable(),
-    categoryId: array().of(string()).nullable()
+    cover: mixed().nullable(),
+    categoryId: array().of(string()).nullable(),
+    attachment: mixed().required('File Attachment Is Required')
 })

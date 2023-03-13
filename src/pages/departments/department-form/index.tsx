@@ -4,7 +4,8 @@ import { useQuery } from 'react-query';
 import { get } from "../../../http";
 import { FormikProps } from "formik";
 import { NewDepartment } from "../../../types/departments";
-import { ChangeEvent, useState, SetStateAction } from "react";
+import { ChangeEvent, useState, SetStateAction, useEffect } from 'react';
+import CategoryBox from "../../../components/category-box";
 
 type selectedDepartment = {
     id: string,
@@ -15,20 +16,39 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
 
     const [selectedFaculties, setSelectedFaculties] = useState<selectedDepartment[]>([]);
 
+    useEffect(() => {
+        setSelectedFaculties((prev) =>   
+            formik.values.faculties ? 
+            formik.values.faculties.map(faculty =>( {
+                id: faculty.id,
+                name: faculty.name
+            })) : [])
+        
+    },[formik.values.faculties])
+
     const { data: faculties } = useQuery(
         ['/Faculty/GetDropDownFaculties'], 
     () => get(`/Faculty/GetDropDownFaculties`));
 
     const handleAddFaculty = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedFaculties((prev: SetStateAction<selectedDepartment[]>) => {
-            return [
-                ...prev,
-                {
-                    id: event.target.value,
-                    name: event.target.options[event.target.selectedIndex].textContent
-                }
-            ]
+        const newSelectedFaculties = [
+            ...selectedFaculties,
+            {
+                id: event.target.value,
+                name: event.target.options[event.target.selectedIndex].textContent
+            }
+        ]
+        setSelectedFaculties((prev) => {
+            return newSelectedFaculties
         })
+        formik.setFieldValue('facultiesIds',[...formik.values.facultiesIds, event.target.value])
+    }
+
+    const handleRemoveCategory = (facultyId: string) => {
+        setSelectedFaculties(prev => {
+            return [...prev.filter(faculty => faculty.id !== facultyId)]
+        })
+        formik.setFieldValue('facultiesIds',[...formik.values.facultiesIds.filter(faculty => faculty !== facultyId)])
     }
 
   return (
@@ -98,7 +118,7 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
             <Form.Select
                 size="lg"
                 id=""
-                name="facultyId" 
+                name="facultiesIds" 
                 onChange={handleAddFaculty}>
                     <option key="no-value" value=""></option>
                 {
@@ -108,6 +128,18 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
                 }
             </Form.Select>            
         </Form.Group>
+        <div className="mb-4">
+            {
+                selectedFaculties.map((faculty: selectedDepartment) => {
+                    return  <CategoryBox key={faculty.id} pill>
+                                {faculty.name} 
+                                <span className="fa fa-trash fa-sm text-danger cursor-pointer ms-2 ps-2" 
+                                        onClick={() => handleRemoveCategory(faculty.id)}
+                                ></span> 
+                            </CategoryBox>
+                })
+            }
+        </div>
     </Form>
   )
 }
