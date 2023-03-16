@@ -89,10 +89,6 @@ const SemestersPage = () => {
         accessor: 'name',
       },
       {
-        Header: 'Description',
-        accessor: 'description',
-      },
-      {
         Header: 'Options',
         accessor: 'options',
       }
@@ -161,7 +157,7 @@ const SemestersPage = () => {
   return  <>
             <Table<Semester>  
               columns={columns} 
-              data={[]} 
+              data={semesters} 
               isBulk
               hasSort
               hasSearch
@@ -193,14 +189,14 @@ const SemestersPage = () => {
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                             </button>
-                            <button className="btn btn-falcon-danger btn-sm m-1" 
+                            {/* <button className="btn btn-falcon-danger btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.delete);
                                             setSemesterId(semester.id);
                                     }}>        
                                 <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                            </button>
+                            </button> */}
                             {/* <SwitchInput 
                               checked={semester.isActive} 
                               value={semester.id} 
