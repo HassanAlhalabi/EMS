@@ -7,6 +7,9 @@ export interface NewFaculty {
     descriptionEn: string,
     minCountToSubject: number,
     maxStudCountInGroup: number,
+    workingDaysNum: number,
+    workStartAt: number,
+    workEndAt: number
 }
 
 export interface NewSpec {

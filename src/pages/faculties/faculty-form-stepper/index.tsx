@@ -43,6 +43,9 @@ const FACULTY_INITIAL_STATE = {
     descriptionEn: "",
     minCountToSubject: 1,
     maxStudCountInGroup: 1,
+    workingDaysNum: 6,
+    workStartAt: 9,
+    workEndAt: 5
 }
 
 const SPEC_INITIAL_STATE = {
@@ -80,6 +83,9 @@ const FacultyFormPage = () => {
                                                     descriptionEn: data.data.descriptionEn,
                                                     minCountToSubject: data.data.minCountToSubject,
                                                     maxStudCountInGroup: data.data.maxStudCountInGroup,
+                                                    workingDaysNum:  data.data.workingDaysNum,
+                                                    workStartAt:  data.data.workStartAt,
+                                                    workEndAt:  data.data.workEndAt
                                                 });
                                                 setSpecs(data.data.specialties                                                    );
                                                 setHalls(data.data.halls)
@@ -134,7 +140,7 @@ const FacultyFormPage = () => {
     const handleAddHall = () => {
         if(hallsFormik.dirty && hallsFormik.isValid) {
             if(halls.find(hall => hall.nameEn === hallsFormik.values.nameEn)
-                || specs.find(hall => hall.nameAr === hallsFormik.values.nameAr)) {
+                || halls.find(hall => hall.nameAr === hallsFormik.values.nameAr)) {
                     return;
                 }
             setHalls(prev => [...prev, hallsFormik.values]);
@@ -225,6 +231,8 @@ const FacultyFormPage = () => {
         setSpecs([]);
         setHalls([]);
     }
+
+    console.log(halls)
     
     return (
         <FormWizard headers={formWizardHeaders} currentTab={currentTab}>

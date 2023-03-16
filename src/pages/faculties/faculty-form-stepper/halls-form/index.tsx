@@ -83,8 +83,7 @@ const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
         <button
             onClick={(e) => { e.preventDefault(); formik.handleSubmit()} } 
             className={`btn btn-falcon-success px-5 px-sm-6`} 
-            type="button"
-            >
+            type="button" >
             Add Hall <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>
         </button>
     </Form>
