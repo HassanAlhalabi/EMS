@@ -7,6 +7,9 @@ export const facultyValidation = object({
     descriptionEn: string().required('English Description Is Required'),
     minCountToSubject: number().required('Minimum Students Nummber For Subject Is Required').min(1),
     maxStudCountInGroup: number().required('Maximum Students In Class Is Required').min(1),
+    workingDaysNum:  number().required('Number Of Working Days Is Required').min(1).max(7),
+    workStartAt:  number().required('Work Day Starting Hour Is Required').min(1).max(24),
+    workEndAt:  number().required('Work Day End Hour Is Required').min(1).max(24)
 })
 
 export const specValidation = object({

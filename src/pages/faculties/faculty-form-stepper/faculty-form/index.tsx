@@ -99,6 +99,59 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                 </Form.Group> 
             </Col>
         </Row>
+        <Row>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        size="lg"
+                        required
+                        type="number"
+                        min={1} 
+                        max={7}
+                        placeholder="Working Days Number"
+                        name="workingDaysNum"
+                        value={formik.values.workingDaysNum} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.workingDaysNum as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        min={1} 
+                        max={24}
+                        size="lg"
+                        required
+                        type="number" 
+                        placeholder="Working Day Starts At"
+                        name="workStartAt"
+                        value={formik.values.workStartAt} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.workStartAt as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+            <Col>
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        min={1} 
+                        max={24}
+                        size="lg"
+                        required
+                        type="number" 
+                        placeholder="Working Day Ends At"
+                        name="workEndAt"
+                        value={formik.values.workEndAt} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.workEndAt as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+        </Row>
         <Row className="mt-3">
             <Col>
             </Col>

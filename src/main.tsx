@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryFunction } from 'react-query';
 import { QueryClientProvider } from 'react-query'
 import App from './App'
+import ErrorBoundary from './components/error-boundries';
 import { AuthProvider } from './contexts/auth-context'
 import { LayoutContextProvider } from './contexts/layout-context';
 import { LocalizeProvider } from './contexts/localize-context';
@@ -30,14 +31,16 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <LayoutContextProvider>
-      <LocalizeProvider>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            <App />
-          </QueryClientProvider>
-        </AuthProvider>
-      </LocalizeProvider>
-    </LayoutContextProvider>
-  </React.StrictMode>,
+    <ErrorBoundary>
+      <LayoutContextProvider>
+        <LocalizeProvider>
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              <App />
+            </QueryClientProvider>
+          </AuthProvider>
+        </LocalizeProvider>
+      </LayoutContextProvider>
+    </ErrorBoundary>
+  </React.StrictMode>
 )
