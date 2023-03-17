@@ -43,13 +43,12 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
             <Col>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="collectingSuggestionsStartAt">
-                        Collect Suggestoins Start At
+                        Collect Suggestions Starts At:
                     </Form.Label>
                     <Form.Control
                         size="lg"
                         required
                         type="date" 
-                        placeholder="Suggestions Started At"
                         id="collectingSuggestionsStartAt"
                         name="collectingSuggestionsStartAt"
                         value={formik.values.collectingSuggestionsStartAt} 
@@ -61,11 +60,14 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="collectingSuggestionsEndAt">
+                        Collect Suggestions Ends At:
+                    </Form.Label>
                     <Form.Control
+                        id="collectingSuggestionsEndAt"
                         size="lg"
                         required
                         type="date" 
-                        placeholder="English Name"
                         name="collectingSuggestionsEndAt"
                         value={formik.values.collectingSuggestionsEndAt} 
                         onChange={formik.handleChange} />
@@ -78,11 +80,13 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
         <Row>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="reviewSuggestionsStartAt">
+                        Review Suggestions Starts At:
+                    </Form.Label>
                     <Form.Control
                         size="lg"
                         required
                         type="date" 
-                        placeholder="Suggestions Started At"
                         name="reviewSuggestionsStartAt"
                         value={formik.values.reviewSuggestionsStartAt} 
                         onChange={formik.handleChange} />
@@ -93,11 +97,14 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="reviewSuggestionsEndAt">
+                        Review Suggestions Ends At:
+                    </Form.Label>
                     <Form.Control
+                        id="reviewSuggestionsEndAt"
                         size="lg"
                         required
                         type="date" 
-                        placeholder="English Name"
                         name="reviewSuggestionsEndAt"
                         value={formik.values.reviewSuggestionsEndAt} 
                         onChange={formik.handleChange} />
@@ -110,11 +117,14 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
         <Row>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="subjectsRegistrationStartAt">
+                        Subjects Registration Starts At:
+                    </Form.Label>
                     <Form.Control
+                        id="subjectsRegistrationStartAt"
                         size="lg"
                         required
                         type="date" 
-                        placeholder="Suggestions Started At"
                         name="subjectsRegistrationStartAt"
                         value={formik.values.subjectsRegistrationStartAt} 
                         onChange={formik.handleChange} />
@@ -125,11 +135,14 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="subjectsRegistrationEndAt">
+                        Subjects Registration Ends At:
+                    </Form.Label>
                     <Form.Control
+                        id="subjectsRegistrationEndAt"
                         size="lg"
                         required
                         type="date" 
-                        placeholder="English Name"
                         name="subjectsRegistrationEndAt"
                         value={formik.values.subjectsRegistrationEndAt} 
                         onChange={formik.handleChange} />
@@ -142,11 +155,14 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
         <Row>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="semesterStartAt">
+                        Semester Starts At:
+                    </Form.Label>
                     <Form.Control
+                        id="semesterStartAt"
                         size="lg"
                         required
                         type="date" 
-                        placeholder="Suggestions Started At"
                         name="semesterStartAt"
                         value={formik.values.semesterStartAt} 
                         onChange={formik.handleChange} />
@@ -157,11 +173,14 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="semesterEndAt">
+                        Semester Ends At:
+                    </Form.Label>
                     <Form.Control
+                        id="semesterEndAt"
                         size="lg"
                         required
                         type="date" 
-                        placeholder="English Name"
                         name="semesterEndAt"
                         value={formik.values.semesterEndAt} 
                         onChange={formik.handleChange} />
