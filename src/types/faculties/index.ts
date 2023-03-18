@@ -8,8 +8,8 @@ export interface NewFaculty {
     minCountToSubject: number,
     maxStudCountInGroup: number,
     workingDaysNum: number,
-    workStartAt: number,
-    workEndAt: number
+    workStartAt: string,
+    workEndAt: string
 }
 
 export interface NewSpec {
@@ -34,5 +34,5 @@ export interface NewHall {
     nameEn: string,
     descriptionAr: string,
     descriptionEn: string,
-    maxCount: number
+    maxCount: number | string
 }

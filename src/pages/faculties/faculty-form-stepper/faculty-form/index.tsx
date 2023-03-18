@@ -4,16 +4,20 @@ import { FormikProps } from 'formik';
 import { NewFaculty } from "../../../../types/faculties";
 
 const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
+
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="nameAr">
+                        Arabic Title
+                    </Form.Label>
                     <Form.Control
+                        id="nameAr"
                         size="lg"
                         required
                         type="text" 
-                        placeholder="Arabic Name"
                         name="nameAr"
                         value={formik.values.nameAr} 
                         onChange={formik.handleChange} />
@@ -24,11 +28,14 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="nameEn">
+                        English Title
+                    </Form.Label>
                     <Form.Control
+                        id="nameEn"
                         size="lg"
                         required
                         type="text" 
-                        placeholder="English Name"
                         name="nameEn"
                         value={formik.values.nameEn} 
                         onChange={formik.handleChange} />
@@ -39,12 +46,15 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Col>
         </Row>  
         <Form.Group className="mb-3">
+            <Form.Label htmlFor="descriptionAr">
+                Arabic Description
+            </Form.Label>
             <Form.Control
+                id="descriptionAr"
                 as='textarea'
                 size="lg"
                 required
                 type="text" 
-                placeholder="Arabic Description"
                 name="descriptionAr"
                 value={formik.values.descriptionAr as string} 
                 onChange={formik.handleChange} />
@@ -53,12 +63,15 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Feedback>
         </Form.Group> 
         <Form.Group className="mb-3">
+            <Form.Label htmlFor="descriptionEn">
+                English Description
+            </Form.Label>
             <Form.Control
+                id="descriptionEn"
                 as="textarea"
                 size="lg"
                 required
                 type="text" 
-                placeholder="English Description"
                 name="descriptionEn"
                 value={formik.values.descriptionEn as string} 
                 onChange={formik.handleChange} />
@@ -69,12 +82,15 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
         <Row>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="minCountToSubject">
+                        Minimum Students Number in a Class: 
+                    </Form.Label>
                     <Form.Control
+                        id="minCountToSubject"
                         size="lg"
                         required
                         type="number"
                         min={1} 
-                        placeholder="Minimum Student Count"
                         name="minCountToSubject"
                         value={formik.values.minCountToSubject} 
                         onChange={formik.handleChange} />
@@ -85,11 +101,14 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="maxStudCountInGroup">
+                        Maximum Students Number in a Class: 
+                    </Form.Label>
                     <Form.Control
+                        id="maxStudCountInGroup"
                         size="lg"
                         required
                         type="number" 
-                        placeholder="Maximum Students Number in a Class"
                         name="maxStudCountInGroup"
                         value={formik.values.maxStudCountInGroup} 
                         onChange={formik.handleChange} />
@@ -102,13 +121,16 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
         <Row>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="workingDaysNum">
+                        Number Of Working Days: 
+                    </Form.Label>
                     <Form.Control
+                        id="workingDaysNum"
                         size="lg"
                         required
                         type="number"
                         min={1} 
                         max={7}
-                        placeholder="Working Days Number"
                         name="workingDaysNum"
                         value={formik.values.workingDaysNum} 
                         onChange={formik.handleChange} />
@@ -119,13 +141,16 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="workStartAt">
+                        Working Day Starts At:
+                    </Form.Label>
                     <Form.Control
+                        id="workStartAt"
                         min={1} 
                         max={24}
                         size="lg"
                         required
-                        type="number" 
-                        placeholder="Working Day Starts At"
+                        type="time" 
                         name="workStartAt"
                         value={formik.values.workStartAt} 
                         onChange={formik.handleChange} />
@@ -136,13 +161,16 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Col>
             <Col>
                 <Form.Group className="mb-3">
+                    <Form.Label htmlFor="workEndAt">
+                        Working Day Ends At:
+                    </Form.Label>
                     <Form.Control
+                        id="workEndAt"
                         min={1} 
                         max={24}
                         size="lg"
                         required
-                        type="number" 
-                        placeholder="Working Day Ends At"
+                        type="time" 
                         name="workEndAt"
                         value={formik.values.workEndAt} 
                         onChange={formik.handleChange} />

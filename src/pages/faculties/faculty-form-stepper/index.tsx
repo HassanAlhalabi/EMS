@@ -44,8 +44,8 @@ const FACULTY_INITIAL_STATE = {
     minCountToSubject: 1,
     maxStudCountInGroup: 1,
     workingDaysNum: 6,
-    workStartAt: 9,
-    workEndAt: 5
+    workStartAt: '09:00',
+    workEndAt: '17:00'
 }
 
 const SPEC_INITIAL_STATE = {
@@ -60,7 +60,7 @@ const HALL_INITIAL_STATE = {
     nameEn: "",
     descriptionAr: "",
     descriptionEn: "",
-    maxCount: 5
+    maxCount: ""
 }
 
 const FacultyFormPage = () => {
@@ -148,7 +148,7 @@ const FacultyFormPage = () => {
         }
     }
 
-    const handleDeleteHall = (title: string) => {
+    const handleDeleteHall = (title: string) => {   
         const newHalls = halls.filter(hall => hall.nameEn !== title);
         setHalls(newHalls);
     }
@@ -189,11 +189,15 @@ const FacultyFormPage = () => {
       {
         id: facultyId,
         ...facultyFormik.values,
+        workStartAt: Number(facultyFormik.values.workStartAt.slice(0,2)),
+        workEndAt: Number(facultyFormik.values.workEndAt.slice(0,2)),
         specialties: [...specs],
         halls: [...halls]
       }) : usePost('/Faculty ', 
       {
         ...facultyFormik.values,
+        workStartAt: Number(facultyFormik.values.workStartAt.slice(0,2)),
+        workEndAt: Number(facultyFormik.values.workEndAt.slice(0,2)),
         specialties: [...specs],
         halls: [...halls]
       })

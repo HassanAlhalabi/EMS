@@ -1,4 +1,4 @@
-import { object, string, number } from "yup";
+import { object, string, number, date } from "yup";
 
 export const facultyValidation = object({
     nameAr: string().required('Arabic Name Is Required'),
@@ -8,8 +8,8 @@ export const facultyValidation = object({
     minCountToSubject: number().required('Minimum Students Nummber For Subject Is Required').min(1),
     maxStudCountInGroup: number().required('Maximum Students In Class Is Required').min(1),
     workingDaysNum:  number().required('Number Of Working Days Is Required').min(1).max(7),
-    workStartAt:  number().required('Work Day Starting Hour Is Required').min(1).max(24),
-    workEndAt:  number().required('Work Day End Hour Is Required').min(1).max(24)
+    workStartAt:  string().required('Work Day Starting Hour Is Required'),
+    workEndAt:  string().required('Work Day End Hour Is Required')
 })
 
 export const specValidation = object({
