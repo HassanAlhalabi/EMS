@@ -195,6 +195,7 @@ const SubjectsPage = () => {
 									action === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
 								handleConfirm={handleSubjectAction}
+                                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
 								actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 

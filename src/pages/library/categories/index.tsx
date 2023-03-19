@@ -200,6 +200,7 @@ const CategoriesPage = () => {
 									action === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
 								handleConfirm={handleCategoryAction}
+                                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
 								actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 

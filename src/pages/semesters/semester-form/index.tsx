@@ -51,7 +51,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         type="date" 
                         id="collectingSuggestionsStartAt"
                         name="collectingSuggestionsStartAt"
-                        value={formik.values.collectingSuggestionsStartAt} 
+                        value={formik.values.collectingSuggestionsStartAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.collectingSuggestionsStartAt as string}
@@ -69,7 +69,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         required
                         type="date" 
                         name="collectingSuggestionsEndAt"
-                        value={formik.values.collectingSuggestionsEndAt} 
+                        value={formik.values.collectingSuggestionsEndAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.collectingSuggestionsEndAt as string}
@@ -88,7 +88,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         required
                         type="date" 
                         name="reviewSuggestionsStartAt"
-                        value={formik.values.reviewSuggestionsStartAt} 
+                        value={formik.values.reviewSuggestionsStartAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.reviewSuggestionsStartAt as string}
@@ -106,7 +106,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         required
                         type="date" 
                         name="reviewSuggestionsEndAt"
-                        value={formik.values.reviewSuggestionsEndAt} 
+                        value={formik.values.reviewSuggestionsEndAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.reviewSuggestionsEndAt as string}
@@ -126,7 +126,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         required
                         type="date" 
                         name="subjectsRegistrationStartAt"
-                        value={formik.values.subjectsRegistrationStartAt} 
+                        value={formik.values.subjectsRegistrationStartAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.subjectsRegistrationStartAt as string}
@@ -144,7 +144,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         required
                         type="date" 
                         name="subjectsRegistrationEndAt"
-                        value={formik.values.subjectsRegistrationEndAt} 
+                        value={formik.values.subjectsRegistrationEndAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.subjectsRegistrationEndAt as string}
@@ -164,7 +164,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         required
                         type="date" 
                         name="semesterStartAt"
-                        value={formik.values.semesterStartAt} 
+                        value={formik.values.semesterStartAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.semesterStartAt as string}
@@ -182,7 +182,7 @@ const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
                         required
                         type="date" 
                         name="semesterEndAt"
-                        value={formik.values.semesterEndAt} 
+                        value={formik.values.semesterEndAt.split('T')[0]} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.semesterEndAt as string}

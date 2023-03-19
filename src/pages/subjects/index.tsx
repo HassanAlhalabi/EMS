@@ -10,8 +10,9 @@ import { subjectValidation } from "../../schema/subject";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../util";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { NewSubject, Subject } from "../../types/subjects";
+import { FacultySubject, NewSubject, Subject } from "../../types/subjects";
 import SubjectForm from "./subject-form";
+import { Faculty } from "../../types/faculties";
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -61,7 +62,7 @@ const SubjectsPage = () => {
                                 formik.setValues({
                                     ...data.data,
                                     subjectTypeId: data.data.subjectType.id,
-                                    facultySubjects: data.data.facultySubjects.map(fs => {
+                                    facultySubjects: data.data.facultySubjects.map((fs: {faculty: Faculty, superSubject: Subject}) => {
                                         return {
                                             facultyId: fs.faculty.id,
                                             facultyName: fs.faculty.nameEn,
@@ -200,14 +201,15 @@ const SubjectsPage = () => {
                 />
 
                 <PopUp  title={`${action && capitalize(action as string)} Subject`}
-								show={action !== null}
-								onHide={() => { setAction(null), formik.resetForm(), setSubjectId(null) } }
-								confirmText={`${action} Subject`}
-								confirmButtonVariant={
-									action === ACTION_TYPES.delete ? 'danger' : "primary"
-								}
-								handleConfirm={handleSubjectAction}
-								actionLoading={postLoading}
+                        show={action !== null}
+                        onHide={() => { setAction(null), formik.resetForm(), setSubjectId(null) } }
+                        confirmText={`${action} Subject`}
+                        confirmButtonVariant={
+                            action === ACTION_TYPES.delete ? 'danger' : "primary"
+                        }
+                        confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
+                        handleConfirm={handleSubjectAction}
+                        actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)

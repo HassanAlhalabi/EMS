@@ -13,7 +13,8 @@ const SubjectsTypes     = lazy(() => import('../pages/subjects-types'));
 const Books             = lazy(() => import('../pages/library/books'));
 const BooksCategories   = lazy(() => import('../pages/library/categories'));
 const Departments       = lazy(() => import('../pages/departments'));
-const Semesters       = lazy(() => import('../pages/semesters'));
+const Semesters         = lazy(() => import('../pages/semesters'));
+const StudyPlans        = lazy(() => import('../pages/study-plans'));
 
 export const routes = [
     {
@@ -109,6 +110,14 @@ export const routes = [
                 isIndex: false,
                 childRoutes: null,
                 element: <Semesters />
+            },
+            {
+                id: 'study-plan',
+                name: 'Study Plan',
+                path: '/study-plan',
+                isIndex: false,
+                childRoutes: null,
+                element: <StudyPlans />
             },
         ],
         element: <ProtectedRoute><Main /></ProtectedRoute>
