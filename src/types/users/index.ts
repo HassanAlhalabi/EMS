@@ -7,6 +7,7 @@ export interface NewUser {
     email: string,
     phoneNumber: string,
     type: string,
+    specialtyId: string,
     contract: {
         startAt: Date | string,
         endAt: Date | string,

@@ -23,6 +23,7 @@ const INITIAL_VALUES: NewUser = {
   email: '',
   phoneNumber: "",
   type: '',
+  specialtyId: '',
   contract: {
       startAt: '',
       endAt: '',

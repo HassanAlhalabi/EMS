@@ -18,10 +18,17 @@ const toggleButtonStyle = {
   padding: 0
 }
 
-const CDropdown = ({isOpen, handleToggleOpen, renderMenu, renderButton, extraClasses, handleBlur}: IDropdown) => {
+const CDropdown = ({isOpen, 
+                    handleToggleOpen, 
+                    renderMenu, 
+                    renderButton, 
+                    extraClasses, 
+                    handleBlur}: IDropdown) => {
   return (
     <Dropdown>
-      <Dropdown.Toggle id="dropdown-basic" className="nav-link pe-0" style={toggleButtonStyle}>
+      <Dropdown.Toggle  id="dropdown-basic" 
+                        className="nav-link pe-0" 
+                        style={toggleButtonStyle}>
         {renderButton()}
       </Dropdown.Toggle>
 
