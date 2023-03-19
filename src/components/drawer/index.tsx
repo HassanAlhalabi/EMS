@@ -49,12 +49,12 @@ const Drawer = () => {
             <NavListLabel title='University Management' />
             <NavLink title="Faculties" faIcon="fas fa-university" link="faculties" />
             <NavLink title="Subjects" faIcon="fas fa-chalkboard-teacher" link="subjects" />
-            <NavLink title="Subjects Types" faIcon="fas fa-chalkboard-teacher" link="subjects-types" />
+            <NavLink title="Subjects Types" faIcon="fas fa-book-open" link="subjects-types" />
             <NavLink title="Library" faIcon="fas fa-archive">
-              <NavLink title="Books" faIcon="fas fa-book" link="books" />
+              <NavLink title="Books" faIcon="fa fa-book" link="books" />
               <NavLink title="Categories" faIcon="fas fa-list-alt" link="books-categories" />
             </NavLink>
-            <NavLink title="Departments" faIcon="fas fa-chalkboard-teacher" link="departments" />
+            <NavLink title="Departments" faIcon="fas fa-people-roof" link="departments" />
             <NavLink title="Semesters" faIcon="fas fa-calendar" link="semesters" />
 
             <NavListLabel title='Students Management' />
