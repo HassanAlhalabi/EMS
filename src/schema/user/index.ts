@@ -9,6 +9,7 @@ export const addUserValidation = object({
     email: string().required('Email Is Required').email('Invalid Email'),
     phoneNumber: string().required('Phone Number Is Required').length(13, 'Phone Number Must Be 13 Numbers').matches(phoneRegExp, 'Phone number is not valid'),
     type: string().required('User Type Is Required'),
+    specialtyId: string().nullable(),
     contract: object().shape({
         startAt: date().required('Starting Date Is Required'),
         endAt: date().required('End Date Is Required'),

@@ -13,6 +13,7 @@ import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
 import { addDepartmentValidation } from "../../schema/department";
 import { NewDepartment, Department } from "../../types/departments";
+import { Faculty } from "../../types/faculties";
 import { capitalize, getAxiosError } from "../../util";
 import DepartmentForm from "./department-form";
 
@@ -55,7 +56,7 @@ const DepartmentsPage = () => {
                         enabled: false,   
                         onSuccess: data => formik.setValues({
                           ...data.data,
-                          facultiesIds: data.data.faculties.map(faculty => faculty.id)
+                          facultiesIds: data.data.faculties.map((faculty: Faculty) => faculty.id)
                         })              
         });
 
@@ -216,6 +217,7 @@ const DepartmentsPage = () => {
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
                 handleConfirm={handleDepartmentAction}
+                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
                 actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 

@@ -118,7 +118,10 @@ const SignIn = () => {
               </Row>
                   
               <div className="mb-3">
-                <button className="btn btn-primary d-block w-100 mt-3 p-2" type="submit" name="submit">
+                <button className="btn btn-primary d-block w-100 mt-3 p-2" 
+                        type="submit" 
+                        name="submit"
+                        disabled={!formik.isValid || !formik.dirty}>
                   {
                     isLoading ? <Spinner size="sm" animation="grow" /> : 'Log in'
                   }

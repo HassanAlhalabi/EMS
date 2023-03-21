@@ -9,7 +9,7 @@ import { get } from "../../../http";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { Book } from "../../../types/books";
+import { Book, NewBook } from "../../../types/books";
 import { bookValidation } from "../../../schema/book";
 import BookForm from "./book-form";
 import SwitchInput from "../../../components/switch-input/index.";
@@ -21,8 +21,9 @@ const INITIAL_VALUES = {
     authorNameEn: '',
     descriptionAr: '',
     descriptionEn: '',
-    cover: '',
-    categoryId: []
+    cover: null,
+    categoryId: [],
+    attachment: null
 }
 
 const BooksPage = () => {
@@ -34,7 +35,7 @@ const BooksPage = () => {
     const [bookId, setBookId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
 
-    const formik = useFormik({
+    const formik = useFormik<NewBook>({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleBookAction(),
 		validationSchema: bookValidation
@@ -225,6 +226,7 @@ const BooksPage = () => {
 								}
 								handleConfirm={handleBookAction}
 								actionLoading={postLoading}
+                                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)

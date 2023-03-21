@@ -11,34 +11,31 @@ import { ACTION_TYPES } from "../../constants";
 import { useDelete, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
-import { addUserValidation } from "../../schema/user";
-import { NewUser, User } from "../../types/users";
+import { addStudyPlanValidation } from "../../schema/study-plan";
+import { NewStudyPlan, StudyPlan } from "../../types/study-plan";
 import { capitalize, getAxiosError } from "../../util";
-import UserForm from "./user-form";
+import StudyPlanForm from "./study-plan-form";
 
-const INITIAL_VALUES: NewUser = {
-  roleId: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  phoneNumber: "",
-  type: '',
-  specialtyId: '',
-  contract: {
-      startAt: '',
-      endAt: '',
-      salary: 0,
-      workDays: []
-  }
+const INITIAL_VALUES: NewStudyPlan = {
+  nameAr:	'',
+  nameEn:	'',
+  collectingSuggestionsStartAt: '',
+  collectingSuggestionsEndAt: '',
+  reviewSuggestionsStartAt: '',
+  reviewSuggestionsEndAt: '',
+  subjectsRegistrationStartAt: '',
+  subjectsRegistrationEndAt: '',
+  studyPlanStartAt: '',
+  studyPlanEndAt: ''
 }
 
-const UsersPage = () => {
+const StudyPlansPage = () => {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [searchKey, setSearchKey] = useState<string>('');
   const [action, setAction] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [studyPlanId, setStudyPlanId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
 
   const { data, 
@@ -46,32 +43,32 @@ const UsersPage = () => {
           isLoading, 
           isFetching, 
           refetch } = useQuery(
-                                            ['/User/GetAllUsers', page, pageSize, searchKey], 
-                                            () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
+                                            ['/StudyPlan/GetAllStudyPlans', page, pageSize, searchKey], 
+                                            () => get(`/StudyPlan/GetAllStudyPlans?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                                             {
                                               keepPreviousData: true,
                                               enabled: false
                                             });
 
-  const { data: user, 
-          refetch: refetchUser,
+  const { data: studyPlan, 
+          refetch: refetchStudyPlan,
         } = useQuery(
-                    ['/User/GetUser', userId], 
-                    () => get(`/User/GetUser/${userId}`),
+                    ['/StudyPlan/GetFullStudyPlan', studyPlanId], 
+                    () => get(`/StudyPlan/GetFullStudyPlan/${studyPlanId}`),
                     {
                         enabled: false,   
-                        onSuccess: data => formik.setValues(data.data)                    
+                        onSuccess: data => formik.setValues(data.data)              
         });
 
   useEffect(() => {
-    if(userId && action === ACTION_TYPES.update) {
-      refetchUser();
+    if(studyPlanId && action === ACTION_TYPES.update) {
+      refetchStudyPlan();
     }
-    if(userId && action === ACTION_TYPES.toggle) {
-      handleUserAction();
+    if(studyPlanId && action === ACTION_TYPES.toggle) {
+      handleStudyPlanAction();
     }
-    () => setUserId(null);
-  },[userId]);
+    () => setStudyPlanId(null);
+  },[studyPlanId]);
 
   useEffect(() => {
     let searchTimeout: number; 
@@ -88,32 +85,8 @@ const UsersPage = () => {
   const columns = useMemo(
 		() => [
       {
-        Header: 'User Name',
-        accessor: 'userName',
-      },
-      {
-        Header: 'First Name',
-        accessor: 'firstName',
-      },
-      {
-        Header: 'Last Name',
-        accessor: 'lastName',
-      },
-      {
-        Header: 'Email',
-        accessor: 'email',
-      },
-      {
-        Header: 'Phone Number',
-        accessor: 'phoneNumber',
-      },
-      {
-        Header: 'Type',
-        accessor: 'type',
-      },
-      {
-        Header: 'Role',
-        accessor: 'role',
+        Header: 'StudyPlan Name',
+        accessor: 'name',
       },
       {
         Header: 'Options',
@@ -123,40 +96,37 @@ const UsersPage = () => {
 		[]
 	 )
 
-  const users = useMemo(
-    () => (isLoading || status === 'idle') ? [] : (data?.data.users),
+  const studyPlans = useMemo(
+    () => (isLoading || status === 'idle') ? [] : (data?.data.studyPlans),
     [data, isFetching, isLoading]
   );
 
   const formik = useFormik({
       initialValues: INITIAL_VALUES,
-      onSubmit: () => handleUserAction(),
-      validationSchema: addUserValidation
+      onSubmit: () => handleStudyPlanAction(),
+      validationSchema: addStudyPlanValidation
   })
 
   const reset = () => {
     setAction(null); 
     formik.resetForm();
-    setUserId(null)
+    setStudyPlanId(null)
   }
 
   const { mutateAsync , 
           isLoading: postLoading
-        } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
-              {
-                ...formik.values,
-                roleId:formik.values.type === 'Student' ? null : formik.values.roleId  ,
-              }) :
-                              action === ACTION_TYPES.update ? 
-                              usePut('/User/PutUser', 
-      {
-        id: userId,
+        } = action === ACTION_TYPES.add ? usePost('/StudyPlan', 
+              formik.values) :
+              action === ACTION_TYPES.update ? 
+              usePut('/StudyPlan', 
+{
+        id: studyPlanId,
        ...formik.values
       }) : action === ACTION_TYPES.delete ? 
-                useDelete('/User',userId as string)
-             :  usePut(`/User/ToggleActivation/${userId}`);
+                useDelete('/StudyPlan',studyPlanId as string)
+             :  usePut(`/StudyPlan/ToggleActivation/${studyPlanId}`);
 
-  const handleUserAction = async () => {
+  const handleStudyPlanAction = async () => {
 
       // Not Valid ... Do Nothing
     if(!formik.isValid && action !== ACTION_TYPES.delete) {
@@ -170,7 +140,7 @@ const UsersPage = () => {
         toggleScreenLoader();
         await mutateAsync();
         refetch();
-        toast.success(`${capitalize(action as string)} User Done Successfully`)
+        toast.success(`${capitalize(action as string)} StudyPlan Done Successfully`)
         reset();
       } catch(error) {
         toast.error(getAxiosError(error))
@@ -179,15 +149,15 @@ const UsersPage = () => {
     }
   }
 
-  const handleToggleUser = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleToggleStudyPlan = async (e: ChangeEvent<HTMLInputElement>) => {
     setAction(ACTION_TYPES.toggle);
-    setUserId(e.target.value);
+    setStudyPlanId(e.target.value);
   }
 
   return  <>
-            <Table<User>  
+            <Table<StudyPlan>  
               columns={columns} 
-              data={users} 
+              data={studyPlans} 
               isBulk
               hasSort
               hasSearch
@@ -209,51 +179,50 @@ const UsersPage = () => {
                                             </button>
                                            
                                     }} 
-              renderRowActions={(user) => {
+              renderRowActions={(studyPlan) => {
                   return  <div className="d-flex align-items-center">
                             <button className="btn btn-falcon-info btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.update)
-                                            setUserId(user.id);
+                                            setStudyPlanId(studyPlan.id);
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                             </button>
-                            <button className="btn btn-falcon-danger btn-sm m-1" 
+                            {/* <button className="btn btn-falcon-danger btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.delete);
-                                            setUserId(user.id);
+                                            setStudyPlanId(studyPlan.id);
                                     }}>        
                                 <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                            </button>
-                            <SwitchInput 
-                              checked={user.isActive} 
-                              value={user.id} 
-                              onChange={handleToggleUser} />
+                            </button> */}
+                            {/* <SwitchInput 
+                              checked={studyPlan.isActive} 
+                              value={studyPlan.id} 
+                              onChange={handleToggleStudyPlan} /> */}
                           </div>
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} User`}
+                title={`${action && capitalize(action as string)} StudyPlan`}
                 show={action !== null && action !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} User`}
+                confirmText={`${action} StudyPlan`}
                 confirmButtonVariant={
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
-                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
-                handleConfirm={handleUserAction}
+                handleConfirm={handleStudyPlanAction}
                 actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
-                                && <UserForm formik={formik} />}
+                                && <StudyPlanForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This User</>
+                                    <>Are you Sure You Want to Delete This StudyPlan</>
                         }
                 </PopUp>
               </>
 }
 
-export default UsersPage
+export default StudyPlansPage

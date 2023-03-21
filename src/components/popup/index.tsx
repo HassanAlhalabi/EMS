@@ -8,6 +8,7 @@ interface PopUpExtra {
     handleConfirm?: () => void,
     confirmText?: string,
     confirmButtonVariant?: ButtonVariant,
+    confirmButtonIsDisabled?: boolean,
     actionLoading?: boolean,
     children?: React.ReactNode,
 }
@@ -33,7 +34,8 @@ const PopUp = (props: ModalProps & PopUpExtra) => {
         <Button variant={props.confirmButtonVariant} 
                 onClick={props.handleConfirm} 
                 style={{textTransform: 'capitalize'}}
-                className="btn btn-falcon-primary">
+                className="btn btn-falcon-primary"
+                disabled={props.confirmButtonIsDisabled}>
           {props.confirmText ? capitalize(props.confirmText) : 'Ok'}
         </Button>
       </Modal.Footer>

@@ -200,6 +200,7 @@ const RolesPage = () => {
 								}
 								handleConfirm={handleRoleAction}
 								actionLoading={postLoading}
+                                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)

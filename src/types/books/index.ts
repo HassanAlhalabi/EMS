@@ -10,7 +10,7 @@ export interface NewBook {
     categoryId: string[],
     imagePath?: string,
     updateImage?: boolean,
-    attachment: File
+    attachment: File | null
 }
 
 export interface FullBook {

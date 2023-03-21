@@ -1,3 +1,16 @@
+.dropdown-toggle::after {
+    display: none;
+}
+
+.navbar .dropdown-menu:after {
+    display: none;
+}
+
+.navbar-top .navbar-nav-icons .dropdown-menu {
+    min-width: 15rem;
+    max-width: 90vw;
+}
+
 .notification-indicator::before {
     right: 0px;
     top: 6px;

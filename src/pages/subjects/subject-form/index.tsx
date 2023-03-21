@@ -3,16 +3,15 @@ import Feedback from "../../../components/feedback"
 import { useQuery } from 'react-query';
 import { get } from "../../../http";
 import { FormikProps } from "formik";
-import { FacultySubject, NewSubject, SubjectType } from "../../../types/subjects";
-import { Faculty } from "../../../types/faculties";
+import { FacultySubject, NewSubject,  } from "../../../types/subjects";
 import { useState,useEffect, ChangeEvent, MouseEvent, useMemo } from 'react';
 import Table from "../../../components/table";
 
 type FacultySubjectProps = {
     facultyId: string,
-    facultyName: string | null,
+    facultyName?: string | null,
     superSubjectId: string | null,
-    superSubjectName: string | null
+    superSubjectName?: string | null
 }
 
 const SubjectForm = (   {formik, loading}:
@@ -83,7 +82,8 @@ const SubjectForm = (   {formik, loading}:
     }
 
     useEffect(() => {
-        setFacultySubjects(formik.values.facultySubjects)
+        setFacultySubjects(
+            formik.values.facultySubjects)
     },[loading])
 
     const handleDeleteFacultySubject = (facultyId: string, superSubjectId: string | null) => {
@@ -118,7 +118,7 @@ const SubjectForm = (   {formik, loading}:
         []
     )
 
-    console.log(facultySubjects)
+    console.log(formik.values.facultySubjects)
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">

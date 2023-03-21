@@ -1,6 +1,8 @@
 export interface FacultySubject {
     facultyId: string
     superSubjectId: string | null
+    facultyName?: string
+    superSubjectName?: string
 }
 
 export interface NewSubject {

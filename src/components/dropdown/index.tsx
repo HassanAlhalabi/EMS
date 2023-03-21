@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { Fade } from "react-bootstrap"
+import { Dropdown } from "react-bootstrap"
 
 interface IDropdown {
     isOpen: boolean,
@@ -10,28 +10,33 @@ interface IDropdown {
     extraClasses?: string
 }
 
-const Dropdown = ({isOpen, handleToggleOpen, renderMenu, renderButton, extraClasses, handleBlur}: IDropdown) => {
+const toggleButtonStyle = {
+  backgroundColor: 'transparent',
+  border: 'none',
+  outline: 'none',
+  boxShadow: 'none',
+  padding: 0
+}
+
+const CDropdown = ({isOpen, 
+                    handleToggleOpen, 
+                    renderMenu, 
+                    renderButton, 
+                    extraClasses, 
+                    handleBlur}: IDropdown) => {
   return (
-    <div style={{position: 'relative'}}>
+    <Dropdown>
+      <Dropdown.Toggle  id="dropdown-basic" 
+                        className="nav-link pe-0" 
+                        style={toggleButtonStyle}>
+        {renderButton()}
+      </Dropdown.Toggle>
 
-      <a  className="nav-link pe-0" 
-        role="button"  
-        aria-haspopup="true" 
-        onClick={handleToggleOpen}>
-          {renderButton()}
-      </a>
-
-      <Fade in={isOpen} >
-        <div onBlur={handleBlur} className={`dropdown-menu dropdown-menu-end py-0 ${extraClasses}`}
-            aria-labelledby="navbarDropdownUser">
-            <div className="bg-white dark__bg-1000 rounded-2 py-2">
-              {renderMenu()}
-            </div>
-        </div>
-      </Fade>
-
-    </div>
+      <Dropdown.Menu>
+        {renderMenu()}
+      </Dropdown.Menu>
+    </Dropdown>
   )
 }
 
-export default Dropdown
+export default CDropdown

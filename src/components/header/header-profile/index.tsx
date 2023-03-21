@@ -2,7 +2,7 @@
 import member from '../../../assets/img/team/3-thumb.png';
 import ProfileMenu from './profile-menu';
 import { useContext, useState } from 'react';
-import Dropdown from '../../dropdown';
+import CDropdown from '../../dropdown';
 import NotificationMenu from '../notification-menu';
 import { LayoutContext } from '../../../contexts/layout-context';
 
@@ -35,22 +35,21 @@ const HeaderProfile = () => {
         </div>
       </li>
 
-    <li className="nav-item dropdown">
+    <li className="nav-item">
 
-      <Dropdown
+      <CDropdown
         handleBlur={() => setNotificationMenuIsOpen(false)}
         isOpen={notificationMenuIsOpen}
         renderButton={() => (      <a className="nav-link notification-indicator notification-indicator-primary px-2 " id="navbarDropdownNotification" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span className="fas fa-bell" style={{fontSize: '24px'}}></span> 
                       </a>)}
         renderMenu={() => <NotificationMenu />}       
-        handleToggleOpen={handleToggleNotificationMenu}
-        extraClasses="dropdown-menu-card dropdown-menu-notification"  
+        handleToggleOpen={handleToggleNotificationMenu} 
       />
   
     </li>
-    <li className="nav-item dropdown" onBlur={handleBlur}>
-      <Dropdown
+    <li className="nav-item" onBlur={handleBlur}>
+      <CDropdown
         handleBlur={() => setProfileMenuIsOpen(false)}
         isOpen={profileMenuIsOpen}
         handleToggleOpen={handleToggleProfileMenu}
