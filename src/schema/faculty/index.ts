@@ -1,10 +1,16 @@
-import { object, string, number, date } from "yup";
+import { object, string, number, date, boolean } from "yup";
 
 export const facultyValidation = object({
     nameAr: string().required('Arabic Name Is Required'),
     nameEn: string().required('English Name Is Required'),
-    descriptionAr: string().required('Arabic Description Is Required'),
-    descriptionEn: string().required('English Description Is Required'),
+    descriptionAr: string(),
+    descriptionEn: string(),
+    studingYearsCount: number().required('Study Years Number Is Required'),
+    isManySpeciality: boolean(),
+    specialtyYearNum: number().when(['isManySpeciality'],{
+        is: true,
+        then: number().required('Specialization Starting Year Is Required')
+      }) ,
     minCountToSubject: number().required('Minimum Students Nummber For Subject Is Required').min(1),
     maxStudCountInGroup: number().required('Maximum Students In Class Is Required').min(1),
     workingDaysNum:  number().required('Number Of Working Days Is Required').min(1).max(7),
@@ -15,14 +21,14 @@ export const facultyValidation = object({
 export const specValidation = object({
     nameAr: string().required('Arabic Name Is Required'),
     nameEn: string().required('English Name Is Required'),
-    descriptionAr: string().required('Arabic Description Is Required'),
-    descriptionEn: string().required('English Description Is Required'),
+    descriptionAr: string(),
+    descriptionEn: string(),
 })
 
 export const hallValidation = object({
     nameAr: string().required('Arabic Name Is Required'),
     nameEn: string().required('English Name Is Required'),
-    descriptionAr: string().required('Arabic Description Is Required'),
-    descriptionEn: string().required('English Description Is Required'),
+    descriptionAr: string(),
+    descriptionEn: string(),
     maxCount: number().required('Max Student In Hall Is Required').min(1)
 })

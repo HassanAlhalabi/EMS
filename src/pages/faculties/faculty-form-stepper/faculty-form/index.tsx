@@ -80,6 +80,64 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Feedback>
         </Form.Group> 
         <Row>
+            <Col sm={5}>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="studingYearsCount">
+                        Number Of Study Years: 
+                    </Form.Label>
+                    <Form.Control
+                        id="studingYearsCount"
+                        size="lg"
+                        required
+                        type="number"
+                        min={1} 
+                        name="studingYearsCount"
+                        value={formik.values.studingYearsCount} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.studingYearsCount as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+            <Col sm={2}>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="isManySpecialty">
+                        Has Specialiaztions: 
+                    </Form.Label>
+                    <Form.Switch
+                        id="isManySpecialty"
+                        type="check"                       
+                        name="isManySpecialty"
+                        value={formik.values.isManySpecialty} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.isManySpecialty as string}
+                    </Feedback>
+                </Form.Group> 
+            </Col>
+            <Col sm={5}>
+                {
+                    formik.values.isManySpecialty && 
+                    <Form.Group className="mb-3">
+                        <Form.Label htmlFor="specialtyYearNum">
+                            Specialiaztion Starting Year: 
+                        </Form.Label>
+                        <Form.Control
+                            id="specialtyYearNum"
+                            size="lg"
+                            required
+                            type="number" 
+                            name="specialtyYearNum"
+                            value={formik.values.specialtyYearNum} 
+                            onChange={formik.handleChange} />
+                        <Feedback type="invalid">
+                            {formik.errors.specialtyYearNum as string}
+                        </Feedback>
+                    </Form.Group>
+                } 
+            </Col>
+        </Row>
+        <Row>
             <Col>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="minCountToSubject">

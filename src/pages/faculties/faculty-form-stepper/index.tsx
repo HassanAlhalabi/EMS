@@ -41,6 +41,9 @@ const FACULTY_INITIAL_STATE = {
     nameEn: "",
     descriptionAr: "",
     descriptionEn: "",
+    studingYearsCount: 4,
+    isManySpecialty: false,
+    specialtyYearNum: 2,
     minCountToSubject: 1,
     maxStudCountInGroup: 1,
     workingDaysNum: 6,
@@ -70,7 +73,6 @@ const FacultyFormPage = () => {
     const handleChangeToNextTab = () => setCurrentTab(prev => prev + 1);
     const handleChangeToPrevTab = () => setCurrentTab(prev => prev - 1);
     const {toggleScreenLoader} = useScreenLoader();
-    const [action, setAction] = useState(null);
 
     const {data: facultyData, refetch: refetchFaculty } = useQuery(['faculty', facultyId], 
                                         () => get(`/Faculty/GetFullFaculty/${facultyId}`),{
@@ -81,6 +83,9 @@ const FacultyFormPage = () => {
                                                     nameEn: data.data.nameEn,
                                                     descriptionAr: data.data.descriptionAr,
                                                     descriptionEn: data.data.descriptionEn,
+                                                    studingYearsCount: data.data.studingYearsCount,
+                                                    isManySpecialty: data.data.isManySpecialty,
+                                                    specialtyYearNum: data.data.specialtyYearNum,
                                                     minCountToSubject: data.data.minCountToSubject,
                                                     maxStudCountInGroup: data.data.maxStudCountInGroup,
                                                     workingDaysNum:  data.data.workingDaysNum,

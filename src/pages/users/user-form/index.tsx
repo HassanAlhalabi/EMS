@@ -304,7 +304,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setFacultyId(e.target.value) }>
                                     <option key="no-value" value=""></option>
                                 {
-                                    faculties.map((faculty: {id: string, name: string}) => 
+                                    faculties?.map((faculty: {id: string, name: string}) => 
                                         <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
                                     )
                                 }
