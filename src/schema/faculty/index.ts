@@ -23,6 +23,7 @@ export const specValidation = object({
     nameEn: string().required('English Name Is Required'),
     descriptionAr: string(),
     descriptionEn: string(),
+    isDefault: boolean()
 })
 
 export const hallValidation = object({

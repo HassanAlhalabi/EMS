@@ -43,7 +43,6 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
             <Form.Control
                 size="lg"
                 as="textarea"
-                required
                 type="text" 
                 placeholder="Arabic Description"
                 name="descriptionAr"
@@ -57,7 +56,6 @@ const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
             <Form.Control
                 as="textarea"
                 size="lg"
-                required
                 type="text" 
                 placeholder="English Description"
                 name="descriptionEn"

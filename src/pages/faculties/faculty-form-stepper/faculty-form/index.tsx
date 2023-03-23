@@ -2,6 +2,7 @@ import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../../components/feedback"
 import { FormikProps } from 'formik';
 import { NewFaculty } from "../../../../types/faculties";
+import SwitchInput from "../../../../components/switch-input/index.";
 
 const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
 
@@ -53,7 +54,6 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                 id="descriptionAr"
                 as='textarea'
                 size="lg"
-                required
                 type="text" 
                 name="descriptionAr"
                 value={formik.values.descriptionAr as string} 
@@ -70,7 +70,6 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                 id="descriptionEn"
                 as="textarea"
                 size="lg"
-                required
                 type="text" 
                 name="descriptionEn"
                 value={formik.values.descriptionEn as string} 
@@ -104,11 +103,10 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                     <Form.Label htmlFor="isManySpecialty">
                         Has Specialiaztions: 
                     </Form.Label>
-                    <Form.Switch
-                        id="isManySpecialty"
-                        type="check"                       
+                    <SwitchInput
+                        id="isManySpecialty"                    
                         name="isManySpecialty"
-                        value={formik.values.isManySpecialty} 
+                        checked={formik.values.isManySpecialty} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
                         {formik.errors.isManySpecialty as string}

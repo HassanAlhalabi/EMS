@@ -19,7 +19,8 @@ export interface NewSpec {
     nameAr: string,
     nameEn: string,
     descriptionAr: string,
-    descriptionEn: string
+    descriptionEn: string,
+    isDefault: boolean
 }
 
 export interface Faculty {

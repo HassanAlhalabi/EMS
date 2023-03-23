@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import FormWizard from "../../../components/form-wizard";
 import { PaneHeadProps } from "../../../components/form-wizard/pane-head";
+import SwitchInput from "../../../components/switch-input/index.";
 import Table from "../../../components/table";
 import { usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
@@ -56,6 +57,7 @@ const SPEC_INITIAL_STATE = {
     nameEn: "",
     descriptionAr: "",
     descriptionEn: "",
+    isDefault: false
 }
 
 const HALL_INITIAL_STATE = {
@@ -123,14 +125,46 @@ const FacultyFormPage = () => {
             if(specs.find(spec => spec.nameEn === specsFormik.values.nameEn)
                 || specs.find(spec => spec.nameAr === specsFormik.values.nameAr)) {
                     return;
+            }
+            setSpecs(prev => [
+                ...prev, 
+                {
+                    ...specsFormik.values,
+                    isDefault: specs.length === 0 ? true : false
                 }
-            setSpecs(prev => [...prev, specsFormik.values]);
+            ]);
             specsFormik.resetForm();
         }
     }
 
-    const handleDeleteSpec = (title: string) => {
+    const handleToggleDefaultSpec = (nameEn: string) => {
+        setSpecs(prev => {
+            return prev.map(spec => {
+                return spec.nameEn === nameEn ? {
+                    ...spec,
+                    isDefault: true
+                } : {
+                    ...spec,
+                    isDefault: false
+                }
+            })
+        })
+    }
+
+    const handleDeleteSpec = (title: string, isDefault: boolean) => {
         const newSpecs = specs.filter(spec => spec.nameEn !== title);
+        if(isDefault && newSpecs.length > 0) {
+            return setSpecs(      
+                newSpecs.map((spec, index) => {
+                    return index === 0 ? {
+                        ...spec,
+                        isDefault: true
+                    } : {
+                        ...spec,
+                        isDefault: false
+                    }
+            }))
+        } 
         setSpecs(newSpecs);
     }
 
@@ -271,9 +305,10 @@ const FacultyFormPage = () => {
                         return  <div className="d-flex align-items-center">
                                     <button className="btn btn-falcon-danger btn-sm m-1" 
                                             type="button" 
-                                            onClick={() => {handleDeleteSpec(spec.nameEn)}}>        
+                                            onClick={() => {handleDeleteSpec(spec.nameEn, spec.isDefault)}}>        
                                         <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                                     </button>
+                                    <SwitchInput checked={spec.isDefault} onChange={() => handleToggleDefaultSpec(spec.nameEn)} />
                                 </div>
                     }} />
             </div>
