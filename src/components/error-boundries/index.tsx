@@ -26,7 +26,11 @@ class ErrorBoundary extends Component<ErrorBoundryProps,ErrorBoundryState> {
                     style={{height: "100vh"}}>
                         <div>
                             <h1>Something went wrong.</h1>
-                            <h3 className="bg-danger p-5 rounded">{this.state.errorMessage}</h3>
+                            {
+                              import.meta.env.MODE === 'development' ? 
+                              <h3 className="bg-danger p-5 rounded">{this.state.errorMessage}</h3> :
+                              ''
+                            }
                         </div>
                 </div>;
       }

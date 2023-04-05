@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState, ChangeEvent } from 'react';
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import PopUp from "../../components/popup";
-import SwitchInput from "../../components/switch-input/index.";
 
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
@@ -19,14 +18,8 @@ import StudyPlanForm from "./study-plan-form";
 const INITIAL_VALUES: NewStudyPlan = {
   nameAr:	'',
   nameEn:	'',
-  collectingSuggestionsStartAt: '',
-  collectingSuggestionsEndAt: '',
-  reviewSuggestionsStartAt: '',
-  reviewSuggestionsEndAt: '',
-  subjectsRegistrationStartAt: '',
-  subjectsRegistrationEndAt: '',
-  studyPlanStartAt: '',
-  studyPlanEndAt: ''
+  specialtyId: '',
+  studyPlanSubjects: []
 }
 
 const StudyPlansPage = () => {

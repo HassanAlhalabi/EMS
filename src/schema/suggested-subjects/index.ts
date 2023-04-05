@@ -1,6 +1,6 @@
 import { array, boolean, object, string } from "yup";
 
 export const addStudentSuggestedSubjectValidation = object({
-    subjecstIds: array().of(string()),
+    subjectIds: array(string()).min(1,'Subjects Are Required'),
     isSeniorStudent: boolean()
 })

@@ -56,6 +56,8 @@ const Drawer = () => {
             </NavLink>
             <NavLink title="Departments" faIcon="fas fa-people-roof" link="departments" />
             <NavLink title="Semesters" faIcon="fas fa-calendar" link="semesters" />
+            <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects" />
+            <NavLink title="Study Plans" faIcon="fas fa-calendar" link="study-plans" />
 
             <NavListLabel title='Students Management' />
             <NavLink title="Users" faIcon="fas fa-users" link="users" />

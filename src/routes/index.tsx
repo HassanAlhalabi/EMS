@@ -123,7 +123,7 @@ export const routes = [
             {
                 id: 'study-plan',
                 name: 'Study Plan',
-                path: '/study-plan',
+                path: '/study-plans',
                 isIndex: false,
                 childRoutes: null,
                 element: <StudyPlans />

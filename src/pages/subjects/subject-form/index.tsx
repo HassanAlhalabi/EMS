@@ -82,8 +82,7 @@ const SubjectForm = (   {formik, loading}:
     }
 
     useEffect(() => {
-        setFacultySubjects(
-            formik.values.facultySubjects)
+        setFacultySubjects(formik.values.facultySubjects)
     },[loading])
 
     const handleDeleteFacultySubject = (facultyId: string, superSubjectId: string | null) => {
@@ -117,8 +116,6 @@ const SubjectForm = (   {formik, loading}:
         ],
         []
     )
-
-    console.log(formik.values.facultySubjects)
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">

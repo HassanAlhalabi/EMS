@@ -1,7 +1,7 @@
 
 
 export interface NewSubjectSuggestion {
-    subjecstIds: string[],
+    subjectIds: string[],
     isSeniorStudent: boolean
 }
 

@@ -17,7 +17,7 @@ import { capitalize, getAxiosError } from "../../util";
 import SubjectSuggestionForm from "./subject-suggestion-form";
 
 const INITIAL_VALUES: NewSubjectSuggestion = {
-  subjecstIds: [],
+  subjectIds: [],
   isSeniorStudent: false
 }
 
@@ -35,12 +35,12 @@ const StudentSuggestedSubjectsPage = () => {
           isLoading, 
           isFetching, 
           refetch } = useQuery(
-                                            ['/StudentSuggestedSubject/GetAllStudentSuggestedSubjectsForAdmin', page, pageSize, searchKey], 
-                                            () => get(`/StudentSuggestedSubject/GetAllStudentSuggestedSubjectsForAdmin?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                            {
-                                              keepPreviousData: true,
-                                              enabled: false
-                                            });
+                                ['/StudentSuggestedSubject/GetAllStudentSuggestedSubjectsForAdmin', page, pageSize, searchKey], 
+                                () => get(`/StudentSuggestedSubject/GetAllStudentSuggestedSubjectsForAdmin?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
+                                {
+                                  keepPreviousData: true,
+                                  enabled: false
+                                });
 
   const { data: studentSuggestedSubject, 
           refetch: refetchStudentSuggestedSubject,
@@ -77,7 +77,7 @@ const StudentSuggestedSubjectsPage = () => {
   const columns = useMemo(
 		() => [
       {
-        Header: 'StudentSuggestedSubject Name',
+        Header: 'Student Suggested Subjects',
         accessor: 'name',
       },
       {
@@ -93,7 +93,7 @@ const StudentSuggestedSubjectsPage = () => {
     [data, isFetching, isLoading]
   );
 
-  const formik = useFormik({
+  const formik = useFormik<NewSubjectSuggestion>({
       initialValues: INITIAL_VALUES,
       onSubmit: () => handleStudentSuggestedSubjectAction(),
       validationSchema: addStudentSuggestedSubjectValidation
@@ -132,7 +132,7 @@ const StudentSuggestedSubjectsPage = () => {
         toggleScreenLoader();
         await mutateAsync();
         refetch();
-        toast.success(`${capitalize(action as string)} StudentSuggestedSubject Done Successfully`)
+        toast.success(`${capitalize(action as string)} Student Suggested Subjects Done Successfully`)
         reset();
       } catch(error) {
         toast.error(getAxiosError(error))
@@ -197,15 +197,16 @@ const StudentSuggestedSubjectsPage = () => {
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} StudentSuggestedSubject`}
+                title={`${action && capitalize(action as string)} Student Suggested Subjects`}
                 show={action !== null && action !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} StudentSuggestedSubject`}
+                confirmText={`${action} Student Suggested Subjects`}
                 confirmButtonVariant={
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
                 handleConfirm={handleStudentSuggestedSubjectAction}
                 actionLoading={postLoading}
+                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)

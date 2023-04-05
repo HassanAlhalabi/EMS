@@ -1,9 +1,101 @@
 import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { FormikProps } from "formik";
-import { NewStudyPlan } from "../../../types/studyPlan";
+import { NewStudyPlan } from "../../../types/study-plan";
+import { get } from "../../../http";
+import { useQuery } from "react-query";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import Table from "../../../components/table";
+import { Typeahead } from "react-bootstrap-typeahead";
+import { mapToTyphead } from "../../../util";
+import { Option } from "react-bootstrap-typeahead/types/types";
+
+interface SelectedSubject {
+    id: string,
+    name: string,
+    label: string
+}
 
 const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
+
+    const [facultyId, setFacultyId] = useState<string>();
+
+    const { data: faculties } = useQuery(
+        ['/Faculty/GetDropDownFaculties'], 
+        () => get(`/Faculty/GetDropDownFaculties`));
+
+    const { data: specialities, refetch: refetchSpecialities } = useQuery(
+        ['/Specialty/GetDropDownSpecialties', facultyId], 
+        () => get(`/Specialty/GetDropDownSpecialties/${facultyId}`),
+        {
+            enabled: false
+        });
+   
+    const { data: subjects } = useQuery(
+        ['/Subject/GetDropDownSubjects'], 
+        () => get(`/Subject/GetDropDownSubjects`));
+
+    useEffect(() => {
+        if(facultyId) {
+            refetchSpecialities();
+        }
+    },[facultyId])
+
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
+
+   const handleSelectSubject = (selectedSubject: Option[]) => {
+    
+        if(selectedSubject.length === 0) return;
+
+        // Check If Object Already Exists
+        const objectExits = selectedSubjects.find(item => item.id === selectedSubject[0].id);
+
+        if(objectExits) return;      
+
+        setSelectedSubjects(prev => ([
+            ...prev,
+            selectedSubject[0]
+        ]))
+        
+        formik.setValues({
+            ...formik.values,
+            studyPlanSubjects: [
+                ...formik.values.studyPlanSubjects,
+                selectedSubject[0].id
+            ]
+        })
+    }
+    
+
+    const handleDeleteSubject = (subjectId: string) => {
+        const newSubjects = formik.values.studyPlanSubjects.filter(item => {
+            return (item !== subjectId) 
+        })
+        const newSubjectsForTable = selectedSubjects?.filter(item => {
+            return (item.id !== subjectId) 
+        })
+        formik.setValues({
+            ...formik.values,
+            studyPlanSubjects: newSubjects
+        })
+        setSelectedSubjects(newSubjectsForTable)
+    }
+
+    console.log(formik.isValid, formik.values, formik.errors)
+
+   const columns = useMemo(
+        () => [
+            {
+                Header: 'Subject Name',
+                accessor: 'name',
+            },
+            {
+                Header: 'Options',
+                accessor: 'options',
+            }
+        ],
+        []
+    )
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -38,82 +130,84 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                     </Feedback>
                 </Form.Group>
             </Col>
-        </Row>
+        </Row> 
         <Row>
             <Col>
                 <Form.Group className="mb-3">
-                    <Form.Label htmlFor="collectingSuggestionsStartAt">
-                        Collect Suggestions Starts At:
+                    <Form.Label htmlFor="facultyId">
+                        Faculties:
                     </Form.Label>
-                    <Form.Control
+                    <Form.Select
                         size="lg"
-                        required
-                        type="date" 
-                        id="collectingSuggestionsStartAt"
-                        name="collectingSuggestionsStartAt"
-                        value={formik.values.collectingSuggestionsStartAt.split('T')[0]} 
-                        onChange={formik.handleChange} />
-                    <Feedback type="invalid">
-                        {formik.errors.collectingSuggestionsStartAt as string}
-                    </Feedback>
+                        id="facultyId"
+                        name="facultyId"
+                        value={facultyId} 
+                        onChange={(e: ChangeEvent<HTMLSelectElement>) => { 
+                            setFacultyId(e.target.value);
+                        }}>
+                            <option key="no-value" value="" disabled></option>
+                        {
+                            faculties?.data.map((faculty: {id: string, name: string}) => 
+                                <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
+                            )
+                        }
+                    </Form.Select>            
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group className="mb-3">
-                    <Form.Label htmlFor="collectingSuggestionsEndAt">
-                        Collect Suggestions Ends At:
+                    <Form.Label htmlFor="specialtyId">
+                        Speciality:             
                     </Form.Label>
-                    <Form.Control
-                        id="collectingSuggestionsEndAt"
-                        size="lg"
+                    <Form.Select
                         required
-                        type="date" 
-                        name="collectingSuggestionsEndAt"
-                        value={formik.values.collectingSuggestionsEndAt.split('T')[0]} 
-                        onChange={formik.handleChange} />
-                    <Feedback type="invalid">
-                        {formik.errors.collectingSuggestionsEndAt as string}
-                    </Feedback>
-                </Form.Group>
-            </Col>
-        </Row>   
-        <Row>
-            <Col>
-                <Form.Group className="mb-3">
-                    <Form.Label htmlFor="reviewSuggestionsStartAt">
-                        Review Suggestions Starts At:
-                    </Form.Label>
-                    <Form.Control
+                        disabled={!Boolean(facultyId)}
                         size="lg"
-                        required
-                        type="date" 
-                        name="reviewSuggestionsStartAt"
-                        value={formik.values.reviewSuggestionsStartAt.split('T')[0]} 
-                        onChange={formik.handleChange} />
+                        id="specialtyId"
+                        name="specialtyId"
+                        value={formik.values.specialtyId} 
+                        onChange={formik.handleChange}>
+                            <option key="no-value" value=""></option>
+                        {
+                            specialities?.data.map((speciality: {id: string, name: string}) => 
+                                <option key={speciality.id} value={speciality.id}>{speciality.name}</option>
+                            )
+                        }
+                    </Form.Select>  
                     <Feedback type="invalid">
-                        {formik.errors.reviewSuggestionsStartAt as string}
-                    </Feedback>
-                </Form.Group>
-            </Col>
-            <Col>
-                <Form.Group className="mb-3">
-                    <Form.Label htmlFor="reviewSuggestionsEndAt">
-                        Review Suggestions Ends At:
-                    </Form.Label>
-                    <Form.Control
-                        id="reviewSuggestionsEndAt"
-                        size="lg"
-                        required
-                        type="date" 
-                        name="reviewSuggestionsEndAt"
-                        value={formik.values.reviewSuggestionsEndAt.split('T')[0]} 
-                        onChange={formik.handleChange} />
-                    <Feedback type="invalid">
-                        {formik.errors.reviewSuggestionsEndAt as string}
-                    </Feedback>
+                        {formik.errors.specialtyId as string}
+                    </Feedback>          
                 </Form.Group>
             </Col>
         </Row>
+        <Row>
+            <Form.Group className="mb-3">
+                <Form.Label>
+                    Choose Subjects:
+                </Form.Label>
+                <Typeahead
+                    id="studyPlanSubjects"
+                    size="lg"
+                    className={formik.values.studyPlanSubjects.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
+                    placeholder='Search Subjects'
+                    onChange={handleSelectSubject}
+                    options={subjects ? mapToTyphead(subjects.data) : []}
+                    isInvalid={formik.values.studyPlanSubjects.length === 0 && formik.dirty}
+                    isValid={formik.values.studyPlanSubjects.length !== 0 && formik.dirty}
+                />
+                <Feedback type="invalid">
+                    {formik.errors.studyPlanSubjects as string}
+                </Feedback>
+            </Form.Group> 
+        </Row> 
+        <Table<SelectedSubject>  
+            columns={columns} 
+            data={selectedSubjects}
+            renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 
+            type="button" 
+            onClick={() => handleDeleteSubject(data.id)}>        
+                    <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                </button>}  />
     </Form>
   )
 }

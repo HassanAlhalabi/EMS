@@ -6,9 +6,8 @@ export interface StudyPlan {
   }
 
 export interface NewStudyPlan {
-    titleAr: string,
-    titleEn: string,
-    image: string,
-    superStudyPlanId: string,
-    facultyStudyPlans: string[]
+    nameAr: string,
+    nameEn: string,
+    specialtyId: string,
+    studyPlanSubjects: string[]
 }
