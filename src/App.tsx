@@ -1,5 +1,5 @@
 // import './assets/css/theme-rtl.min.css';
-import { Suspense, useContext } from 'react';
+import { Suspense } from 'react';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import './assets/css/theme.min.css';
 import "react-toastify/dist/ReactToastify.css";
@@ -10,6 +10,7 @@ import { IRoute } from './types/routes';
 import { LayoutContext } from './contexts/layout-context';
 import { ToastContainer } from 'react-toastify';
 import { useScreenLoader } from './hooks/useScreenLoader';
+import { withProfiler } from '@sentry/react';
 
 const renderRoutes = (routes: IRoute[]) => {
   return routes.map(route => {
@@ -41,4 +42,4 @@ function App() {
   )
 }
 
-export default App
+export default withProfiler(App)

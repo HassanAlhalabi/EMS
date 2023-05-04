@@ -52,15 +52,15 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
         headers: {
             'Authorization': 'Bearer '+getCookie("EMSUser").token
         }
-    }));
+    }).then(res => res.json()));
 
     const { data: specialities, refetch: refetchSpecialities } = useQuery(
         ['/Speciality/GetDropDownSpecialities',facultyId], 
-    () => fetch(`http://universitysys-001-site1.gtempurl.com/api/Speciality/GetDropDownSpecialities/${facultyId}`,{
+    () => fetch(`http://universitysys-001-site1.gtempurl.com/api/Specialty/GetDropDownSpecialties/${facultyId}`,{
         headers: {
             'Authorization': 'Bearer '+getCookie("EMSUser").token
         }
-    }),{
+    }).then(res => res.json()),{
         enabled: false
     });
 
@@ -69,6 +69,8 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
             refetchSpecialities()
         }
     },[facultyId])
+
+    console.log(formik.errors)
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">

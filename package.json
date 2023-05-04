@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sentry/react": "^7.50.0",
     "axios": "^1.3.3",
     "formik": "^2.2.9",
     "js-cookie": "^3.0.1",

@@ -145,7 +145,8 @@ const UsersPage = () => {
         } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
               {
                 ...formik.values,
-                roleId:formik.values.type === 'Student' ? null : formik.values.roleId  ,
+                roleId:formik.values.type === 'Student' ? null : formik.values.roleId,
+                contract:formik.values.type === 'Student' ? null : formik.values.contract 
               }) :
                               action === ACTION_TYPES.update ? 
                               usePut('/User/PutUser', 
