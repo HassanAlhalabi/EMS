@@ -10,10 +10,14 @@ export const addUserValidation = object({
     phoneNumber: string().required('Phone Number Is Required').length(13, 'Phone Number Must Be 13 Numbers').matches(phoneRegExp, 'Phone number is not valid'),
     type: string().required('User Type Is Required'),
     specialtyId: string().nullable(),
-    contract: object().shape({
-        startAt: date().required('Starting Date Is Required'),
-        endAt: date().required('End Date Is Required'),
-        salary: number().required('Salary Is Required'),
-        workDays: array().of(number())
-    }).required()
+    contract: object().when('type', {
+        is: 'Student', 
+        then: object().nullable(),
+        otherwise: object().shape({
+            startAt: date().required('Starting Date Is Required'),
+            endAt: date().required('End Date Is Required'),
+            salary: number().required('Salary Is Required'),
+            workDays: array().of(number())
+        })
+    })
 })

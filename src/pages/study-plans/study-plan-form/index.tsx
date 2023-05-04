@@ -4,7 +4,7 @@ import { FormikProps } from "formik";
 import { NewStudyPlan } from "../../../types/study-plan";
 import { get } from "../../../http";
 import { useQuery } from "react-query";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Table from "../../../components/table";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { mapToTyphead } from "../../../util";
@@ -18,15 +18,13 @@ interface SelectedSubject {
 
 const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
 
-    const [facultyId, setFacultyId] = useState<string>();
-
     const { data: faculties } = useQuery(
         ['/Faculty/GetDropDownFaculties'], 
         () => get(`/Faculty/GetDropDownFaculties`));
 
     const { data: specialities, refetch: refetchSpecialities } = useQuery(
-        ['/Specialty/GetDropDownSpecialties', facultyId], 
-        () => get(`/Specialty/GetDropDownSpecialties/${facultyId}`),
+        ['/Specialty/GetDropDownSpecialties', formik.values.facultyId], 
+        () => get(`/Specialty/GetDropDownSpecialties/${formik.values.facultyId}`),
         {
             enabled: false
         });
@@ -36,10 +34,10 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
         () => get(`/Subject/GetDropDownSubjects`));
 
     useEffect(() => {
-        if(facultyId) {
+        if(formik.values.facultyId) {
             refetchSpecialities();
         }
-    },[facultyId])
+    },[formik.values.facultyId])
 
     const [selectedSubjects, setSelectedSubjects] = useState([]);
 
@@ -80,8 +78,6 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
         })
         setSelectedSubjects(newSubjectsForTable)
     }
-
-    console.log(formik.isValid, formik.values, formik.errors)
 
    const columns = useMemo(
         () => [
@@ -138,20 +134,22 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                         Faculties:
                     </Form.Label>
                     <Form.Select
+                        required
                         size="lg"
                         id="facultyId"
                         name="facultyId"
-                        value={facultyId} 
-                        onChange={(e: ChangeEvent<HTMLSelectElement>) => { 
-                            setFacultyId(e.target.value);
-                        }}>
-                            <option key="no-value" value="" disabled></option>
+                        value={formik.values.facultyId} 
+                        onChange={formik.handleChange}>
+                            <option key="no-value" value=""></option>
                         {
                             faculties?.data.map((faculty: {id: string, name: string}) => 
                                 <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
                             )
                         }
-                    </Form.Select>            
+                    </Form.Select>   
+                    <Feedback type="invalid">
+                        {formik.errors.facultyId as string}
+                    </Feedback>          
                 </Form.Group>
             </Col>
             <Col>
@@ -161,7 +159,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                     </Form.Label>
                     <Form.Select
                         required
-                        disabled={!Boolean(facultyId)}
+                        disabled={!Boolean(formik.values.facultyId)}
                         size="lg"
                         id="specialtyId"
                         name="specialtyId"
