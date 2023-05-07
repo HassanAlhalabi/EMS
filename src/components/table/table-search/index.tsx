@@ -15,10 +15,11 @@ const TableSearch = ({
       <Form.Control 
         type="search" 
         name="search" 
-        className="ms-1 me-1" 
+        className="ms-1 me-1 fit-content" 
         placeholder="Search..."
         value={searchKey}
-        onChange={handleSearchChange} />
+        onChange={handleSearchChange}
+        style={{maxWidth: 'fit-content'}} />
     </div>
   )
 }

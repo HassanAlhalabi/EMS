@@ -148,8 +148,8 @@ const Table = <T extends unknown>({ 	isBulk,
 	return (
 		<>
 
-			<div className="d-flex align-items-center justify-content-between mb-2">
-					<div className="d-flex align-items-center justify-content-between">
+			<div className="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+					<div className="d-flex align-items-center justify-content-between flex-wrap">
 						{
 							pagination &&
 							<TablePagination
