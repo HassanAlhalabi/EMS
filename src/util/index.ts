@@ -3,6 +3,34 @@ import { AxiosError } from 'axios';
 import jwt_decode from "jwt-decode";
 import { IDecodedToken } from "../types/token";
 
+declare global {
+    interface Array<T> {
+        hasAllValues(listOfValues: Array<T>): boolean;
+        hasSomeValues(listOfValues: Array<T>): boolean;
+    }
+}
+
+Array.prototype.hasAllValues = function(this, listOfValues) {
+    let isAllIn = true;
+    listOfValues.forEach(value => {
+        if(!this.includes(value)) {
+            isAllIn = false;
+        }
+    })
+    return isAllIn;
+}
+
+Array.prototype.hasSomeValues = function(this, listOfValues) {
+    let isSomeIn = false;
+    listOfValues.forEach(value => {
+        if(this.includes(value)) {
+            isSomeIn = true;
+        }
+    })
+    return isSomeIn;
+}
+
+
 export const setCookie = <T>(key: string, data: T, time?: number) => {
     if(time) {
         return Cookies.set(key, JSON.stringify(data), { expires: time });
@@ -39,6 +67,7 @@ export const getAxiosError = (error: unknown) => {
 
 export const getClaims = () => {
     let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
+    console.log(decodedToken.Claims)
     return decodedToken.Claims.map((claim: string) => {
         return claim.substring(claim.indexOf('.') + 1)
     });
@@ -60,9 +89,11 @@ export const getClaimsMap = () => {
     return claimsMap;
 }
 
-export const hasPermission = (scope: string) => {
+export const hasPermission = (scope: string | string[]) => {
     const claims = getClaims();
-    return claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
+    return  Array.isArray(scope) ? 
+                    claims.hasSomeValues(scope)
+                :   claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
 }
 
 export const capitalize = (word: string) => {

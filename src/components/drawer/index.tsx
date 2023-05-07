@@ -6,6 +6,7 @@ import { LayoutContext } from '../../contexts/layout-context';
 import NavList from '../nav-list';
 import NavLink from '../nav-list/nav-link';
 import NavListLabel from '../nav-list/nav-list-label';
+import PermissionsGate from '../permissions-gate';
 
 const Drawer = () => {
 
@@ -34,40 +35,40 @@ const Drawer = () => {
 
       <div className={`collapse navbar-collapse ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
-            {/* {
-              drawerMenu.map(menuItem => ({
-
-              }))
-            } */}
 
             <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />
+            <PermissionsGate scope={['User.View','Role.View']}>
+              <NavListLabel title='Users Management' />
+            </PermissionsGate>
+            <NavLink title="Users" faIcon="fas fa-users" link="users" scope='User.Insert' />
+            <NavLink title="Roles" faIcon="fas fa-user" link="roles" scope='Role.Insert'/>
 
-            <NavListLabel title='Users Management' />
-            <NavLink title="Users" faIcon="fas fa-users" link="users" />
-            <NavLink title="Roles" faIcon="fas fa-user" link="roles" />
-
-            <NavListLabel title='University Management' />
-            <NavLink title="Faculties" faIcon="fas fa-university" link="faculties" />
-            <NavLink title="Subjects" faIcon="fas fa-chalkboard-teacher" link="subjects" />
-            <NavLink title="Subjects Types" faIcon="fas fa-book-open" link="subjects-types" />
-            <NavLink title="Library" faIcon="fas fa-archive">
-              <NavLink title="Books" faIcon="fa fa-book" link="books" />
-              <NavLink title="Categories" faIcon="fas fa-list-alt" link="books-categories" />
+            <NavListLabel title='University Management' 
+                          scope={['Faculty.View',
+                                  'Subject.View',
+                                  'SubjectType.View',
+                                  'Book.View',
+                                  'Category.View',
+                                  'Department.View',
+                                  'Semester.View',
+                                  'StudentSuggestedSubject.View',
+                                  'StudyPlan.View']} />
+            <NavLink title="Faculties" faIcon="fas fa-university" link="faculties" scope='Faculty.View' />
+            <NavLink title="Subjects" faIcon="fas fa-chalkboard-teacher" link="subjects" scope='Subject.View' />
+            <NavLink title="Subjects Types" faIcon="fas fa-book-open" link="subjects-types" scope='SubjectType.View' />
+            <NavLink title="Library" faIcon="fas fa-archive" scope={['Book.View','Category.View']}>
+              <NavLink title="Books" faIcon="fa fa-book" link="books" scope='Book.View' />
+              <NavLink title="Categories" faIcon="fas fa-list-alt" link="books-categories" scope='Category.View' />
             </NavLink>
-            <NavLink title="Departments" faIcon="fas fa-people-roof" link="departments" />
-            <NavLink title="Semesters" faIcon="fas fa-calendar" link="semesters" />
-            <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects" />
-            <NavLink title="Study Plans" faIcon="fas fa-calendar" link="study-plans" />
-
-            <NavListLabel title='Students Management' />
-            <NavLink title="Users" faIcon="fas fa-users" link="users" />
-            <NavLink title="Roles" faIcon="fas fa-user" link="roles" />
-            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
+            <NavLink title="Departments" faIcon="fas fa-people-roof" link="departments" scope='Department.View' />
+            <NavLink title="Semesters" faIcon="fas fa-calendar" link="semesters" scope='Semester.View' />
+            <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects" scope='StudentSuggestedSubject.View' />
+            <NavLink title="Study Plans" faIcon="fas fa-calendar" link="study-plans" scope='StudyPlan.View' />
 
             <NavListLabel title='Transport Management' />
-            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
-            <NavLink title="Chat" faIcon="fas fa-comments" link="#" />
-            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" />
+            {/* <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" scope='' />
+            <NavLink title="Chat" faIcon="fas fa-comments" link="#" scope='' />
+            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" scope='' /> */}
 
         </NavList>
       </div>

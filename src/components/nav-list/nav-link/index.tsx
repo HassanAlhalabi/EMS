@@ -1,20 +1,24 @@
 import { Children, ReactNode, useState } from "react";
-import { Collapse, NavItem } from "react-bootstrap";
+import { Collapse } from "react-bootstrap";
 import { Link, To } from "react-router-dom";
+import { hasPermission } from "../../../util";
 
 interface INavLink {
     faIcon: string,
     title: string,
     link?: To,
+    scope?: string | string[],
     children?: ReactNode,
 }
 
-const NavLink = ({faIcon,title,link, children}:INavLink) => {
+const NavLink = ({faIcon,title,link,scope, children}:INavLink) => {
 
     const [expanded, setExpanded] = useState(false);
     const isParent = Children.count(children) > 0;
 
     const toggleMenuList = () => setExpanded(prev => !prev);
+
+    if(scope && !hasPermission(scope)) return null;
 
     return isParent ? (
         <li className="nav-item">
