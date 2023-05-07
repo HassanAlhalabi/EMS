@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../util";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { Role } from "../../types/roles";
+import PermissionsGate from "../../components/permissions-gate";
 
 const INITIAL_VALUES: {name: string, roleClaims: string[]} = {
     name: '',
@@ -160,33 +161,37 @@ const RolesPage = () => {
                     setSearchKey={setSearchKey}
                     pagination={data?.data.paginationInfo}
                     renderTableOptions={() => {
-                    return  <>
+                    return  <PermissionsGate scope={'Role.Insert'}>
                                 <button 	className="btn btn-falcon-success btn-sm" 
                                                         type="button" 
                                                         onClick={() => setAction(ACTION_TYPES.add)}>        
                                     <span className="fas fa-plus"></span>
                                     <span className="ms-1">New</span>
                                 </button>
-                            </>
+                            </PermissionsGate>
                     }} 
                     renderRowActions={(data) => {
                         return  <>
-                                    <button className="btn btn-falcon-info btn-sm m-1" 
-                                            type="button" 
-                                            onClick={() => {
-                                                    setAction(ACTION_TYPES.update)
-                                                    setRoleId(data.id);
-                                            }}>        
-                                        <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
-                                    <button className="btn btn-falcon-danger btn-sm m-1" 
-                                            type="button" 
-                                            onClick={() => {
-                                                    setAction(ACTION_TYPES.delete);
-                                                    setRoleId(data.id);
-                                            }}>        
-                                        <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
+                                    <PermissionsGate scope={'Role.Edit'}>
+                                        <button className="btn btn-falcon-info btn-sm m-1" 
+                                                type="button" 
+                                                onClick={() => {
+                                                        setAction(ACTION_TYPES.update)
+                                                        setRoleId(data.id);
+                                                }}>        
+                                            <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
+                                        </button>
+                                    </PermissionsGate>
+                                    <PermissionsGate scope={'Role.Delete'}>
+                                        <button className="btn btn-falcon-danger btn-sm m-1" 
+                                                type="button" 
+                                                onClick={() => {
+                                                        setAction(ACTION_TYPES.delete);
+                                                        setRoleId(data.id);
+                                                }}>        
+                                            <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                                        </button>
+                                    </PermissionsGate>
                                 </>
                     }}
                 />

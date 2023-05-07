@@ -216,26 +216,32 @@ const UsersPage = () => {
                                     }} 
               renderRowActions={(user) => {
                   return  <div className="d-flex align-items-center">
-                            <button className="btn btn-falcon-info btn-sm m-1" 
-                                    type="button" 
-                                    onClick={() => {
-                                            setAction(ACTION_TYPES.update)
-                                            setUserId(user.id);
-                                    }}>        
-                                <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                            </button>
-                            <button className="btn btn-falcon-danger btn-sm m-1" 
-                                    type="button" 
-                                    onClick={() => {
-                                            setAction(ACTION_TYPES.delete);
-                                            setUserId(user.id);
-                                    }}>        
-                                <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                            </button>
-                            <SwitchInput 
-                              checked={user.isActive} 
-                              value={user.id} 
-                              onChange={handleToggleUser} />
+                            <PermissionsGate scope={'User.Edit'}>
+                              <button className="btn btn-falcon-info btn-sm m-1" 
+                                      type="button" 
+                                      onClick={() => {
+                                              setAction(ACTION_TYPES.update)
+                                              setUserId(user.id);
+                                      }}>        
+                                  <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
+                              </button>
+                            </PermissionsGate>
+                            <PermissionsGate scope={'User.Delete'}>
+                              <button className="btn btn-falcon-danger btn-sm m-1" 
+                                      type="button" 
+                                      onClick={() => {
+                                              setAction(ACTION_TYPES.delete);
+                                              setUserId(user.id);
+                                      }}>        
+                                  <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                              </button>
+                            </PermissionsGate>
+                            <PermissionsGate scope={'User.Edit'}>
+                              <SwitchInput 
+                                checked={user.isActive} 
+                                value={user.id} 
+                                onChange={handleToggleUser} />
+                              </PermissionsGate>
                           </div>
               }}/>
 
