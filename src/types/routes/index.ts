@@ -5,5 +5,6 @@ export interface IRoute {
     path: string,
     isIndex: boolean,
     childRoutes: IRoute[] | null,
-    element: JSX.Element
+    element: JSX.Element,
+    hasPermission: boolean
 }

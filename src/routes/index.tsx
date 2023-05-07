@@ -1,5 +1,6 @@
 import { lazy } from "react"
 import ProtectedRoute from "../components/protected-route";
+import { hasPermission } from "../util";
 
 const Main              = lazy(() => import('../pages/main'));
 const SignIn            = lazy(() => import('../pages/auth/sign-in'));
@@ -16,6 +17,7 @@ const Departments       = lazy(() => import('../pages/departments'));
 const Semesters         = lazy(() => import('../pages/semesters'));
 const SuggestedSubjects = lazy(() => import('../pages/suggested-subjects'));
 const StudyPlans        = lazy(() => import('../pages/study-plans'));
+const Page404           = lazy(() => import('../pages/404'));
 
 export const routes = [
     {
@@ -30,7 +32,8 @@ export const routes = [
                 path: '/',
                 isIndex: true,
                 childRoutes: null,
-                element: <Dashboard />
+                element: <Dashboard />,
+                hasPermission: true
             },
             {
                 id: 'users',
@@ -38,7 +41,8 @@ export const routes = [
                 path: '/users',
                 isIndex: false,
                 childRoutes: null,
-                element: <Users />
+                element: <Users />,
+                hasPermission: hasPermission('User.View')
             },
             {
                 id: 'roles',
@@ -46,7 +50,8 @@ export const routes = [
                 path: '/roles',
                 isIndex: false,
                 childRoutes: null,
-                element: <Roles />
+                element: <Roles />,
+                hasPermission: hasPermission('Role.View')
             },
             {
                 id: 'faculties',
@@ -54,7 +59,8 @@ export const routes = [
                 path: '/faculties',
                 isIndex: false,
                 childRoutes: null,
-                element: <Faculties />
+                element: <Faculties />,
+                hasPermission: hasPermission('Faculty.View')
             },
             {
                 id: 'faculty-form',
@@ -62,7 +68,8 @@ export const routes = [
                 path: '/faculty-form/:id?',
                 isIndex: false,
                 childRoutes: null,
-                element: <FacultyForm />
+                element: <FacultyForm />,
+                hasPermission: hasPermission('Faculty.View')
             },
             {
                 id: 'subjects',
@@ -70,7 +77,8 @@ export const routes = [
                 path: '/subjects',
                 isIndex: false,
                 childRoutes: null,
-                element: <Subjects />
+                element: <Subjects />,
+                hasPermission: hasPermission('Subject.View')
             },
             {
                 id: 'subjects-types',
@@ -78,7 +86,8 @@ export const routes = [
                 path: '/subjects-types',
                 isIndex: false,
                 childRoutes: null,
-                element: <SubjectsTypes />
+                element: <SubjectsTypes />,
+                hasPermission: hasPermission('SubjectType.View')
             },
             {
                 id: 'books',
@@ -86,7 +95,8 @@ export const routes = [
                 path: '/books',
                 isIndex: false,
                 childRoutes: null,
-                element: <Books />
+                element: <Books />,
+                hasPermission: hasPermission('Book.View')
             },
             {
                 id: 'books-categories',
@@ -94,7 +104,8 @@ export const routes = [
                 path: '/books-categories',
                 isIndex: false,
                 childRoutes: null,
-                element: <BooksCategories />
+                element: <BooksCategories />,
+                hasPermission:  hasPermission('Category.View')
             },
             {
                 id: 'departments',
@@ -102,7 +113,8 @@ export const routes = [
                 path: '/departments',
                 isIndex: false,
                 childRoutes: null,
-                element: <Departments />
+                element: <Departments />,
+                hasPermission: hasPermission('Department.View')
             },
             {
                 id: 'semesters',
@@ -110,7 +122,8 @@ export const routes = [
                 path: '/semesters',
                 isIndex: false,
                 childRoutes: null,
-                element: <Semesters />
+                element: <Semesters />,
+                hasPermission: hasPermission('Semester.View')
             },
             {
                 id: 'suggested-subjects',
@@ -118,7 +131,8 @@ export const routes = [
                 path: '/suggested-subjects',
                 isIndex: false,
                 childRoutes: null,
-                element: <SuggestedSubjects />
+                element: <SuggestedSubjects />,
+                hasPermission: hasPermission('StudentSuggestedSubject.View')
             },
             {
                 id: 'study-plan',
@@ -126,10 +140,12 @@ export const routes = [
                 path: '/study-plans',
                 isIndex: false,
                 childRoutes: null,
-                element: <StudyPlans />
+                element: <StudyPlans />,
+                hasPermission: hasPermission('StudyPlan.View')
             }
         ],
-        element: <ProtectedRoute><Main /></ProtectedRoute>
+        element: <ProtectedRoute><Main /></ProtectedRoute>,
+        hasPermission: true
     },
     {
         id: 'main',
@@ -137,7 +153,8 @@ export const routes = [
         path: '/',
         isIndex: true,
         childRoutes: null,
-        element: <ProtectedRoute><Main /></ProtectedRoute>
+        element: <ProtectedRoute><Main /></ProtectedRoute>,
+        hasPermission: true
     },
     {
         id: 'sign-in',
@@ -145,7 +162,8 @@ export const routes = [
         path: '/sign-in',
         isIndex: false,
         childRoutes: null,
-        element: <SignIn />
+        element: <SignIn />,
+        hasPermission: true
     },
     {
         id: 'not-found',
@@ -153,7 +171,8 @@ export const routes = [
         path: '*',
         isIndex: false,
         childRoutes: null,
-        element: <Main />
+        element: <Page404 />,
+        hasPermission: true
     }
 ]
 

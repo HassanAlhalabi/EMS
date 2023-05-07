@@ -37,10 +37,17 @@ export const getAxiosError = (error: unknown) => {
     }
 }
 
+export const getClaims = () => {
+    let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
+    return decodedToken.Claims.map((claim: string) => {
+        return claim.substring(claim.indexOf('.') + 1)
+    });
+}
+
 export const getClaimsMap = () => {
-    var decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
+    let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
     const claimsMap = new Map();
-    decodedToken.Claims.map((claim: string) => {
+    decodedToken.Claims.forEach((claim: string) => {
         const claimTitle = claim.split('.')[1];
         const claimType = claim.split('.')[2];
         if(claimsMap.has(claimTitle)) {
@@ -51,6 +58,11 @@ export const getClaimsMap = () => {
         return claimsMap.set(claimTitle, [ claimType ])
     });
     return claimsMap;
+}
+
+export const hasPermission = (scope: string) => {
+    const claims = getClaims();
+    return claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
 }
 
 export const capitalize = (word: string) => {

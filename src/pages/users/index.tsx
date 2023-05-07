@@ -15,6 +15,7 @@ import { addUserValidation } from "../../schema/user";
 import { NewUser, User } from "../../types/users";
 import { capitalize, getAxiosError } from "../../util";
 import UserForm from "./user-form";
+import PermissionsGate from "../../components/permissions-gate";
 
 const INITIAL_VALUES: NewUser = {
   roleId: '',
@@ -46,12 +47,13 @@ const UsersPage = () => {
           isLoading, 
           isFetching, 
           refetch } = useQuery(
-                                            ['/User/GetAllUsers', page, pageSize, searchKey], 
-                                            () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                            {
-                                              keepPreviousData: true,
-                                              enabled: false
-                                            });
+                                ['/User/GetAllUsers', page, pageSize, searchKey], 
+                                () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
+                                {
+                                  keepPreviousData: true,
+                                  enabled: false
+                                }
+                              );
 
   const { data: user, 
           refetch: refetchUser,
@@ -70,7 +72,7 @@ const UsersPage = () => {
     if(userId && action === ACTION_TYPES.toggle) {
       handleUserAction();
     }
-    () => setUserId(null);
+    return () => setUserId(null);
   },[userId]);
 
   useEffect(() => {
@@ -147,15 +149,14 @@ const UsersPage = () => {
                 ...formik.values,
                 roleId:formik.values.type === 'Student' ? null : formik.values.roleId,
                 contract:formik.values.type === 'Student' ? null : formik.values.contract 
-              }) :
-                              action === ACTION_TYPES.update ? 
-                              usePut('/User/PutUser', 
-      {
-        id: userId,
-       ...formik.values
-      }) : action === ACTION_TYPES.delete ? 
-                useDelete('/User',userId as string)
-             :  usePut(`/User/ToggleActivation/${userId}`);
+              }) : action === ACTION_TYPES.update ? 
+                     usePut('/User/PutUser', 
+          {
+            id: userId,
+          ...formik.values
+          }) : action === ACTION_TYPES.delete ? 
+                    useDelete('/User',userId as string)
+                :  usePut(`/User/ToggleActivation/${userId}`);
 
   const handleUserAction = async () => {
 
@@ -202,12 +203,15 @@ const UsersPage = () => {
               setSearchKey={setSearchKey}
               fetchData={refetch} 
               renderTableOptions={() => {
-                                    return  <button 	className="btn btn-falcon-success btn-sm" 
-                                              type="button" 
-                                              onClick={() => setAction(ACTION_TYPES.add)}>        
-                                                <span className="fas fa-plus"></span>
-                                                <span className="ms-1">New</span>
-                                            </button>
+                                    return  <PermissionsGate scope={'User.Insert'}>
+                                              <button className="btn btn-falcon-success btn-sm" 
+                                                type="button" 
+                                                onClick={() => setAction(ACTION_TYPES.add)}>        
+                                                  <span className="fas fa-plus"></span>
+                                                  <span className="ms-1">New</span>
+                                              </button>
+                                            </PermissionsGate>
+                                           
                                            
                                     }} 
               renderRowActions={(user) => {

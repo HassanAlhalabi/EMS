@@ -48,7 +48,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
     const { data: faculties } = useQuery(
         ['/Faculty/GetDropDownFaculties'], 
-    () => fetch(`http://universitysys-001-site1.gtempurl.com/api/Faculty/GetDropDownFaculties`,{
+    () => fetch(`http://http://alimakhlouf-002-site2.btempurl.com/api/Faculty/GetDropDownFaculties`,{
         headers: {
             'Authorization': 'Bearer '+getCookie("EMSUser").token
         }
@@ -56,7 +56,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
     const { data: specialities, refetch: refetchSpecialities } = useQuery(
         ['/Speciality/GetDropDownSpecialities',facultyId], 
-    () => fetch(`http://universitysys-001-site1.gtempurl.com/api/Specialty/GetDropDownSpecialties/${facultyId}`,{
+    () => fetch(`http://http://alimakhlouf-002-site2.btempurl.com/api/Specialty/GetDropDownSpecialties/${facultyId}`,{
         headers: {
             'Authorization': 'Bearer '+getCookie("EMSUser").token
         }
@@ -69,8 +69,6 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
             refetchSpecialities()
         }
     },[facultyId])
-
-    console.log(formik.errors)
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
