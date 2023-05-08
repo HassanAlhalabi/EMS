@@ -66,11 +66,13 @@ export const getAxiosError = (error: unknown) => {
 }
 
 export const getClaims = () => {
-    let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
-    console.log(decodedToken.Claims)
-    return decodedToken.Claims.map((claim: string) => {
-        return claim.substring(claim.indexOf('.') + 1)
-    });
+    if(getCookie('EMSUser')) {
+        let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
+        return decodedToken.Claims.map((claim: string) => {
+            return claim.substring(claim.indexOf('.') + 1)
+        });
+    }
+    return [];
 }
 
 export const getClaimsMap = () => {
@@ -92,8 +94,8 @@ export const getClaimsMap = () => {
 export const hasPermission = (scope: string | string[]) => {
     const claims = getClaims();
     return  Array.isArray(scope) ? 
-                    claims.hasSomeValues(scope)
-                :   claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
+                claims.hasSomeValues(scope)
+            :   claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
 }
 
 export const capitalize = (word: string) => {

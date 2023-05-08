@@ -19,7 +19,7 @@ const SuggestedSubjects = lazy(() => import('../pages/suggested-subjects'));
 const StudyPlans        = lazy(() => import('../pages/study-plans'));
 const Page404           = lazy(() => import('../pages/404'));
 
-export const routes = [
+export const getRoutes = () => ([
     {
         id: 'main',
         name: 'Main',
@@ -174,7 +174,7 @@ export const routes = [
         element: <Page404 />,
         hasPermission: true
     }
-]
+])
 
 export const drawerUsersMenu = [
     [
