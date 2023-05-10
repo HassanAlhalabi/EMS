@@ -24,11 +24,11 @@ const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
         if(categoryExists) return;
 
         formik.setFieldValue('categoryId',[...formik.values.categoryId, value])
-        setSelectedCategories((prev: SetStateAction<SelectedCategory[]>) => {
+        setSelectedCategories((prev) => {
             return [...prev, 
                     {   
                         id: value,
-                        name: event.target.options[event.target.selectedIndex].textContent,
+                        name: event.target.options[event.target.selectedIndex].textContent as string,
                     }]
         })
 

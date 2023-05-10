@@ -8,13 +8,8 @@ import { useEffect, useMemo, useState } from "react";
 import Table from "../../../components/table";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { mapToTyphead } from "../../../util";
+import { SelectedOption } from "../../../types";
 import { Option } from "react-bootstrap-typeahead/types/types";
-
-interface SelectedSubject {
-    id: string,
-    name: string,
-    label: string
-}
 
 const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
 
@@ -39,27 +34,27 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
         }
     },[formik.values.facultyId])
 
-    const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState<SelectedOption[]>([]);
 
-   const handleSelectSubject = (selectedSubject: Option[]) => {
+   const handleSelectSubject = (selectedSubjects: SelectedOption[]) => {
     
-        if(selectedSubject.length === 0) return;
+        if(selectedSubjects.length === 0) return;
 
         // Check If Object Already Exists
-        const objectExits = selectedSubjects.find(item => item.id === selectedSubject[0].id);
+        const objectExits = selectedSubjects.find(item => item.id === selectedSubjects[0].id);
 
         if(objectExits) return;      
 
-        setSelectedSubjects(prev => ([
-            ...prev,
-            selectedSubject[0]
-        ]))
+        setSelectedSubjects([
+            ...selectedSubjects,
+            selectedSubjects[0]
+        ])
         
         formik.setValues({
             ...formik.values,
             studyPlanSubjects: [
                 ...formik.values.studyPlanSubjects,
-                selectedSubject[0].id
+                selectedSubjects[0].id
             ]
         })
     }
@@ -188,7 +183,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                     size="lg"
                     className={formik.values.studyPlanSubjects.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                     placeholder='Search Subjects'
-                    onChange={handleSelectSubject}
+                    onChange={(options) => handleSelectSubject(options as SelectedOption[])}
                     options={subjects ? mapToTyphead(subjects.data) : []}
                     isInvalid={formik.values.studyPlanSubjects.length === 0 && formik.dirty}
                     isValid={formik.values.studyPlanSubjects.length !== 0 && formik.dirty}
@@ -198,7 +193,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                 </Feedback>
             </Form.Group> 
         </Row> 
-        <Table<SelectedSubject>  
+        <Table<SelectedOption>  
             columns={columns} 
             data={selectedSubjects}
             renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 

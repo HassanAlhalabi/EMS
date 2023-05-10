@@ -6,16 +6,10 @@ import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { mapToTyphead } from "../../../util";
-import { Option } from "react-bootstrap-typeahead/types/types";
 import SwitchInput from "../../../components/switch-input/index.";
 import Table from "../../../components/table";
 import { NewSubjectSuggestion } from "../../../types/suggested-subjects";
-
-interface SelectedSubject {
-    id: string,
-    name: string,
-    label: string
-}
+import { SelectedOption } from "../../../types";
 
 const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestion>}) => {
 
@@ -23,14 +17,14 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
         ['/Subject/GetDropDownSubjects'], 
     () => get(`/Subject/GetDropDownSubjects`));
 
-    const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubject[]>([]);
+    const [selectedSubjects, setSelectedSubjects] = useState<SelectedOption[]>([]);
 
-   const handleSelectSubject = (selectedSubject: Option[]) => {
+   const handleSelectSubject = (selectedSubject: SelectedOption[]) => {
     
         if(selectedSubject.length === 0) return;
 
         // Check If Object Already Exists
-        const objectExits = selectedSubjects.find(item => item.id === selectedSubject[0].id);
+        const objectExits = selectedSubjects.find((item) => item.id === selectedSubject[0].id);
 
         if(objectExits) return;      
 
@@ -90,7 +84,7 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
                         size="lg"
                         className={formik.values.subjectIds.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search Subjects'
-                        onChange={handleSelectSubject}
+                        onChange={(options) => handleSelectSubject(options as SelectedOption[])}
                         options={subjects ? mapToTyphead(subjects.data) : []}
                         isInvalid={formik.values.subjectIds.length === 0 && formik.dirty}
                         isValid={formik.values.subjectIds.length !== 0 && formik.dirty}
@@ -109,7 +103,7 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
                 </Form.Group>
             </Col>
         </Row>
-        <Table<SelectedSubject>  
+        <Table<SelectedOption>  
             columns={columns} 
             data={selectedSubjects}
             renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 

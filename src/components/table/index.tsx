@@ -51,7 +51,7 @@ const IndeterminateCheckbox = forwardRef<HTMLInputElement, IndeterminateCheckbox
 	}
 )
 
-const Table = <T extends unknown>({ 	isBulk, 
+const Table = <T extends Record<any,any>>({ 	isBulk, 
 					hasSort,
 					hasSearch,
 				 	columns, 
@@ -233,7 +233,7 @@ const Table = <T extends unknown>({ 	isBulk,
 											{row.cells.map(cell => {
 												if(cell.column.id === 'thumbnail') {
 													return 	<td className="align-middle" {...cell.getCellProps()}>
-																<Image className="table-thumbnail" thumbnail roundedCircle src={cell.row.original.thumbnail} />
+																<Image className="table-thumbnail" thumbnail roundedCircle src={(cell.row.original as T).thumbnail} />
 															</td>
 												}
 												if(cell.column.id === 'options') {

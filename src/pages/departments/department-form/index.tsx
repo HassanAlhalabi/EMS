@@ -35,20 +35,18 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
             ...selectedFaculties,
             {
                 id: event.target.value,
-                name: event.target.options[event.target.selectedIndex].textContent
+                name: event.target.options[event.target.selectedIndex].textContent as string
             }
         ]
-        setSelectedFaculties((prev) => {
-            return newSelectedFaculties
-        })
-        formik.setFieldValue('facultiesIds',[...formik.values.facultiesIds, event.target.value])
+        setSelectedFaculties(newSelectedFaculties)
+        formik.setFieldValue('facultiesIds',[...(formik.values.facultiesIds as string[]), event.target.value])
     }
 
     const handleRemoveCategory = (facultyId: string) => {
         setSelectedFaculties(prev => {
             return [...prev.filter(faculty => faculty.id !== facultyId)]
         })
-        formik.setFieldValue('facultiesIds',[...formik.values.facultiesIds.filter(faculty => faculty !== facultyId)])
+        formik.setFieldValue('facultiesIds',[...(formik.values.facultiesIds as string[]).filter(faculty => faculty !== facultyId)])
     }
 
   return (

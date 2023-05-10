@@ -1,3 +1,4 @@
+import { Option } from "react-bootstrap-typeahead/types/types"
 
 
 export interface PaginationInfo {
@@ -8,3 +9,11 @@ export interface PaginationInfo {
     totalItems: number
     totalPages: number
 }
+
+export interface SelectedItem {
+    id: string,
+    name: string,
+    label: string
+}
+
+export type SelectedOption = Exclude<Option, string> | SelectedItem

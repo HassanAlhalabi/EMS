@@ -8,7 +8,7 @@ export interface StudyPlan {
 export interface NewStudyPlan {
     nameAr: string,
     nameEn: string,
-    facultyId: string,
+    facultyId?: string,
     specialtyId: string,
     studyPlanSubjects: string[]
 }
