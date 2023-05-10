@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getCookie } from "../util";
 
-export const baseURL = 'http://alimakhlouf-002-site4.btempurl.com/api';
+export const baseURL = 'https://alimakhlouf-002-site4.btempurl.com/api';
 
 let HTTPclient = axios.create({
   baseURL,

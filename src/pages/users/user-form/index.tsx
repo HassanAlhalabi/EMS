@@ -6,9 +6,7 @@ import { get } from "../../../http";
 import { FormikProps } from "formik";
 import { NewUser } from "../../../types/users";
 import { useState, ChangeEvent, useEffect } from 'react';
-import CategoryBox from "../../../components/category-box";
-import { getCookie } from "../../../util";
-    
+import CategoryBox from "../../../components/category-box";  
 
 const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
@@ -17,9 +15,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
     const { data } = useQuery(
                             ['/Role/GetRolesList'], 
                         () => get(`/Role/GetRolesList`));
-
-                        
-                        
+                
     const [workingDays, setWorkingDays] = useState<{id: number, name: string | null}[]>([])
 
     const handleSelectedDays = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -48,21 +44,20 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
     const { data: faculties } = useQuery(
         ['/Faculty/GetDropDownFaculties'], 
-    () => fetch(`http://http://alimakhlouf-002-site2.btempurl.com/api/Faculty/GetDropDownFaculties`,{
-        headers: {
-            'Authorization': 'Bearer '+getCookie("EMSUser").token
-        }
-    }).then(res => res.json()));
+        () => get(`/Faculty/GetDropDownFaculties`));
 
     const { data: specialities, refetch: refetchSpecialities } = useQuery(
-        ['/Speciality/GetDropDownSpecialities',facultyId], 
-    () => fetch(`http://http://alimakhlouf-002-site2.btempurl.com/api/Specialty/GetDropDownSpecialties/${facultyId}`,{
-        headers: {
-            'Authorization': 'Bearer '+getCookie("EMSUser").token
+        ['/Specialty/GetDropDownSpecialties', facultyId], 
+        () => get(`/Specialty/GetDropDownSpecialties/${facultyId}`),
+        {
+            enabled: false
+        });
+
+    useEffect(() => {
+        if(facultyId) {
+            refetchSpecialities();
         }
-    }).then(res => res.json()),{
-        enabled: false
-    });
+    },[facultyId])
 
     useEffect(() => {
         if(facultyId) {
@@ -128,7 +123,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                             type="tel" 
                             placeholder="Phone Number"
                             name="phoneNumber"
-                            value={formik.values.phoneNumber as string} 
+                            value={formik.values.phoneNumber} 
                             onChange={formik.handleChange} />
                         <Feedback type="invalid">
                             {formik.errors.phoneNumber as string}
@@ -147,7 +142,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                             required
                             id="type"
                             name="type"
-                            value={formik.values.type as string} 
+                            value={formik.values.type} 
                             onChange={formik.handleChange}>
                                 <option key="no-value" value=""></option>
                             {
@@ -268,7 +263,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 <option value=""></option>
                             {
                                 Object.entries(WORK_DAYS).map(([key, value]) => {
-                                    return <option value={value}>{key}</option>   
+                                    return <option key={key} value={value}>{key}</option>   
                                 })
                             }
                         </Form.Select>            
@@ -304,7 +299,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setFacultyId(e.target.value) }>
                                     <option key="no-value" value=""></option>
                                 {
-                                    faculties?.map((faculty: {id: string, name: string}) => 
+                                    faculties?.data.map((faculty: {id: string, name: string}) => 
                                         <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
                                     )
                                 }
@@ -325,7 +320,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 onChange={formik.handleChange}>
                                     <option key="no-value" value=""></option>
                                 {
-                                    specialities?.map((speciality: {id: string, name: string}) => 
+                                    specialities?.data.map((speciality: {id: string, name: string}) => 
                                         <option key={speciality.id} value={speciality.id}>{speciality.name}</option>
                                     )
                                 }
