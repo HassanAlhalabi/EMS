@@ -58,7 +58,7 @@ const FACULTY_INITIAL_STATE = {
         maxHours: 24,
         minHours: 1,
         minGradePointAverage: 1,
-        maxCount: 1
+        // maxCount: 1
     }
 }
 

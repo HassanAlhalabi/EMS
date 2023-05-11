@@ -232,7 +232,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                     </Feedback>
                 </Form.Group> 
             </Col>
-            <Col>
+            {/* <Col>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="semesterRegistrationRequirement.maxCount">
                         Semester Max Courses Count To Register: 
@@ -250,7 +250,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                         {formik.errors.semesterRegistrationRequirement?.maxCount as string}
                     </Feedback>
                 </Form.Group> 
-            </Col>
+            </Col> */}
         </Row>
     </Form>
   )

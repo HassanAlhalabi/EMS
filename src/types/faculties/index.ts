@@ -24,7 +24,7 @@ export interface NewFaculty {
         maxHours: number,
         minHours: number,
         minGradePointAverage: number,
-        maxCount: number
+        // maxCount: number
     }
 }
 
