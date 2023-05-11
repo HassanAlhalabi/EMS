@@ -1,4 +1,4 @@
-import { useState, ReactNode, useMemo } from 'react';
+import { useState, ReactNode, useMemo, Children } from 'react';
 import PaneHead from './pane-head';
 import { PaneHeadProps } from './pane-head';
 
@@ -47,7 +47,7 @@ const FormWizard = ({children, headers, currentTab}: FormWizardProps) => {
             <div className="card-body py-4" id="wizard-controller">
                 <div className="tab-content">
                     {
-                        children.map((child: ReactNode, index: number) => 
+                        Children.map(children, (child, index) => 
                             <div key={index} className={`tab-pane px-sm-3 px-md-5 ${index === currentTab ? 'active' : ''}`} role="tabpane">
                                 {child}
                             </div>)

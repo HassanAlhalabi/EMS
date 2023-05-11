@@ -123,7 +123,7 @@ const DepartmentsPage = () => {
               formik.values) :
               action === ACTION_TYPES.update ? 
               usePut('/Department', 
-{
+        {
         id: departmentId,
        ...formik.values
       }) : action === ACTION_TYPES.delete ? 

@@ -6,16 +6,13 @@ import "react-toastify/dist/ReactToastify.css";
 import './assets/css/user.css';
 import Loader from './components/loader';
 import { IRoute } from './types/routes';
-import { LayoutContext } from './contexts/layout-context';
 import { ToastContainer } from 'react-toastify';
 import { useScreenLoader } from './hooks/useScreenLoader';
 import { withProfiler } from '@sentry/react';
 import { useRoutes } from './hooks/useRoutes';
 
 const renderRoutes = (routes: IRoute[]) => {
-  console.log(routes)
   return routes.map(route => {
-    console.log(route.hasPermission)
     if(!route.hasPermission) return <Route key='has-no-permission' path='*' />
     if(route.childRoutes) {
       return <Route key={route.id} path={route.path} element={route.element}>

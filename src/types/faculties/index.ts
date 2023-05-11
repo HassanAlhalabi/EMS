@@ -1,5 +1,15 @@
+export interface WorkDay {
+    dayNumber: 1 | 2 | 3 | 4 | 5 | 6 | 7
+    workStartAt: number
+    workEndAt: number
+}
 
-
+export interface SemesterRegReq {
+    maxHours: number,
+    minHours: number,
+    minGradePointAverage: number,
+    maxCount: number
+}
 export interface NewFaculty {
     nameAr: string,
     nameEn: string,
@@ -10,7 +20,17 @@ export interface NewFaculty {
     specialtyYearNum: number,
     minCountToSubject: number,
     maxStudCountInGroup: number,
-    workingDaysNum: number,
+    semesterRegistrationRequirement: {
+        maxHours: number,
+        minHours: number,
+        minGradePointAverage: number,
+        maxCount: number
+    }
+}
+
+export interface NewDay {
+    name: string,
+    dayNumber: number,
     workStartAt: string,
     workEndAt: string
 }
@@ -39,4 +59,5 @@ export interface NewHall {
     descriptionAr: string,
     descriptionEn: string,
     maxCount: number | string
+    isLabratory: boolean
 }

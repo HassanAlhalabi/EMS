@@ -1,3 +1,4 @@
+import { TypeOf } from "yup";
 
 
 export const USERS_TYPES = {
@@ -22,12 +23,14 @@ export const ACTION_TYPES = {
     toggle: 'TOGGLE'
 }
 
-export const WORK_DAYS = {
-        'Sunday': 1,
-        'Monday': 2,
-        'Tuesday': 3,
-        'Wednesday': 4,
-        'Thursday': 5,
-        'Friday': 6,
-        'Saturday': 7
-};
+export const WORK_DAYS: Record<string,number> = {
+    'Sunday': 1,
+    'Monday': 2,
+    'Tuesday': 3,
+    'Wednesday': 4,
+    'Thursday': 5,
+    'Friday': 6,
+    'Saturday': 7
+}; 
+
+export const WORK_DAYS_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']

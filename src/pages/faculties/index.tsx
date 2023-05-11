@@ -6,11 +6,13 @@ import { toast } from "react-toastify";
 import SwitchInput from "../../components/switch-input/index.";
 
 import Table from "../../components/table"
-import {  usePut } from "../../hooks";
+import {  useDelete, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { get } from "../../http";
 import { Faculty } from "../../types/faculties";
-import {  getAxiosError } from "../../util";
+import {  capitalize, getAxiosError } from "../../util";
+import { ACTION_TYPES } from '../../constants';
+import PopUp from '../../components/popup';
 
 
 const FacultiesPage = () => {
@@ -20,6 +22,7 @@ const FacultiesPage = () => {
   const [searchKey, setSearchKey] = useState<string>('');
   const { toggleScreenLoader } = useScreenLoader();
   const [facultyId, setFacultyId] = useState<string | null>(null);
+  const [action, setAction] = useState< string | null>(null);
 
   const { data, 
           status,
@@ -46,7 +49,7 @@ const FacultiesPage = () => {
   },[page,pageSize,searchKey])
 
   useEffect(() => {
-    if(facultyId) {
+    if(facultyId && action === ACTION_TYPES.toggle) {
       handleFacultyToggle();
     }
   },[facultyId])
@@ -70,14 +73,18 @@ const FacultiesPage = () => {
     [data, isFetching, isLoading]
   );
 
-  const { mutateAsync , 
-          isLoading: postLoading
+  const { mutateAsync: toggleFaculty , 
+          isLoading: toggleLoading
         } = usePut(`/Faculty/ToggleActivation/${facultyId}`);
+
+  const { mutateAsync: deleteFaculty , 
+          isLoading: postLoading
+        } = useDelete(`/Faculty`, facultyId as string);
 
   const handleFacultyToggle = async () => {
       try {
         toggleScreenLoader();
-        await mutateAsync();
+        await toggleFaculty();
         refetch();
         setFacultyId(null);
         toast.success(`Activate Faculty Done Successfully`)
@@ -86,6 +93,20 @@ const FacultiesPage = () => {
       }
       toggleScreenLoader();
   }
+
+  const handleDeleteFaculty = async () => {
+    try {
+      toggleScreenLoader();
+      await deleteFaculty();
+      refetch();
+      setFacultyId(null);
+      toast.success(`Faculty Deleted Successfully`)
+    } catch(error) {
+      toast.error(getAxiosError(error))
+    }
+    setAction(null)
+    toggleScreenLoader();
+}
 
 
   return  <>
@@ -122,10 +143,30 @@ const FacultiesPage = () => {
                             <SwitchInput 
                               checked={faculty.isActive} 
                               value={faculty.id} 
-                              onChange={() => { setFacultyId(faculty.id) }} />
+                              onChange={() => { setFacultyId(faculty.id), setAction(ACTION_TYPES.toggle); }} />
+                            <button className="btn btn-falcon-danger btn-sm m-1" 
+                                    type="button" 
+                                    onClick={() => {
+                                      setAction(ACTION_TYPES.delete);
+                                      setFacultyId(faculty.id);
+                                    }}>        
+                                <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                            </button>
                           </div>
               }}/>
-
+              <PopUp  
+                title={`${action && capitalize(action as string)} Faculty`}
+                show={action === ACTION_TYPES.delete}
+                onHide={() => setAction(null)}
+                confirmText={`${action} Faculty`}
+                confirmButtonVariant={'danger'}
+                handleConfirm={handleDeleteFaculty}
+                actionLoading={postLoading}
+                    >
+                        {action === ACTION_TYPES.delete && 
+                          <>Are you Sure You Want to Delete This Faculty</>
+                        }
+                </PopUp>
               </>
 }
 

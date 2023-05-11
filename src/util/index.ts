@@ -7,6 +7,7 @@ declare global {
     interface Array<T> {
         hasAllValues(listOfValues: Array<T>): boolean;
         hasSomeValues(listOfValues: Array<T>): boolean;
+        sortByProp(propKey: keyof T): Array<T>
     }
 }
 
@@ -30,7 +31,24 @@ Array.prototype.hasSomeValues = function(this, listOfValues) {
     return isSomeIn;
 }
 
-
+Array.prototype.sortByProp = function(propKey){
+    // Empty Array Case
+    if(this.length === 0) {
+        return [];
+    }
+    // In Case Property Type is Number
+    if(typeof this[0][propKey] === 'number') {
+        return this.sort((a,b) => a[propKey] > b[propKey] ? 1 : -1)
+    }
+    // In Case Property Type is String
+    if(typeof this[0][propKey] === 'number') {
+        return this.sort((a, b) => {
+            return a[propKey].toLowerCase() > b[propKey].toLocaleLowerCase() ? 1 : -1
+        })
+    }
+    return this.sort();
+}
+ 
 export const setCookie = <T>(key: string, data: T, time?: number) => {
     if(time) {
         return Cookies.set(key, JSON.stringify(data), { expires: time });
@@ -108,4 +126,4 @@ export const mapToTyphead = <TItem extends {name: string}>(data: TItem[] ) =>
     data.map(item => ({
         ...item,
         label: item.name
-    }))
+    })) 

@@ -13,9 +13,12 @@ export const facultyValidation = object({
       }) ,
     minCountToSubject: number().required('Minimum Students Nummber For Subject Is Required').min(1),
     maxStudCountInGroup: number().required('Maximum Students In Class Is Required').min(1),
-    workingDaysNum:  number().required('Number Of Working Days Is Required').min(1).max(7),
-    workStartAt:  string().required('Work Day Starting Hour Is Required'),
-    workEndAt:  string().required('Work Day End Hour Is Required')
+})
+
+export const dayValidation = object({
+    name: string().required('Day Name Is Required'),
+    workStartAt: string().required('Work Day Starting Hour Is Required'),
+    workEndAt: string().required('Work Day End Hour Is Required')
 })
 
 export const specValidation = object({

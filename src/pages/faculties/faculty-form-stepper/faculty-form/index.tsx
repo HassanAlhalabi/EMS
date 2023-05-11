@@ -177,76 +177,79 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
         <Row>
             <Col>
                 <Form.Group className="mb-3">
-                    <Form.Label htmlFor="workingDaysNum">
-                        Number Of Working Days: 
+                    <Form.Label htmlFor="semesterRegistrationRequirement.minHours">
+                        Semester Min Hours: 
                     </Form.Label>
                     <Form.Control
-                        id="workingDaysNum"
+                        id="semesterRegistrationRequirement.minHours"
                         size="lg"
                         required
                         type="number"
                         min={1} 
-                        max={7}
-                        name="workingDaysNum"
-                        value={formik.values.workingDaysNum} 
+                        name="semesterRegistrationRequirement.minHours"
+                        value={formik.values.semesterRegistrationRequirement?.minHours} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
-                        {formik.errors.workingDaysNum as string}
+                        {formik.errors.semesterRegistrationRequirement?.minHours as string}
                     </Feedback>
                 </Form.Group> 
             </Col>
             <Col>
                 <Form.Group className="mb-3">
-                    <Form.Label htmlFor="workStartAt">
-                        Working Day Starts At:
+                    <Form.Label htmlFor="semesterRegistrationRequirement.maxHours">
+                        Semester Max Hours: 
                     </Form.Label>
                     <Form.Control
-                        id="workStartAt"
-                        min={1} 
-                        max={24}
+                        id="semesterRegistrationRequirement.maxHours"
                         size="lg"
                         required
-                        type="time" 
-                        name="workStartAt"
-                        value={formik.values.workStartAt} 
+                        type="number"
+                        min={1} 
+                        name="semesterRegistrationRequirement.maxHours"
+                        value={formik.values.semesterRegistrationRequirement?.maxHours} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
-                        {formik.errors.workStartAt as string}
+                        {formik.errors.semesterRegistrationRequirement?.maxHours as string}
                     </Feedback>
                 </Form.Group> 
             </Col>
             <Col>
                 <Form.Group className="mb-3">
-                    <Form.Label htmlFor="workEndAt">
-                        Working Day Ends At:
+                    <Form.Label htmlFor="semesterRegistrationRequirement.minGradePointAverage">
+                        Semester Min Average Grade: 
                     </Form.Label>
                     <Form.Control
-                        id="workEndAt"
-                        min={1} 
-                        max={24}
+                        id="semesterRegistrationRequirement.minGradePointAverage"
                         size="lg"
                         required
-                        type="time" 
-                        name="workEndAt"
-                        value={formik.values.workEndAt} 
+                        type="number"
+                        min={1} 
+                        name="semesterRegistrationRequirement.minGradePointAverage"
+                        value={formik.values.semesterRegistrationRequirement?.minGradePointAverage} 
                         onChange={formik.handleChange} />
                     <Feedback type="invalid">
-                        {formik.errors.workEndAt as string}
+                        {formik.errors.semesterRegistrationRequirement?.minGradePointAverage as string}
                     </Feedback>
                 </Form.Group> 
             </Col>
-        </Row>
-        <Row className="mt-3">
             <Col>
-            </Col>
-            <Col className="d-flex justify-content-end">
-                <button
-                    disabled={!formik.isValid || !formik.dirty}
-                    onClick={(e) => { e.preventDefault(); formik.handleSubmit()} } 
-                    className={`btn btn-primary px-5 px-sm-6`} 
-                    type="submit">
-                    Next <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
-                </button>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="semesterRegistrationRequirement.maxCount">
+                        Semester Max Courses Count To Register: 
+                    </Form.Label>
+                    <Form.Control
+                        id="semesterRegistrationRequirement.maxCount"
+                        size="lg"
+                        required
+                        type="number"
+                        min={1} 
+                        name="semesterRegistrationRequirement.maxCount"
+                        value={formik.values.semesterRegistrationRequirement?.maxCount} 
+                        onChange={formik.handleChange} />
+                    <Feedback type="invalid">
+                        {formik.errors.semesterRegistrationRequirement?.maxCount as string}
+                    </Feedback>
+                </Form.Group> 
             </Col>
         </Row>
     </Form>
