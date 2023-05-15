@@ -25,6 +25,7 @@ const INITIAL_VALUES: NewUser = {
   phoneNumber: "",
   type: '',
   specialtyId: '',
+  facultyId: '',
   contract: {
       startAt: '',
       endAt: '',
@@ -42,6 +43,12 @@ const UsersPage = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
 
+  const formik = useFormik({
+    initialValues: INITIAL_VALUES,
+    onSubmit: () => handleUserAction(),
+    validationSchema: addUserValidation
+  })
+
   const { data, 
           status,
           isLoading, 
@@ -55,14 +62,21 @@ const UsersPage = () => {
                                 }
                               );
 
-  const { data: user, 
-          refetch: refetchUser,
+  const {  refetch: refetchUser,
         } = useQuery(
                     ['/User/GetUser', userId], 
                     () => get(`/User/GetUser/${userId}`),
                     {
                         enabled: false,   
-                        onSuccess: data => formik.setValues(data.data)                    
+                        onSuccess: data => formik.setValues({
+                          ...data.data,
+                          roleId: data.data.role.id,
+                          contract: data.data.contract ? {
+                            ...data.data.contract,
+                            endAt: data.data.contract.endAt.split('T')[0],
+                            startAt: data.data.contract.startAt.split('T')[0]
+                          } : null
+                        })                    
         });
 
   useEffect(() => {
@@ -72,8 +86,9 @@ const UsersPage = () => {
     if(userId && action === ACTION_TYPES.toggle) {
       handleUserAction();
     }
-    return () => setUserId(null);
   },[userId]);
+
+  console.log(formik.values)
 
   useEffect(() => {
     let searchTimeout: number; 
@@ -129,12 +144,6 @@ const UsersPage = () => {
     () => (isLoading || status === 'idle') ? [] : (data?.data.users),
     [data, isFetching, isLoading]
   );
-
-  const formik = useFormik({
-      initialValues: INITIAL_VALUES,
-      onSubmit: () => handleUserAction(),
-      validationSchema: addUserValidation
-  })
 
   const reset = () => {
     setAction(null); 

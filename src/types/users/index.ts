@@ -8,6 +8,7 @@ export interface NewUser {
     phoneNumber: string,
     type: string,
     specialtyId: string,
+    facultyId: string,
     contract: {
         startAt: Date | string,
         endAt: Date | string,

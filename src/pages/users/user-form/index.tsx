@@ -10,8 +10,6 @@ import CategoryBox from "../../../components/category-box";
 
 const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
-    const [facultyId, setFacultyId] = useState<string>();
-
     const { data } = useQuery(
                             ['/Role/GetRolesList'], 
                         () => get(`/Role/GetRolesList`));
@@ -30,6 +28,8 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
         setWorkingDays(prev => [...prev, newValue]);
 
+        console.log(formik.values.contract.workDays)
+
         formik.setFieldValue('contract.workDays', [...formik.values.contract.workDays, Number(e.target.value)])
 
         e.target.value = '';
@@ -47,23 +47,17 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
         () => get(`/Faculty/GetDropDownFaculties`));
 
     const { data: specialities, refetch: refetchSpecialities } = useQuery(
-        ['/Specialty/GetDropDownSpecialties', facultyId], 
-        () => get(`/Specialty/GetDropDownSpecialties/${facultyId}`),
+        ['/Specialty/GetDropDownSpecialties', formik.values.facultyId], 
+        () => get(`/Specialty/GetDropDownSpecialties/${formik.values.facultyId}`),
         {
             enabled: false
         });
 
     useEffect(() => {
-        if(facultyId) {
+        if(formik.values.facultyId) {
             refetchSpecialities();
         }
-    },[facultyId])
-
-    useEffect(() => {
-        if(facultyId) {
-            refetchSpecialities()
-        }
-    },[facultyId])
+    },[formik.values.facultyId])
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -200,7 +194,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                     required
                                     id="contractStartAt"
                                     name="contract.startAt"
-                                    value={formik.values.contract.startAt as string} 
+                                    value={formik.values.contract?.startAt as string} 
                                     onChange={formik.handleChange}>
                                 </Form.Control>            
                                 <Feedback type="invalid">
@@ -219,7 +213,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                     required
                                     id="contractEndAt"
                                     name="contract.endAt"
-                                    value={formik.values.contract.endAt as string} 
+                                    value={formik.values.contract?.endAt as string} 
                                     onChange={formik.handleChange}>
                                 
                                 </Form.Control>            
@@ -240,7 +234,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                     required
                                     id="contractSalary"
                                     name="contract.salary"
-                                    value={formik.values.contract.salary} 
+                                    value={formik.values.contract?.salary} 
                                     onChange={formik.handleChange}>
                                 
                                 </Form.Control>            
@@ -295,15 +289,15 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 size="lg"
                                 id=""
                                 name="facultyId"
-                                value={facultyId} 
-                                onChange={(e: ChangeEvent<HTMLSelectElement>) => setFacultyId(e.target.value) }>
+                                value={formik.values.facultyId} 
+                                onChange={formik.handleChange}>
                                     <option key="no-value" value=""></option>
                                 {
                                     faculties?.data.map((faculty: {id: string, name: string}) => 
                                         <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
                                     )
                                 }
-                            </Form.Select>            
+                            </Form.Select>           
                         </Form.Group>
                     </Col>
                     <Col>
