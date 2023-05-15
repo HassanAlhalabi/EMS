@@ -1,18 +1,20 @@
 import { Form, Row, Col } from "react-bootstrap"
 import { FormikProps } from "formik";
-import { BookCategory, NewBook } from "../../../../types/books";
-import Feedback from "../../../../components/feedback";
-import { ChangeEvent, SetStateAction, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useQuery } from "react-query";
-import { get } from "../../../../http";
+
+import Feedback from "../../../../components/feedback";
 import CategoryBox from "../../../../components/category-box";
 import ImageUpload from "../../../../components/image-upload";
+import { useGet } from "../../../../hooks";
+import { BookCategory, NewBook } from "../../../../types/books";
 
 type SelectedCategory = {id: string, name: string}
 
 const BookForm = ({formik}:{formik: FormikProps<NewBook>}) => {
 
     const [selectedCategories, setSelectedCategories] = useState<SelectedCategory[]>([]);
+    const get = useGet();
 
     const handleCategorySelect = (event: ChangeEvent<HTMLSelectElement>) => {
         

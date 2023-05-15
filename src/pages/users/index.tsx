@@ -10,12 +10,12 @@ import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
 import { useDelete, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { get } from "../../http";
 import { addUserValidation } from "../../schema/user";
 import { NewUser, User } from "../../types/users";
 import { capitalize, getAxiosError } from "../../util";
 import UserForm from "./user-form";
 import PermissionsGate from "../../components/permissions-gate";
+import { useHTTP } from "../../hooks/useHTTP";
 
 const INITIAL_VALUES: NewUser = {
   roleId: '',
@@ -42,6 +42,7 @@ const UsersPage = () => {
   const [action, setAction] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
+  const { get } = useHTTP();
 
   const formik = useFormik({
     initialValues: INITIAL_VALUES,

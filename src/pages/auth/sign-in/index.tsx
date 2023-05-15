@@ -26,11 +26,11 @@ const SignIn = () => {
     validationSchema: signInValidation
   })
 
-  const { mutateAsync , isLoading, isError, error } = usePost('/Authenticate', 
-                                        {
-                                          name: formik.values.name,
-                                          password: formik.values.password
-                                        });
+  const { mutateAsync , isLoading } = usePost('/Authenticate', 
+                                      {
+                                        name: formik.values.name,
+                                        password: formik.values.password
+                                      });
 
   const handleSignIn = async () => {
 

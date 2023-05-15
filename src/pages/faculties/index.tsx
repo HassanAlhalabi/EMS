@@ -6,9 +6,8 @@ import { toast } from "react-toastify";
 import SwitchInput from "../../components/switch-input/index.";
 
 import Table from "../../components/table"
-import {  useDelete, usePut } from "../../hooks";
+import {  useDelete, useGet, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { get } from "../../http";
 import { Faculty } from "../../types/faculties";
 import {  capitalize, getAxiosError } from "../../util";
 import { ACTION_TYPES } from '../../constants';
@@ -23,6 +22,7 @@ const FacultiesPage = () => {
   const { toggleScreenLoader } = useScreenLoader();
   const [facultyId, setFacultyId] = useState<string | null>(null);
   const [action, setAction] = useState< string | null>(null);
+  const get = useGet();
 
   const { data, 
           status,

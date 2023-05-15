@@ -1,8 +1,14 @@
 import { useMutation, useQuery } from "react-query";
-import { post, put, get, deleteReq } from "../http";
-import { useState } from 'react';
+import { useHTTP } from "./useHTTP";
 
-export const useGet = (path: string, page: number = 1, pageSize: number = 15) => {
+export const useGet = () => {
+    const { get } = useHTTP();
+    return get;
+}
+
+export const usePagedGet = (path: string, page: number = 1, pageSize: number = 15) => {
+
+    const { get } = useHTTP();
 
     const queryFn = () => get(`${path}?page=${page}&pageSize=${pageSize}`);
     
@@ -14,6 +20,8 @@ export const useGet = (path: string, page: number = 1, pageSize: number = 15) =>
 
 export const usePost = <T>(path: string, data: T) => {
 
+    const { post } = useHTTP();
+
     const mutationFn = async () => await post(path, data);
     
     return useMutation(mutationFn);
@@ -22,8 +30,10 @@ export const usePost = <T>(path: string, data: T) => {
 
 export const usePostFormData = <T>(path: string, data: T) => {
 
+    const { post } = useHTTP();
+
     const formData = new FormData();
-    Object.entries(data as Object).map(([key, value]) => {
+    Object.entries(data as Object).forEach(([key, value]) => {
         if(value && value.length !== 0) {
             formData.append(key, value)
         }
@@ -42,6 +52,8 @@ export const usePostFormData = <T>(path: string, data: T) => {
 
 export const usePut = <T>(path: string, data?: T) => {
 
+    const { put } = useHTTP();
+
     const mutationFn = async () => await put(path, data);
     
     return useMutation(mutationFn);
@@ -50,8 +62,10 @@ export const usePut = <T>(path: string, data?: T) => {
 
 export const usePutFormData = <T>(path: string, data: T) => {
 
+    const { put } = useHTTP();
+
     const formData = new FormData();
-    Object.entries(data as Object).map(([key, value]) => {
+    Object.entries(data as Object).forEach(([key, value]) => {
         if(value  && value.length !== 0) {
             formData.append(key, value)
         }
@@ -70,6 +84,8 @@ export const usePutFormData = <T>(path: string, data: T) => {
 
 export const usePutByPath = <T>(path: string) => {
 
+    const { put } = useHTTP();
+
     const mutationFn = async () => await put(path);
     
     return useMutation(mutationFn);
@@ -78,12 +94,10 @@ export const usePutByPath = <T>(path: string) => {
 
 export const useDelete = (path: string, id: string) => {
 
+    const { deleteReq } = useHTTP();
+
     const mutationFn = async () => await deleteReq(`${path}/${id}`);
     
     return useMutation(mutationFn);
 
-}
-
-export const useToast = () => {
-    const [isOpen, setIsOpen] = useState(false);
 }

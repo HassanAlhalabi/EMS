@@ -1,13 +1,14 @@
-import { useFormik } from "formik";
 import { useMemo, useState, useEffect } from 'react';
+
+import { useFormik } from "formik";
 import { useQuery } from "react-query";
+import { toast } from "react-toastify";
+
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, usePostFormData, usePutFormData } from "../../../hooks";
-import { get } from "../../../http";
+import { useDelete, useGet, usePostFormData, usePutFormData } from "../../../hooks";
 import { bookCategoryValidation } from "../../../schema/book/book-category";
-import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { BookCategory, NewBookCategory } from "../../../types/books";
@@ -28,6 +29,7 @@ const CategoriesPage = () => {
     const [action, setAction] = useState<string | null>(null);
     const [categoryId, setCategoryId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
+    const get = useGet();
 
     const formik = useFormik<NewBookCategory>({
 		initialValues: INITIAL_VALUES,

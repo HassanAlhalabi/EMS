@@ -8,13 +8,13 @@ import SwitchInput from "../../components/switch-input/index.";
 
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, usePost, usePut } from "../../hooks";
+import { useDelete, useGet, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { get } from "../../http";
 import { addStudentSuggestedSubjectValidation } from "../../schema/suggested-subjects";
 import { NewSubjectSuggestion, SuggestedSubject } from "../../types/suggested-subjects";
 import { capitalize, getAxiosError } from "../../util";
 import SubjectSuggestionForm from "./subject-suggestion-form";
+const get = useGet();
 
 const INITIAL_VALUES: NewSubjectSuggestion = {
   subjectIds: [],

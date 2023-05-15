@@ -1,11 +1,11 @@
 import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { useQuery } from 'react-query';
-import { get } from "../../../http";
 import { FormikProps } from "formik";
 import { FacultySubject, NewSubject,  } from "../../../types/subjects";
 import { useState,useEffect, ChangeEvent, MouseEvent, useMemo } from 'react';
 import Table from "../../../components/table";
+import { useGet } from "../../../hooks";
 
 type FacultySubjectProps = {
     facultyId: string,
@@ -23,6 +23,7 @@ const SubjectForm = (   {formik, loading}:
     const [superSubjectId, setSuperSubjectId] = useState<string | null>(null);
     const [superSubjectName, setSuperSubjectName] = useState<string | null>(null);
     const [facultySubjects, setFacultySubjects] = useState<FacultySubjectProps[]>([])
+    const get = useGet();
 
     const { data: faculties } = useQuery(
                             ['/Faculty/GetDropDownFaculties'], 

@@ -2,19 +2,20 @@ import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { USERS_TYPES, WORK_DAYS } from "../../../constants"
 import { useQuery } from 'react-query';
-import { get } from "../../../http";
 import { FormikProps } from "formik";
 import { NewUser } from "../../../types/users";
 import { useState, ChangeEvent, useEffect } from 'react';
 import CategoryBox from "../../../components/category-box";  
+import { useGet } from "../../../hooks";
 
 const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
+
+    const [workingDays, setWorkingDays] = useState<{id: number, name: string | null}[]>([])
+    const get = useGet();
 
     const { data } = useQuery(
                             ['/Role/GetRolesList'], 
                         () => get(`/Role/GetRolesList`));
-                
-    const [workingDays, setWorkingDays] = useState<{id: number, name: string | null}[]>([])
 
     const handleSelectedDays = (e: ChangeEvent<HTMLSelectElement>) => {
 

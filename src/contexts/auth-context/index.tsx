@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useState, ReactNode, useEffect, useMemo } from 'react';
 import { getCookie } from '../../util';
 
 const AUTH_INITIAL_VALUE = {
@@ -21,7 +21,11 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
         }
     },[])
 
-    return <AuthContext.Provider value={{isAuthUser: isAuthUser, setAuthUser: handleAuthUser}}>
+    const AuthValue = useMemo(() => {
+        return {isAuthUser: isAuthUser, setAuthUser: handleAuthUser}
+    }, [isAuthUser])
+
+    return <AuthContext.Provider value={AuthValue}>
                 {children}
             </AuthContext.Provider>
 }

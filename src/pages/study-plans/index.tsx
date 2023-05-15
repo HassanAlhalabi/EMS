@@ -7,9 +7,8 @@ import PopUp from "../../components/popup";
 
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, usePost, usePut } from "../../hooks";
+import { useDelete, useGet, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { get } from "../../http";
 import { addStudyPlanValidation } from "../../schema/study-plan";
 import { NewStudyPlan, StudyPlan } from "../../types/study-plan";
 import { capitalize, getAxiosError } from "../../util";
@@ -30,6 +29,7 @@ const StudyPlansPage = () => {
   const [action, setAction] = useState<string | null>(null);
   const [studyPlanId, setStudyPlanId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
+  const get = useGet();
 
   const { data, 
           status,

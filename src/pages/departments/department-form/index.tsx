@@ -1,11 +1,11 @@
 import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { useQuery } from 'react-query';
-import { get } from "../../../http";
 import { FormikProps } from "formik";
 import { NewDepartment } from "../../../types/departments";
-import { ChangeEvent, useState, SetStateAction, useEffect } from 'react';
+import { ChangeEvent, useState, useEffect } from 'react';
 import CategoryBox from "../../../components/category-box";
+import { useGet } from "../../../hooks";
 
 type selectedDepartment = {
     id: string,
@@ -15,6 +15,7 @@ type selectedDepartment = {
 const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
 
     const [selectedFaculties, setSelectedFaculties] = useState<selectedDepartment[]>([]);
+    const get = useGet();
 
     useEffect(() => {
         setSelectedFaculties((prev) =>   

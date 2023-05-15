@@ -2,16 +2,17 @@ import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { FormikProps } from "formik";
 import { NewStudyPlan } from "../../../types/study-plan";
-import { get } from "../../../http";
 import { useQuery } from "react-query";
 import { useEffect, useMemo, useState } from "react";
 import Table from "../../../components/table";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { mapToTyphead } from "../../../util";
 import { SelectedOption } from "../../../types";
-import { Option } from "react-bootstrap-typeahead/types/types";
+import { useGet } from "../../../hooks";
 
 const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
+
+    const get = useGet();
 
     const { data: faculties } = useQuery(
         ['/Faculty/GetDropDownFaculties'], 

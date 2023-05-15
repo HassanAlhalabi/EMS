@@ -4,8 +4,7 @@ import { useQuery } from "react-query";
 import PopUp from "../../components/popup";
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, usePost, usePut } from "../../hooks";
-import { get } from "../../http";
+import { useDelete, useGet, usePost, usePut } from "../../hooks";
 import { subjectValidation } from "../../schema/subject";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../util";
@@ -31,6 +30,7 @@ const SubjectsPage = () => {
     const [action, setAction] = useState<string | null>(null);
     const [subjectId, setSubjectId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
+    const get = useGet();
 
     const formik = useFormik<NewSubject>({
 		initialValues: INITIAL_VALUES,

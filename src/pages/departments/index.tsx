@@ -1,16 +1,13 @@
 import { useFormik } from "formik";
 import { useEffect, useMemo, useState, ChangeEvent } from 'react';
-
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import PopUp from "../../components/popup";
-import SwitchInput from "../../components/switch-input/index.";
 
+import PopUp from "../../components/popup";
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, usePost, usePut } from "../../hooks";
+import { useDelete, useGet, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { get } from "../../http";
 import { addDepartmentValidation } from "../../schema/department";
 import { NewDepartment, Department } from "../../types/departments";
 import { Faculty } from "../../types/faculties";
@@ -34,6 +31,7 @@ const DepartmentsPage = () => {
   const [action, setAction] = useState<string | null>(null);
   const [departmentId, setDepartmentId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
+  const get = useGet();
 
   const { data, 
           status,

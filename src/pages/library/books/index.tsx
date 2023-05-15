@@ -1,18 +1,19 @@
-import { useFormik } from "formik";
 import { useMemo, useState, useEffect, ChangeEvent } from 'react';
+
+import { useFormik } from "formik";
+import { toast } from "react-toastify";
 import { useQuery } from "react-query";
+
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, usePostFormData, usePut, usePutFormData } from "../../../hooks";
-import { get } from "../../../http";
-import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { Book, NewBook } from "../../../types/books";
 import { bookValidation } from "../../../schema/book";
 import BookForm from "./book-form";
 import SwitchInput from "../../../components/switch-input/index.";
+import { useDelete, useGet, usePostFormData, usePut, usePutFormData } from "../../../hooks";
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -34,6 +35,7 @@ const BooksPage = () => {
     const [action, setAction] = useState<string | null>(null);
     const [bookId, setBookId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
+    const get = useGet();
 
     const formik = useFormik<NewBook>({
 		initialValues: INITIAL_VALUES,

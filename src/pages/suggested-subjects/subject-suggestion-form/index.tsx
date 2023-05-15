@@ -1,7 +1,6 @@
 import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { FormikProps } from "formik";
-import { get } from "../../../http";
 import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Typeahead } from "react-bootstrap-typeahead";
@@ -10,8 +9,11 @@ import SwitchInput from "../../../components/switch-input/index.";
 import Table from "../../../components/table";
 import { NewSubjectSuggestion } from "../../../types/suggested-subjects";
 import { SelectedOption } from "../../../types";
+import { useGet } from "../../../hooks";
 
 const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestion>}) => {
+
+    const get = useGet();
 
     const { data: subjects } = useQuery(
         ['/Subject/GetDropDownSubjects'], 

@@ -4,8 +4,7 @@ import { useQuery } from "react-query";
 import PopUp from "../../components/popup";
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, usePost, usePut } from "../../hooks";
-import { get } from "../../http";
+import { useDelete, useGet, usePost, usePut } from "../../hooks";
 import { roleValidation } from "../../schema/roles";
 import RoleForm from "./role-form";
 import { toast } from "react-toastify";
@@ -27,6 +26,7 @@ const RolesPage = () => {
     const [action, setAction] = useState<string | null>(null);
     const [roleId, setRoleId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
+    const get = useGet();
 
     const formik = useFormik({
 		initialValues: INITIAL_VALUES,

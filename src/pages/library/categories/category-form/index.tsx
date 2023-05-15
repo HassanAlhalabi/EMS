@@ -1,11 +1,15 @@
 import { Form, Row, Col } from "react-bootstrap"
 import { FormikProps } from "formik";
+
 import { BookCategory, NewBookCategory } from "../../../../types/books";
 import Feedback from "../../../../components/feedback";
 import { useQuery } from "react-query";
-import { get } from "../../../../http";
 import ImageUpload from "../../../../components/image-upload";
+import { useGet } from "../../../../hooks";
+
 const CategoryForm = ({formik}:{formik: FormikProps<NewBookCategory>}) => {
+
+    const get = useGet();
 
     const { data } = useQuery(
         ['/Category/GetAllCategories', 1, 9999999], 

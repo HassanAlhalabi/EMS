@@ -8,9 +8,8 @@ import SwitchInput from "../../components/switch-input/index.";
 
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, usePost, usePut } from "../../hooks";
+import { useDelete, useGet, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { get } from "../../http";
 import { addSemesterValidation } from "../../schema/semesters";
 import { NewSemester, Semester } from "../../types/semesters";
 import { capitalize, getAxiosError } from "../../util";
@@ -37,6 +36,7 @@ const SemestersPage = () => {
   const [action, setAction] = useState<string | null>(null);
   const [semesterId, setSemesterId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
+  const get = useGet();
 
   const { data, 
           status,

@@ -1,17 +1,18 @@
+import { useEffect, useMemo, useState } from "react";
+
 import { AxiosResponse } from "axios";
 import { useFormik } from "formik";
-import { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import FormWizard from "../../../components/form-wizard";
 import { PaneHeadProps } from "../../../components/form-wizard/pane-head";
 import SwitchInput from "../../../components/switch-input/index.";
 import Table from "../../../components/table";
-import { usePost, usePut } from "../../../hooks";
+import { useGet, usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { get } from "../../../http";
 import { facultyValidation, hallValidation, specValidation, dayValidation } from "../../../schema/faculty";
 import { NewDay, NewFaculty, NewHall, NewSpec } from "../../../types/faculties";
 import { getAxiosError } from "../../../util";
@@ -93,6 +94,7 @@ const FacultyFormPage = () => {
     const handleChangeToNextTab = () => setCurrentTab(prev => prev + 1);
     const handleChangeToPrevTab = () => setCurrentTab(prev => prev - 1);
     const {toggleScreenLoader} = useScreenLoader();
+    const get = useGet();
 
     const {refetch: refetchFaculty } = useQuery(['faculty', facultyId], 
                                  () => get(`/Faculty/GetFullFaculty/${facultyId}`),{
