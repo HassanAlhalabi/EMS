@@ -1,5 +1,3 @@
-import { TypeOf } from "yup";
-
 
 export const USERS_TYPES = {
     employee: 'Employee',

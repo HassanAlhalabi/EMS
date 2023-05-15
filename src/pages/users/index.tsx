@@ -263,7 +263,7 @@ const UsersPage = () => {
                 confirmButtonVariant={
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
-                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
+                confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                 handleConfirm={handleUserAction}
                 actionLoading={postLoading}
                     >

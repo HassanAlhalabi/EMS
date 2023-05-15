@@ -1,6 +1,6 @@
 import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
-import { USERS_TYPES, WORK_DAYS } from "../../../constants"
+import { USERS_TYPES, WORK_DAYS, WORK_DAYS_NAMES } from "../../../constants"
 import { useQuery } from 'react-query';
 import { FormikProps } from "formik";
 import { NewUser } from "../../../types/users";
@@ -58,7 +58,18 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
         if(formik.values.facultyId) {
             refetchSpecialities();
         }
-    },[formik.values.facultyId])
+    },[formik.values.facultyId]);
+
+    useEffect(() => {
+        if(formik.values.contract) {
+           setWorkingDays(
+               formik.values.contract.workDays.map(day => ({
+                    id: day,
+                    name: WORK_DAYS_NAMES[day - 1]
+                })) 
+            )
+        }
+    },[formik.values.contract]);
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
