@@ -29,8 +29,6 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
         setWorkingDays(prev => [...prev, newValue]);
 
-        console.log(formik.values.contract.workDays)
-
         formik.setFieldValue('contract.workDays', [...formik.values.contract.workDays, Number(e.target.value)])
 
         e.target.value = '';

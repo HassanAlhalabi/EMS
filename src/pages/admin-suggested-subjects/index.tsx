@@ -14,7 +14,6 @@ import { addStudentSuggestedSubjectValidation } from "../../schema/suggested-sub
 import { NewSubjectSuggestion, SuggestedSubject } from "../../types/suggested-subjects";
 import { capitalize, getAxiosError } from "../../util";
 import SubjectSuggestionForm from "./subject-suggestion-form";
-const get = useGet();
 
 const INITIAL_VALUES: NewSubjectSuggestion = {
   subjectIds: [],
@@ -29,6 +28,7 @@ const StudentSuggestedSubjectsPage = () => {
   const [action, setAction] = useState<string | null>(null);
   const [studentSuggestedSubjectId, setStudentSuggestedSubjectId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
+  const get = useGet();
 
   const { data, 
           status,

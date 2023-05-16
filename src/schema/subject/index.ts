@@ -1,15 +1,16 @@
-import { array, number, object, string } from "yup";
+import { array, boolean, number, object, string } from "yup";
 
 export const subjectValidation = object({
     nameAr: string().required('Arabic Name Is Required'),
     nameEn: string().required('English Name Is Required'),
     descriptionAr: string().nullable(),
     descriptionEn: string().nullable(),
+    hasLibrary: boolean().nullable(),
     subjectTypeId: string().required('Subject Type Name Is Required'),
     facultySubjects: array().of(object({
-        facultyId: string().required('Faculty Is Required'),
+        specialtyId: string().required('Speciality Is Required'),
         superSubjectId: string().nullable()
-    })).required('Faculties Are Required')
+    })).required('Specialities Are Required')
 })
 
 export const subjectTypeValidation = object({

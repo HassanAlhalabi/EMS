@@ -2,22 +2,23 @@ import { lazy } from "react"
 import ProtectedRoute from "../components/protected-route";
 import { hasPermission } from "../util";
 
-const Main              = lazy(() => import('../pages/main'));
-const SignIn            = lazy(() => import('../pages/auth/sign-in'));
-const Dashboard         = lazy(() => import('../pages/dashboard'));
-const Users             = lazy(() => import('../pages/users'));
-const Roles             = lazy(() => import('../pages/roles'));
-const Faculties         = lazy(() => import('../pages/faculties'));
-const FacultyForm       = lazy(() => import('../pages/faculties/faculty-form-stepper'));
-const Subjects          = lazy(() => import('../pages/subjects'));
-const SubjectsTypes     = lazy(() => import('../pages/subjects-types'));
-const Books             = lazy(() => import('../pages/library/books'));
-const BooksCategories   = lazy(() => import('../pages/library/categories'));
-const Departments       = lazy(() => import('../pages/departments'));
-const Semesters         = lazy(() => import('../pages/semesters'));
-const SuggestedSubjects = lazy(() => import('../pages/suggested-subjects'));
-const StudyPlans        = lazy(() => import('../pages/study-plans'));
-const Page404           = lazy(() => import('../pages/404'));
+const Main                      = lazy(() => import('../pages/main'));
+const SignIn                    = lazy(() => import('../pages/auth/sign-in'));
+const Dashboard                 = lazy(() => import('../pages/dashboard'));
+const Users                     = lazy(() => import('../pages/users'));
+const Roles                     = lazy(() => import('../pages/roles'));
+const Faculties                 = lazy(() => import('../pages/faculties'));
+const FacultyForm               = lazy(() => import('../pages/faculties/faculty-form-stepper'));
+const Subjects                  = lazy(() => import('../pages/subjects'));
+const SubjectsTypes             = lazy(() => import('../pages/subjects-types'));
+const Books                     = lazy(() => import('../pages/library/books'));
+const BooksCategories           = lazy(() => import('../pages/library/categories'));
+const Departments               = lazy(() => import('../pages/departments'));
+const Semesters                 = lazy(() => import('../pages/semesters'));
+const AdminSuggestedSubjects    = lazy(() => import('../pages/admin-suggested-subjects'));
+const StudentSuggestedSubjects  = lazy(() => import('../pages/student-subjects-suggestions'));
+const StudyPlans                = lazy(() => import('../pages/study-plans'));
+const Page404                   = lazy(() => import('../pages/404'));
 
 export const getRoutes = () => ([
     {
@@ -131,7 +132,7 @@ export const getRoutes = () => ([
                 path: '/suggested-subjects',
                 isIndex: false,
                 childRoutes: null,
-                element: <SuggestedSubjects />,
+                element: <StudentSuggestedSubjects />,
                 hasPermission: hasPermission('StudentSuggestedSubject.View')
             },
             {

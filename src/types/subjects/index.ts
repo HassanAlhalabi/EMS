@@ -1,17 +1,15 @@
-export interface FacultySubject {
-    facultyId: string
-    superSubjectId: string | null
-    facultyName?: string
-    superSubjectName?: string
+export interface SpecialitySubject {
+    specialtyId: string;
+    superSubjectId: string;
 }
-
 export interface NewSubject {
     nameAr: string,
     nameEn: string,
     descriptionAr: string,
     descriptionEn: string,
+    hasLibrary: boolean,
     subjectTypeId: string,
-    facultySubjects: FacultySubject[]
+    specialtySubjects: SpecialitySubject[]
 }
 
 export interface SuperSubject {

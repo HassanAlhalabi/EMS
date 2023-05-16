@@ -57,13 +57,13 @@ const BooksPage = () => {
             isLoading: loadingBook, 
             isFetching: fetchingBook,
             refetch: refetchBook,
-			 } = useQuery<Book>(
+			 } = useQuery(
                         ['/Book/GetFullBook', bookId], 
                         () => get(`/Book/GetFullBook/${bookId}`),
                         {
                             enabled: false,   
                             onSuccess: data => {
-                                
+                                formik.setValues(data.data)
                             }              
 			            });
 
@@ -77,7 +77,7 @@ const BooksPage = () => {
         }
         refetch();
         return () => clearTimeout(searchTimeout);
-        },[page,pageSize,searchKey])
+    },[page,pageSize,searchKey])
 				
 	useEffect(() => {
 		if(bookId && action === ACTION_TYPES.update) {
@@ -85,8 +85,7 @@ const BooksPage = () => {
 		}
         if(bookId && action === ACTION_TYPES.toggle) {
             handleBookAction();
-          }
-		() => setBookId(null);
+        }
 	},[bookId])
     
     const columns = useMemo(
@@ -228,7 +227,7 @@ const BooksPage = () => {
 								}
 								handleConfirm={handleBookAction}
 								actionLoading={postLoading}
-                                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
+                                confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && action !== ACTION_TYPES.delete}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)

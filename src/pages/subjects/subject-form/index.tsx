@@ -2,14 +2,17 @@ import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../components/feedback"
 import { useQuery } from 'react-query';
 import { FormikProps } from "formik";
-import { FacultySubject, NewSubject,  } from "../../../types/subjects";
+import { SpecialitySubject, NewSubject,  } from "../../../types/subjects";
 import { useState,useEffect, ChangeEvent, MouseEvent, useMemo } from 'react';
 import Table from "../../../components/table";
 import { useGet } from "../../../hooks";
+import { useGetSpecialities } from "../../../hooks/useGetSpecialities";
 
 type FacultySubjectProps = {
     facultyId: string,
     facultyName?: string | null,
+    specialityId: string,
+    specialityName: string,
     superSubjectId: string | null,
     superSubjectName?: string | null
 }
@@ -23,11 +26,9 @@ const SubjectForm = (   {formik, loading}:
     const [superSubjectId, setSuperSubjectId] = useState<string | null>(null);
     const [superSubjectName, setSuperSubjectName] = useState<string | null>(null);
     const [facultySubjects, setFacultySubjects] = useState<FacultySubjectProps[]>([])
+    const {faculties,specialities,renderSpecialitySelect} = useGetSpecialities<FacultySubjectProps>();
     const get = useGet();
 
-    const { data: faculties } = useQuery(
-                            ['/Faculty/GetDropDownFaculties'], 
-                        () => get(`/Faculty/GetDropDownFaculties`));
 
     const { data: subjects, refetch: refetchSubjects } = useQuery(
                             ['/Subject/GetDropDownSubjects', facultyId ], 
@@ -35,51 +36,45 @@ const SubjectForm = (   {formik, loading}:
                             enabled: false
                         });
 
-    useEffect(() => {
-        if(facultyId) {
-            refetchSubjects();
-        }
-    },[facultyId])
-
     const { data: subjectTypes } = useQuery(
                             ['/SubjectType/GetDropDownSubjectTypes'], 
                         () => get(`/SubjectType/GetDropDownSubjectTypes`));
 
     const handleAddFacultySubject = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if(facultyId) {
-            // Check If Object Already Exists
-            const objectExits = formik.values.facultySubjects.find(item => item.facultyId === facultyId);
+        // if(facultyId) {
+        //     // Check If Object Already Exists
+        //     const objectExits = formik.values.facultySubjects.find(item => item.facultyId === facultyId);
 
-            if(objectExits) {
-                return;
-            }       
+        //     if(objectExits) {
+        //         return;
+        //     }       
 
-            setFacultySubjects(prev => ([
-                ...prev,
-                {
-                    facultyId,
-                    facultyName,
-                    superSubjectId,
-                    superSubjectName
-                }
-            ]))
+        //     setFacultySubjects(prev => ([
+        //         ...prev,
+        //         {
+        //             facultyId,
+        //             facultyName,
+        //             superSubjectId,
+        //             superSubjectName
+        //         }
+        //     ]))
             
-            formik.setValues({
-                ...formik.values,
-                facultySubjects: [
-                    ...formik.values.facultySubjects,
-                    {
-                        facultyId,
-                        superSubjectId
-                    }
-                ]
-            })
-        }
-        setFacultyId('');
-        setFacultyName(null);
-        setSuperSubjectId(null);
-        setSuperSubjectName(null);
+        //     formik.setValues({
+        //         ...formik.values,
+        //         facultySubjects: [
+        //             ...formik.values.facultySubjects,
+        //             {
+        //                 facultyId,
+        //                 superSubjectId
+        //             }
+        //         ]
+        //     })
+        // }
+        // setFacultyId('');
+        // setFacultyName(null);
+        // setSuperSubjectId(null);
+        // setSuperSubjectName(null);
     }
 
     useEffect(() => {
@@ -87,17 +82,17 @@ const SubjectForm = (   {formik, loading}:
     },[loading])
 
     const handleDeleteFacultySubject = (facultyId: string, superSubjectId: string | null) => {
-        const newFacultySubjects = formik.values.facultySubjects.filter(item => {
-            return (item.facultyId !== facultyId) 
-        })
-        const newFacultySubjectsForTable = facultySubjects?.filter(item => {
-            return (item.facultyId !== facultyId) 
-        })
-        formik.setValues({
-            ...formik.values,
-            facultySubjects: newFacultySubjects
-        })
-        setFacultySubjects(newFacultySubjectsForTable)
+        // const newFacultySubjects = formik.values.facultySubjects.filter(item => {
+        //     return (item.facultyId !== facultyId) 
+        // })
+        // const newFacultySubjectsForTable = facultySubjects?.filter(item => {
+        //     return (item.facultyId !== facultyId) 
+        // })
+        // formik.setValues({
+        //     ...formik.values,
+        //     facultySubjects: newFacultySubjects
+        // })
+        // setFacultySubjects(newFacultySubjectsForTable)
     }
 
     const columns = useMemo(
@@ -105,6 +100,10 @@ const SubjectForm = (   {formik, loading}:
             {
                 Header: 'Faculty Name',
                 accessor: 'facultyName',
+            },
+            {
+                Header: 'Speciality Name',
+                accessor: 'specialityName',
             },
             {
                 Header: 'Pre-Requested Subject Name',
@@ -200,30 +199,10 @@ const SubjectForm = (   {formik, loading}:
                 {formik.errors.subjectTypeId as string}
             </Feedback>
         </Form.Group> 
+
+        {renderSpecialitySelect()}
+
         <Row>
-            <Col>
-                <Form.Group className="mb-3">
-                    <Form.Label htmlFor="type">
-                        Faculties:
-                    </Form.Label>
-                    <Form.Select
-                        size="lg"
-                        id=""
-                        name="facultyId"
-                        value={facultyId} 
-                        onChange={(e: ChangeEvent<HTMLSelectElement>) => { 
-                            setFacultyId(e.target.value);
-                            setFacultyName(e.target.options[e.target.selectedIndex].textContent)
-                        }}>
-                            <option key="no-value" value=""></option>
-                        {
-                            faculties?.data.map((faculty: {id: string, name: string}) => 
-                                <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
-                            )
-                        }
-                    </Form.Select>            
-                </Form.Group>
-            </Col>
             <Col>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="superSubjectId">
@@ -251,7 +230,7 @@ const SubjectForm = (   {formik, loading}:
         <button className="btn btn-success" onClick={handleAddFacultySubject}>
                 Add Faculty Pre-Requested Subject <i className="fa fa-plus"></i>
         </button>
-        <Table<FacultySubject>  columns={columns} 
+        <Table<SpecialitySubject>  columns={columns} 
                 data={facultySubjects}
                 renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 
                 type="button" 
