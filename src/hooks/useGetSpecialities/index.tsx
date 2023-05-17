@@ -1,48 +1,69 @@
-import { useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { useQuery } from "react-query";
 import { Col, Form, Row } from "react-bootstrap";
-import { FormikProps } from "formik";
 
 import { useGet } from "..";
 
-export const useGetSpecialities = function<T>
-                            (formik: FormikProps<T & {facultyId: string, specialtyId: string}>) {
+interface Faculty {
+    id: string,
+    name: string,
+}
+
+interface Speciality {
+    id: string,
+    name: string,
+}
+
+const optionInitialState = {id: '', name: ''};
+
+export const useGetSpecialities = function() {
 
     const get = useGet();
+    const [faculty, setFaculty] = useState<Faculty>(optionInitialState);
+    const [speciality, setSeciality] = useState<Speciality>(optionInitialState);
+
+    const reset = () => {
+        setFaculty(optionInitialState);
+        setSeciality(optionInitialState);
+    }
     
     const { data: faculties } = useQuery(
         ['/Faculty/GetDropDownFaculties'], 
         () => get(`/Faculty/GetDropDownFaculties`));
 
-    const { data: specialities, refetch: refetchSpecialities } = useQuery(
-        ['/Specialty/GetDropDownSpecialties', formik.values.facultyId], 
-        () => get(`/Specialty/GetDropDownSpecialties/${formik.values.facultyId}`),
+    const { data: specialities, refetch: refetchSpecialities, isFetching } = useQuery(
+        ['/Specialty/GetDropDownSpecialties', faculty.id], 
+        () => get(`/Specialty/GetDropDownSpecialties/${faculty.id}`),
         {
             enabled: false
         });
 
     useEffect(() => {
-        if(formik.values.facultyId) {
-            refetchSpecialities();
-        }
-    },[formik.values.facultyId]);
+        if(faculty.id) refetchSpecialities()
+    },[faculty.id])
+
+    const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        const {target: {value, name, options}} =  event;
+        const optionName = options[options.selectedIndex].textContent as string;
+        if(name === 'facultyId') setFaculty({id: value, name: optionName});
+        if(name === 'specialityId') setSeciality({id: value, name: optionName})
+    }    
 
     const renderSpecialitySelect = () => {
         return (
             <Row>
                 <Col>
                     <Form.Group className="mb-3">
-                        <Form.Label htmlFor="type">
+                        <Form.Label htmlFor="facultyId">
                             Faculties:
                         </Form.Label>
                         <Form.Select
-                            required
                             size="lg"
                             id=""
                             name="facultyId"
-                            value={formik.values.facultyId} 
-                            onChange={formik.handleChange}>
+                            value={faculty?.id} 
+                            onChange={handleChange}>
                                 <option key="no-value" value=""></option>
                             {
                                 faculties?.data.map((faculty: {id: string, name: string}) => 
@@ -54,16 +75,16 @@ export const useGetSpecialities = function<T>
                 </Col>
                 <Col>
                     <Form.Group className="mb-3">
-                        <Form.Label htmlFor="superSubjectId">
+                        <Form.Label htmlFor="specialityId">
                             Speciality:             
                         </Form.Label>
                         <Form.Select
-                            required
+                            disabled={!faculty?.id && isFetching}
                             size="lg"
-                            id="specialtyId"
-                            name="specialtyId"
-                            value={formik.values.specialtyId} 
-                            onChange={formik.handleChange}>
+                            id="specialityId"
+                            name="specialityId"
+                            value={speciality?.id} 
+                            onChange={handleChange}>
                                 <option key="no-value" value=""></option>
                             {
                                 specialities?.data.map((speciality: {id: string, name: string}) => 
@@ -78,9 +99,10 @@ export const useGetSpecialities = function<T>
     }
 
     return {
-        faculties,
-        specialities, 
-        renderSpecialitySelect
+        faculty,
+        speciality,
+        renderSpecialitySelect,
+        reset
     }
 
 }

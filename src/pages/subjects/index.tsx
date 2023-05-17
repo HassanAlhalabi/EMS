@@ -9,9 +9,9 @@ import { subjectValidation } from "../../schema/subject";
 import { toast } from "react-toastify";
 import { capitalize, getAxiosError } from "../../util";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
-import { FacultySubject, NewSubject, Subject } from "../../types/subjects";
+import { FullSubject, NewSubject, Subject } from "../../types/subjects";
 import SubjectForm from "./subject-form";
-import { Faculty } from "../../types/faculties";
+import { AxiosResponse } from "axios";
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -19,7 +19,8 @@ const INITIAL_VALUES = {
     descriptionAr: "",
     descriptionEn: "",
     subjectTypeId: '',
-    facultySubjects: []
+    hasLabratory: false,
+    specialtySubjects: []
 }
 
 const SubjectsPage = () => {
@@ -58,16 +59,18 @@ const SubjectsPage = () => {
                         {
                             // @ts-ignore
                             enabled: false,   
-                            onSuccess: data => {
+                            onSuccess: (data: AxiosResponse<FullSubject>) => {
                                 formik.setValues({
                                     ...data.data,
                                     subjectTypeId: data.data.subjectType.id,
-                                    facultySubjects: data.data.facultySubjects.map((fs: {faculty: Faculty, superSubject: Subject}) => {
+                                    specialtySubjects: data.data.specialtySubjects.map((fs) => {
                                         return {
                                             facultyId: fs.faculty.id,
-                                            facultyName: fs.faculty.nameEn,
-                                            superSubjectId: fs.superSubject ? fs.superSubject.id : null,
-                                            superSubjectName: fs.superSubject ? fs.superSubject.nameEn : null,
+                                            facultyName: fs.faculty.name,
+                                            specialtyId: fs.specialty.id,
+                                            specialtyName: fs.specialty.name,
+                                            superSubjectId: fs.superSubject ? fs.superSubject.id : '',
+                                            superSubjectName: fs.superSubject ? fs.superSubject.name : '',
                                         }
                                     })
                                 })
@@ -207,7 +210,7 @@ const SubjectsPage = () => {
                         confirmButtonVariant={
                             action === ACTION_TYPES.delete ? 'danger' : "primary"
                         }
-                        confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
+                        confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                         handleConfirm={handleSubjectAction}
                         actionLoading={postLoading}
                     >

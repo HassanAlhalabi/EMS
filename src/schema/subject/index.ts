@@ -7,7 +7,7 @@ export const subjectValidation = object({
     descriptionEn: string().nullable(),
     hasLibrary: boolean().nullable(),
     subjectTypeId: string().required('Subject Type Name Is Required'),
-    facultySubjects: array().of(object({
+    specialtySubjects: array().of(object({
         specialtyId: string().required('Speciality Is Required'),
         superSubjectId: string().nullable()
     })).required('Specialities Are Required')
