@@ -18,7 +18,16 @@ const RoleForm = ({formik}:{formik: FormikProps<NewRole>}) => {
             .fill([])
             .map((_, i) => elRefs[i] || createRef()),
         );
-      }, [rolesNum]);
+    }, [rolesNum]);
+
+    // Handle Initla Roles Claims Load
+    useEffect(() => {   
+        allRolesRefs.forEach(roleRef => {
+            const subClaims = Array.from((roleRef.current.closest('.accordion-header')?.nextSibling as HTMLElement)?.querySelectorAll('input'));
+            const allChecked = subClaims.every(claim => claim.checked);
+            if(allChecked) roleRef.current.checked = true;
+        })
+    },[formik.values.roleClaims.length])
 
     const handleAllRoles = (e: ChangeEvent<HTMLInputElement>) => {
         const { target: {value} } = e;

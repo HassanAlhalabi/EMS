@@ -45,10 +45,7 @@ const RolesPage = () => {
                                 keepPreviousData: true,
                             });
 
-    const { data: role, 
-				isLoading: loadingRole, 
-				isFetching: fetchingRole,
-				refetch: refetchRole,
+    const { refetch: refetchRole,
 			 } = useQuery(
                         ['/Role/GetRole', roleId], 
                         () => get(`/Role/GetRole/${roleId}`),
@@ -77,7 +74,7 @@ const RolesPage = () => {
 		if(roleId && action === ACTION_TYPES.update) {
 			refetchRole();
 		}
-		() => setRoleId(null);
+		return () => setRoleId(null);
 	},[roleId])
     
     const columns = useMemo(
@@ -105,8 +102,7 @@ const RolesPage = () => {
     );
 
     const { mutateAsync , 
-            isLoading: postLoading, 
-            isError, error } = action === ACTION_TYPES.add ? usePost('/Role', 
+            isLoading: postLoading } = action === ACTION_TYPES.add ? usePost('/Role', 
                                         {
                                             name: formik.values.name,
                                             roleClaims: formik.values.roleClaims
@@ -205,7 +201,7 @@ const RolesPage = () => {
 								}
 								handleConfirm={handleRoleAction}
 								actionLoading={postLoading}
-                                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
+                                confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
