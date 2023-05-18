@@ -71,7 +71,7 @@ const ImageUpload = ({setSelectedImage, previewImage,handleDeletePreviewImage}: 
                 {
                   (previewImage) && 
                     <div  className="image-item">
-                      <img src={previewImage} alt="" height="150" />
+                      <img src={previewImage} alt="" height="150" style={{maxWidth:'100%'}}/>
                       <div className="image-item__btn-wrapper">
                         <a href="#" onClick={handleDeletePreviewImage}>
                           <i className="fa fa-close text-danger fa-fw"></i>
