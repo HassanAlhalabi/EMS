@@ -202,3 +202,8 @@ table tr td:last-of-type {
     font-size: 18px;
     font-weight: bold;
 }
+
+.cursor-pointer input {
+    cursor: pointer;
+    margin: 5px 8px 5px 0;
+}

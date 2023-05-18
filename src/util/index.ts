@@ -109,6 +109,8 @@ export const getClaimsMap = () => {
     return claimsMap;
 }
 
+export const getAllClaimsByType = (type: string) => getClaimsMap().get(type)
+
 export const hasPermission = (scope: string | string[]) => {
     const claims = getClaims();
     return  Array.isArray(scope) ? 
