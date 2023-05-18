@@ -26046,8 +26046,8 @@ html[dir=rtl] .img-dropdown {
   content: "";
   right: 0.125rem;
   top: 0.5rem;
-  height: 1rem;
-  width: 1rem;
+  height: 15px;
+  width: 15px;
   border-radius: 50%;
   border: 2px solid var(--falcon-notification-indicator-border-color);
 }

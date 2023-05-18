@@ -9,7 +9,7 @@
 @media(max-width: 1199px) {
     
     .navbar-vertical {
-        max-width: 90vw;
+        max-width: 30vw;
         height: 100vh;
         left: 0;
         transition: .8s;
@@ -34,7 +34,26 @@
 
 }
 
+@media(max-width: 900px) {
+    .navbar-vertical {
+        max-width: 60vw;
+    }
 
+}
+
+@media(max-width: 600px) {
+    .navbar-vertical {
+        max-width: 70vw;
+    }
+
+}
+
+@media(max-width: 400px) {
+    .navbar-vertical {
+        max-width: 90vw;
+    }
+
+}
 
 .navbar-top .navbar-nav-icons .dropdown-menu {
     min-width: 15rem;
@@ -42,8 +61,10 @@
 }
 
 .notification-indicator::before {
-    right: 0px;
-    top: 6px;
+    right: 7px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
 }
 
 .sort-arrow * {
