@@ -6,6 +6,36 @@
     display: none;
 }
 
+@media(max-width: 1199px) {
+    
+    .navbar-vertical {
+        max-width: 90vw;
+        height: 100vh;
+        left: 0;
+        transition: .8s;
+    }
+
+    .navbar-vertical-collapsed .navbar-vertical {
+        left: -100%
+    }
+
+    .navbar-collapse {
+        border-right: 2px solid #FFF;
+        height: 100%;
+    }
+    
+    .navbar-collapse.collapse:not(.show) {
+        display: inline-block;
+    }
+
+    .navbar-collapse .nav-link {
+     padding-left: 10px;
+    }
+
+}
+
+
+
 .navbar-top .navbar-nav-icons .dropdown-menu {
     min-width: 15rem;
     max-width: 90vw;
@@ -129,7 +159,13 @@ table tr td:last-of-type {
     display: flex;
     width: fit-content;
     position: relative;
-    min-width: 20px
+    min-width: 20px;
+    max-width: 100%;
+}
+
+.image-item img {
+    object-fit: cover;
+    max-width: 100%;
 }
 
 .image-item .image-item__btn-wrapper {
