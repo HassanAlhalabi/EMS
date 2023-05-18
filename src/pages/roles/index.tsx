@@ -34,6 +34,7 @@ const RolesPage = () => {
 		validationSchema: roleValidation
 	})
 
+
     const { data, 
             isLoading, 
             isFetching,
@@ -74,7 +75,6 @@ const RolesPage = () => {
 		if(roleId && action === ACTION_TYPES.update) {
 			refetchRole();
 		}
-		return () => setRoleId(null);
 	},[roleId])
     
     const columns = useMemo(
