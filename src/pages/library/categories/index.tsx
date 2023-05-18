@@ -70,7 +70,7 @@ const CategoriesPage = () => {
             searchTimeout = setTimeout(() => {
             refetch();
             },600);
-            return () => clearTimeout(searchTimeout);;
+            return () => clearTimeout(searchTimeout);
         }
         refetch();
         return () => clearTimeout(searchTimeout);
@@ -112,8 +112,7 @@ const CategoriesPage = () => {
     );
 
     const { mutateAsync , 
-            isLoading: postLoading, 
-            isError, error } = action === ACTION_TYPES.add ? usePostFormData('/Category',formik.values) :
+            isLoading: postLoading } = action === ACTION_TYPES.add ? usePostFormData('/Category',formik.values) :
                                                         action === ACTION_TYPES.update ? 
                                                         usePutFormData('/Category', 
                                         {
@@ -128,7 +127,7 @@ const CategoriesPage = () => {
         if(!formik.isValid && action !== ACTION_TYPES.delete) {
             formik.validateForm();
             return;
-        };
+        }
     
         // If All Is Ok ... Do It
         if(formik.isValid) {
@@ -202,7 +201,7 @@ const CategoriesPage = () => {
 									action === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
 								handleConfirm={handleCategoryAction}
-                                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
+                                confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
 								actionLoading={postLoading}
                     >
                         {(  action === ACTION_TYPES.add || 

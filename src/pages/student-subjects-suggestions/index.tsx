@@ -1,11 +1,10 @@
-import { useFormik } from "formik";
 import { useEffect, useMemo, useState, ChangeEvent } from 'react';
 
+import { useFormik } from "formik";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import PopUp from "../../components/popup";
-import SwitchInput from "../../components/switch-input/index.";
 
+import PopUp from "../../components/popup";
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../hooks";
@@ -42,8 +41,7 @@ const StudentSuggestedSubjectsPage = () => {
                                   enabled: false
                                 });
 
-  const { data: studentSuggestedSubject, 
-          refetch: refetchStudentSuggestedSubject,
+  const { refetch: refetchStudentSuggestedSubject,
         } = useQuery(
                     ['/StudentSuggestedSubject/GetStudentSuggestedSubject', studentSuggestedSubjectId], 
                     () => get(`/StudentSuggestedSubject/GetStudentSuggestedSubject/${studentSuggestedSubjectId}`),
@@ -68,7 +66,7 @@ const StudentSuggestedSubjectsPage = () => {
       searchTimeout = setTimeout(() => {
         refetch();
       },600);
-      return () => clearTimeout(searchTimeout);;
+      return () => clearTimeout(searchTimeout);
     }
     refetch();
     return () => clearTimeout(searchTimeout);
@@ -78,15 +76,15 @@ const StudentSuggestedSubjectsPage = () => {
 		() => [
       {
         Header: 'Student Suggested Subjects',
-        accessor: 'name',
+        accessor: 'subjectName',
       },
       {
         Header: 'Options',
         accessor: 'options',
       }
-		],
-		[]
-	 )
+    ],
+    []
+	)
 
   const studentSuggestedSubjects = useMemo(
     () => (isLoading || status === 'idle') ? [] : (data?.data.studentSuggestedSubjects),
@@ -177,7 +175,7 @@ const StudentSuggestedSubjectsPage = () => {
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.update)
-                                            setStudentSuggestedSubjectId(studentSuggestedSubject.subjectId);
+                                            setStudentSuggestedSubjectId(studentSuggestedSubject.specialtySubjectId);
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                             </button>
@@ -185,7 +183,7 @@ const StudentSuggestedSubjectsPage = () => {
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.delete);
-                                            setStudentSuggestedSubjectId(studentSuggestedSubject.subjectId);
+                                            setStudentSuggestedSubjectId(studentSuggestedSubject.specialtySubjectId);
                                     }}>        
                                 <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                             </button>
@@ -197,7 +195,7 @@ const StudentSuggestedSubjectsPage = () => {
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} Student Suggested Subjects`}
+                title={`${action && capitalize(action)} Student Suggested Subjects`}
                 show={action !== null && action !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
                 confirmText={`${action} Student Suggested Subjects`}
@@ -206,13 +204,13 @@ const StudentSuggestedSubjectsPage = () => {
                 }
                 handleConfirm={handleStudentSuggestedSubjectAction}
                 actionLoading={postLoading}
-                confirmButtonIsDisabled={!formik.isValid || !formik.dirty}
+                confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
                                 && <SubjectSuggestionForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This StudentSuggestedSubject</>
+                                    <>Are you Sure You Want to Delete This Suggested Subject</>
                         }
                 </PopUp>
               </>

@@ -29,6 +29,8 @@ const CategoryForm = ({formik}:{formik: FormikProps<NewBookCategory>}) => {
         formik.setFieldValue('imagePath','')
     }
 
+    console.log(formik.values)
+
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
             <Row>

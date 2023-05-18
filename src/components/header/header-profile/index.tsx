@@ -1,7 +1,8 @@
 
+import { useContext, useState } from 'react';
+
 import member from '../../../assets/img/team/3-thumb.png';
 import ProfileMenu from './profile-menu';
-import { useContext, useState } from 'react';
 import CDropdown from '../../dropdown';
 import NotificationMenu from '../notification-menu';
 import { LayoutContext } from '../../../contexts/layout-context';
