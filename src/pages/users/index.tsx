@@ -16,6 +16,7 @@ import { capitalize, getAxiosError } from "../../util";
 import UserForm from "./user-form";
 import PermissionsGate from "../../components/permissions-gate";
 import { useHTTP } from "../../hooks/useHTTP";
+import { useGetTableData } from "../../hooks/useGetTableData";
 
 const INITIAL_VALUES: NewUser = {
   roleId: '',
@@ -50,18 +51,11 @@ const UsersPage = () => {
     validationSchema: addUserValidation
   })
 
-  const { data, 
-          status,
-          isLoading, 
-          isFetching, 
-          refetch } = useQuery(
-                                ['/User/GetAllUsers', page, pageSize, searchKey], 
-                                () => get(`/User/GetAllUsers?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                {
-                                  keepPreviousData: true,
-                                  enabled: false
-                                }
-                              );
+    const { data, 
+            status,
+            isLoading, 
+            isFetching, 
+            refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
 
   const {  refetch: refetchUser,
         } = useQuery(
@@ -89,19 +83,6 @@ const UsersPage = () => {
     }
   },[userId]);
 
-  console.log(formik.values)
-
-  useEffect(() => {
-    let searchTimeout: number; 
-    if(searchKey) {
-      searchTimeout = setTimeout(() => {
-        refetch();
-      },600);
-      return () => clearTimeout(searchTimeout);;
-    }
-    refetch();
-    return () => clearTimeout(searchTimeout);
-  },[page,pageSize,searchKey])
 
   const columns = useMemo(
 		() => [

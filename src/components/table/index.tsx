@@ -164,7 +164,7 @@ const Table = <T extends Record<any,any>>({ 	isBulk,
 						/>
 						}
 						{
-							hasSearch && !loading &&
+							hasSearch &&
 							<TableSearch
 								searchKey={searchKey as string}
 								handleSearchChange={handleSearchChange}

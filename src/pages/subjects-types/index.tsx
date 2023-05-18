@@ -11,6 +11,7 @@ import { capitalize, getAxiosError } from "../../util";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import {  NewSubjectType, Subject } from "../../types/subjects";
 import SubjectTypeForm from "./subject-type-form";
+import { useGetTableData } from "../../hooks/useGetTableData";
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -39,12 +40,7 @@ const SubjectsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useQuery(
-                            ['/SubjectType/GetAllSubjectTypes', page, pageSize], 
-                            () => get(`/SubjectType/GetAllSubjectTypes?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                            {
-                                keepPreviousData: true,
-                            });
+            refetch } = useGetTableData('/SubjectType/GetAllSubjectTypes', page, pageSize, searchKey)
 
     const { data: subject, 
 				isLoading: loadingSubject, 
@@ -57,18 +53,6 @@ const SubjectsPage = () => {
                             enabled: false,   
                             onSuccess: data => formik.setValues(data.data)            
 			            });
-
-    useEffect(() => {
-        let searchTimeout: number; 
-        if(searchKey) {
-            searchTimeout = setTimeout(() => {
-            refetch();
-            },600);
-            return () => clearTimeout(searchTimeout);;
-        }
-        refetch();
-        return () => clearTimeout(searchTimeout);
-        },[page,pageSize,searchKey])
 				
 	useEffect(() => {
 		if(subjectId && action === ACTION_TYPES.update) {

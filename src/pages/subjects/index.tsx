@@ -12,6 +12,7 @@ import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { FullSubject, NewSubject, Subject } from "../../types/subjects";
 import SubjectForm from "./subject-form";
 import { AxiosResponse } from "axios";
+import { useGetTableData } from "../../hooks/useGetTableData";
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -42,12 +43,7 @@ const SubjectsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useQuery(
-                            ['/Subject/GetAllSubjects', page, pageSize], 
-                            () => get(`/Subject/GetAllSubjects?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                            {
-                                keepPreviousData: true,
-                            });
+            refetch } = useGetTableData('/Subject/GetAllSubjects', page, pageSize, searchKey)
 
     const   {   data: subject, 
                 isLoading: loadingSubject, 
@@ -76,18 +72,6 @@ const SubjectsPage = () => {
                                 })
                             }              
 			            });                   
-
-    useEffect(() => {
-        let searchTimeout: number; 
-        if(searchKey) {
-            searchTimeout = setTimeout(() => {
-            refetch();
-            },600);
-            return () => clearTimeout(searchTimeout);;
-        }
-        refetch();
-        return () => clearTimeout(searchTimeout);
-        },[page,pageSize,searchKey])
 				
 	useEffect(() => {
 		if(subjectId && action === ACTION_TYPES.update) {

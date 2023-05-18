@@ -14,6 +14,7 @@ import { addSemesterValidation } from "../../schema/semesters";
 import { NewSemester, Semester } from "../../types/semesters";
 import { capitalize, getAxiosError } from "../../util";
 import SemesterForm from "./semester-form";
+import { useGetTableData } from "../../hooks/useGetTableData";
 
 const INITIAL_VALUES: NewSemester = {
   nameAr:	'',
@@ -42,13 +43,7 @@ const SemestersPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useQuery(
-                                            ['/Semester/GetAllSemesters', page, pageSize, searchKey], 
-                                            () => get(`/Semester/GetAllSemesters?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                            {
-                                              keepPreviousData: true,
-                                              enabled: false
-                                            });
+          refetch } = useGetTableData('/Semester/GetAllSemesters', page, pageSize, searchKey)
 
   const { data: semester, 
           refetch: refetchSemester,
@@ -69,18 +64,6 @@ const SemestersPage = () => {
     }
     () => setSemesterId(null);
   },[semesterId]);
-
-  useEffect(() => {
-    let searchTimeout: number; 
-    if(searchKey) {
-      searchTimeout = setTimeout(() => {
-        refetch();
-      },600);
-      return () => clearTimeout(searchTimeout);;
-    }
-    refetch();
-    return () => clearTimeout(searchTimeout);
-  },[page,pageSize,searchKey])
 
   const columns = useMemo(
 		() => [

@@ -12,6 +12,7 @@ import { Faculty } from "../../types/faculties";
 import {  capitalize, getAxiosError } from "../../util";
 import { ACTION_TYPES } from '../../constants';
 import PopUp from '../../components/popup';
+import { useGetTableData } from '../../hooks/useGetTableData';
 
 
 const FacultiesPage = () => {
@@ -22,31 +23,12 @@ const FacultiesPage = () => {
   const { toggleScreenLoader } = useScreenLoader();
   const [facultyId, setFacultyId] = useState<string | null>(null);
   const [action, setAction] = useState< string | null>(null);
-  const get = useGet();
 
   const { data, 
           status,
           isLoading, 
           isFetching, 
-          refetch } = useQuery(
-                                ['/Faculty/GetAllFaculties', page, pageSize, searchKey], 
-                                () => get(`/Faculty/GetAllFaculties?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                {
-                                  keepPreviousData: true,
-                                  enabled: false
-                              });
-
-  useEffect(() => {
-    let searchTimeout: number; 
-    if(searchKey) {
-      searchTimeout = setTimeout(() => {
-        refetch();
-      },600);
-      return () => clearTimeout(searchTimeout);;
-    }
-    refetch();
-    return () => clearTimeout(searchTimeout);
-  },[page,pageSize,searchKey])
+          refetch } = useGetTableData('/Faculty/GetAllFaculties', page, pageSize, searchKey)
 
   useEffect(() => {
     if(facultyId && action === ACTION_TYPES.toggle) {

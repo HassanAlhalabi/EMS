@@ -13,6 +13,7 @@ import { addStudentSuggestedSubjectValidation } from "../../schema/suggested-sub
 import { NewSubjectSuggestion, SuggestedSubject } from "../../types/suggested-subjects";
 import { capitalize, getAxiosError } from "../../util";
 import SubjectSuggestionForm from "./subject-suggestion-form";
+import { useGetTableData } from '../../hooks/useGetTableData';
 
 const INITIAL_VALUES: NewSubjectSuggestion = {
   subjectIds: [],
@@ -33,13 +34,7 @@ const StudentSuggestedSubjectsPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useQuery(
-                                ['/StudentSuggestedSubject/GetAllStudentSuggestedSubjects', page, pageSize, searchKey], 
-                                () => get(`/StudentSuggestedSubject/GetAllStudentSuggestedSubjects?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                {
-                                  keepPreviousData: true,
-                                  enabled: false
-                                });
+          refetch } = useGetTableData('/StudentSuggestedSubject/GetAllStudentSuggestedSubjects', page, pageSize, searchKey)
 
   const { refetch: refetchStudentSuggestedSubject,
         } = useQuery(
@@ -59,18 +54,6 @@ const StudentSuggestedSubjectsPage = () => {
     }
     () => setStudentSuggestedSubjectId(null);
   },[studentSuggestedSubjectId]);
-
-  useEffect(() => {
-    let searchTimeout: number; 
-    if(searchKey) {
-      searchTimeout = setTimeout(() => {
-        refetch();
-      },600);
-      return () => clearTimeout(searchTimeout);
-    }
-    refetch();
-    return () => clearTimeout(searchTimeout);
-  },[page,pageSize,searchKey])
 
   const columns = useMemo(
 		() => [
@@ -163,9 +146,12 @@ const StudentSuggestedSubjectsPage = () => {
               renderTableOptions={() => {
                                     return  <button 	className="btn btn-falcon-success btn-sm" 
                                               type="button" 
-                                              onClick={() => setAction(ACTION_TYPES.add)}>        
+                                              onClick={() => setAction(ACTION_TYPES.add)}>   
+                                                <span className="me-1">Add</span>     
                                                 <span className="fas fa-plus"></span>
-                                                <span className="ms-1">New</span>
+                                                <span className="ms-2 me-2">|</span>
+                                                <span className="me-1">Update</span>
+                                                <span className="fas fa-edit"></span>
                                             </button>
                                            
                                     }} 
@@ -198,7 +184,7 @@ const StudentSuggestedSubjectsPage = () => {
                 title={`${action && capitalize(action)} Student Suggested Subjects`}
                 show={action !== null && action !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} Student Suggested Subjects`}
+                confirmText={`${action} Student Suggested Subject`}
                 confirmButtonVariant={
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
@@ -210,7 +196,7 @@ const StudentSuggestedSubjectsPage = () => {
                             action === ACTION_TYPES.update)
                                 && <SubjectSuggestionForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This Suggested Subject</>
+                                    <>Are you Sure You Want to Delete This Subject</>
                         }
                 </PopUp>
               </>

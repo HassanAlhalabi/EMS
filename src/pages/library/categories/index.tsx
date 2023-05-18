@@ -13,6 +13,7 @@ import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { BookCategory, NewBookCategory } from "../../../types/books";
 import CategoryForm from "./category-form";
+import { useGetTableData } from '../../../hooks/useGetTableData';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -40,12 +41,7 @@ const CategoriesPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useQuery(
-                            ['/Category/GetAllCategories', page, pageSize], 
-                            () => get(`/Category/GetAllCategories?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                            {
-                                keepPreviousData: true,
-                            });
+            refetch } = useGetTableData('/Category/GetAllCategories', page, pageSize, searchKey)
 
     const { data: category, 
 				isLoading: loadingCategory, 
@@ -63,18 +59,6 @@ const CategoriesPage = () => {
                                 })
                             }             
 			            });
-
-    useEffect(() => {
-        let searchTimeout: number; 
-        if(searchKey) {
-            searchTimeout = setTimeout(() => {
-            refetch();
-            },600);
-            return () => clearTimeout(searchTimeout);
-        }
-        refetch();
-        return () => clearTimeout(searchTimeout);
-        },[page,pageSize,searchKey])
 				
 	useEffect(() => {
 		if(categoryId && action === ACTION_TYPES.update) {

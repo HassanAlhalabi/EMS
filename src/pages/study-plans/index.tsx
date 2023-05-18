@@ -13,6 +13,7 @@ import { addStudyPlanValidation } from "../../schema/study-plan";
 import { NewStudyPlan, StudyPlan } from "../../types/study-plan";
 import { capitalize, getAxiosError } from "../../util";
 import StudyPlanForm from "./study-plan-form";
+import { useGetTableData } from "../../hooks/useGetTableData";
 
 const INITIAL_VALUES: NewStudyPlan = {
   nameAr:	'',
@@ -35,13 +36,7 @@ const StudyPlansPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useQuery(
-                                            ['/StudyPlan/GetAllStudyPlans', page, pageSize, searchKey], 
-                                            () => get(`/StudyPlan/GetAllStudyPlans?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                            {
-                                              keepPreviousData: true,
-                                              enabled: false
-                                            });
+          refetch } = useGetTableData('/StudyPlan/GetAllStudyPlans', page, pageSize, searchKey)
 
   const { data: studyPlan, 
           refetch: refetchStudyPlan,
@@ -62,18 +57,6 @@ const StudyPlansPage = () => {
     }
     () => setStudyPlanId(null);
   },[studyPlanId]);
-
-  useEffect(() => {
-    let searchTimeout: number; 
-    if(searchKey) {
-      searchTimeout = setTimeout(() => {
-        refetch();
-      },600);
-      return () => clearTimeout(searchTimeout);;
-    }
-    refetch();
-    return () => clearTimeout(searchTimeout);
-  },[page,pageSize,searchKey])
 
   const columns = useMemo(
 		() => [

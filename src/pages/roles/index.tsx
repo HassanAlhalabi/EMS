@@ -12,6 +12,7 @@ import { capitalize, getAxiosError } from "../../util";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { Role } from "../../types/roles";
 import PermissionsGate from "../../components/permissions-gate";
+import { useGetTableData } from "../../hooks/useGetTableData";
 
 const INITIAL_VALUES: {name: string, roleClaims: string[]} = {
     name: '',
@@ -38,13 +39,7 @@ const RolesPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useQuery(
-                            ['/Role/GetAllRoles', page, pageSize], 
-                            () => get(`/Role/GetAllRoles?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                            {
-                                // @ts-ignore
-                                keepPreviousData: true,
-                            });
+            refetch } = useGetTableData('/Role/GetAllRoles', page, pageSize, searchKey)
 
     const { refetch: refetchRole,
 			 } = useQuery(
@@ -58,18 +53,6 @@ const RolesPage = () => {
                                 roleClaims: data.data.roleClaims
 						    })              
 			            });
-
-    useEffect(() => {
-        let searchTimeout: number; 
-        if(searchKey) {
-            searchTimeout = setTimeout(() => {
-            refetch();
-            },600);
-            return () => clearTimeout(searchTimeout);;
-        }
-        refetch();
-        return () => clearTimeout(searchTimeout);
-        },[page,pageSize,searchKey])
 				
 	useEffect(() => {
 		if(roleId && action === ACTION_TYPES.update) {

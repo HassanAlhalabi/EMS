@@ -14,6 +14,7 @@ import { bookValidation } from "../../../schema/book";
 import BookForm from "./book-form";
 import SwitchInput from "../../../components/switch-input/index.";
 import { useDelete, useGet, usePostFormData, usePut, usePutFormData } from "../../../hooks";
+import { useGetTableData } from '../../../hooks/useGetTableData';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -46,12 +47,7 @@ const BooksPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useQuery(
-                            ['/Book/GetAllBooks', page, pageSize], 
-                            () => get(`/Book/GetAllBooks?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                            {
-                                keepPreviousData: true,
-                            });
+            refetch } = useGetTableData('/Book/GetAllBooks', page, pageSize, searchKey)
 
     const { data: book, 
             isLoading: loadingBook, 
@@ -66,18 +62,6 @@ const BooksPage = () => {
                                 formik.setValues(data.data)
                             }              
 			            });
-
-    useEffect(() => {
-        let searchTimeout: number; 
-        if(searchKey) {
-            searchTimeout = setTimeout(() => {
-            refetch();
-            },600);
-            return () => clearTimeout(searchTimeout);;
-        }
-        refetch();
-        return () => clearTimeout(searchTimeout);
-    },[page,pageSize,searchKey])
 				
 	useEffect(() => {
 		if(bookId && action === ACTION_TYPES.update) {

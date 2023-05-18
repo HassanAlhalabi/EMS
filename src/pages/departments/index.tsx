@@ -13,6 +13,7 @@ import { NewDepartment, Department } from "../../types/departments";
 import { Faculty } from "../../types/faculties";
 import { capitalize, getAxiosError } from "../../util";
 import DepartmentForm from "./department-form";
+import { useGetTableData } from "../../hooks/useGetTableData";
 
 const INITIAL_VALUES: NewDepartment = {
   nameAr:	'',
@@ -37,13 +38,7 @@ const DepartmentsPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useQuery(
-                                            ['/Department/GetAllDepartments', page, pageSize, searchKey], 
-                                            () => get(`/Department/GetAllDepartments?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
-                                            {
-                                              keepPreviousData: true,
-                                              enabled: false
-                                            });
+          refetch } = useGetTableData('/Department/GetAllDepartments', page, pageSize, searchKey)
 
   const { data: department, 
           refetch: refetchDepartment,
@@ -67,18 +62,6 @@ const DepartmentsPage = () => {
     }
     () => setDepartmentId(null);
   },[departmentId]);
-
-  useEffect(() => {
-    let searchTimeout: number; 
-    if(searchKey) {
-      searchTimeout = setTimeout(() => {
-        refetch();
-      },600);
-      return () => clearTimeout(searchTimeout);;
-    }
-    refetch();
-    return () => clearTimeout(searchTimeout);
-  },[page,pageSize,searchKey])
 
   const columns = useMemo(
 		() => [
