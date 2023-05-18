@@ -6,7 +6,7 @@ export interface NewSubjectSuggestion {
 }
 
 export interface SuggestedSubject {
-    subjectId: string,
-    studentId: string,
-    isSeniorStudent: boolean
+    isSeniorStudent: boolean;
+    specialtySubjectId: string;
+    subjectName: string;
 }
