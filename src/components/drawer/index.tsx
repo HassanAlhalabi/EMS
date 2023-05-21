@@ -37,9 +37,7 @@ const Drawer = () => {
         <NavList>
 
             <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />
-            <PermissionsGate scope={['User.View','Role.View']}>
-              <NavListLabel title='Users Management' />
-            </PermissionsGate>
+            <NavListLabel title='Users Management' scope={['User.View','Role.View']}/>
             <NavLink title="Users" faIcon="fas fa-users" link="users" scope='User.Insert' />
             <NavLink title="Roles" faIcon="fas fa-user" link="roles" scope='Role.Insert'/>
 
@@ -65,10 +63,20 @@ const Drawer = () => {
             <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects" scope='StudentSuggestedSubject.View' />
             <NavLink title="Study Plans" faIcon="fas fa-calendar" link="study-plans" scope='StudyPlan.View' />
 
-            <NavListLabel title='Transport Management' />
-            {/* <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" scope='' />
-            <NavLink title="Chat" faIcon="fas fa-comments" link="#" scope='' />
-            <NavLink title="Calendar" faIcon="fas fa-calendar-alt" link="#" scope='' /> */}
+            <NavListLabel title='Transport Management' scope={['Booking.View',
+                                  'BusStop.View',
+                                  'City.View',
+                                  'Route.View',
+                                  'State.View',
+                                  'Trip.View',
+                                  'Vheicle.View']} />
+            <NavLink title="Bookings" faIcon="fas fa-calendar-alt" link="#" scope='' />
+            <NavLink title="Trips" faIcon="fas fa-car-alt" link="#" scope='' />
+            <NavLink title="States" faIcon="fas fa-map-marker" link="#" scope='' />
+            <NavLink title="Cities" faIcon="fas fa-city" link="#" scope='' />
+            <NavLink title="Vehicles" faIcon="fas fa-car" link="#" scope='' />
+            <NavLink title="Routes" faIcon="fas fa-route" link="#" scope='' />
+            <NavLink title="Bus Stops" faIcon="fas fa-bus" link="#" scope='' />
 
         </NavList>
       </div>
