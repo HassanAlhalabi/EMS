@@ -101,3 +101,13 @@ export const useDelete = (path: string, id: string) => {
     return useMutation(mutationFn);
 
 }
+
+export const useBulkDelete = (path: string, ids: string[]) => {
+
+    const { put } = useHTTP();
+
+    const mutationFn = async () => await put(`${path}`,ids);
+    
+    return useMutation(mutationFn);
+
+}
