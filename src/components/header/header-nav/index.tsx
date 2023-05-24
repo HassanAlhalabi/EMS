@@ -1,8 +1,9 @@
-import HeaderProfile from "../header-profile"
-import HeaderSearch from "../header-search"
 import { useContext } from 'react';
-import { LayoutContext } from "../../../contexts/layout-context";
+
 import { Link } from "react-router-dom";
+
+import HeaderProfile from "../header-profile"
+import { LayoutContext } from "../../../contexts/layout-context";
 
 const HeaderNav = () => {
 
@@ -21,8 +22,7 @@ const HeaderNav = () => {
 
       <Link className="navbar-brand me-1 me-sm-3" to="/">
         <div className="d-flex align-items-center">
-          <img className="me-2" src="assets/img/icons/spot-illustrations/falcon.png" alt="" width="40" />
-          <span className="font-sans-serif">falcon</span>
+          <span className="font-sans-serif">EMS</span>
         </div>
       </Link>
 
