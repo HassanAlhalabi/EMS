@@ -184,9 +184,6 @@ const UsersPage = () => {
       }
     })
 
-    console.log(formik.values)
-    console.log(actionsMap['UPDATE'])
-
   return  <>
             <Table<User>  
               columns={columns} 

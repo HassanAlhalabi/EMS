@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 
@@ -14,15 +14,6 @@ export interface ActionItem {
     payload?: any;
     onSuccess?: () => void
 }
-
-// type ActionsMap = {
-//     addAction?: ActionItem;
-//     updateAction?: ActionItem;
-//     deleteAction?: ActionItem;
-//     toggleAction?: ActionItem;
-// }
-
-// type ActionsMap2 = Record<any, ActionItem>
 
 const actionInitialState = {
     type: null,
@@ -73,33 +64,10 @@ export const useActions = () => {
                 }
             }
             catch(error) {
-                console.log(getAxiosError(error))
                 toast.error(getAxiosError(error))
             }
             toggleScreenLoader();
         }
-
-    // const addAction = actionsMap.addAction;
-    // const updateAction = actionsMap.updateAction;
-    // const deleteAction = actionsMap.deleteAction;
-    // const toggleAction = actionsMap.toggleAction;
-
-    // switch (action.type) {
-    //     case ACTION_TYPES.add:
-    //         console.log(action)
-    //         return addMutatation.mutate();
-    //     case ACTION_TYPES.update:
-    //         console.log(action)
-    //         return updateMutatation.mutate();
-    //     case ACTION_TYPES.delete:
-    //         console.log(action)
-    //         return deleteMutatation.mutate();
-    //     case ACTION_TYPES.toggle:
-    //         console.log(action)
-    //         return toggleMutatation.mutate();
-    //     default:
-    //         return {};
-    // }
 
     useEffect(() => {
         if(action.type) {
