@@ -78,9 +78,10 @@ export const isAuthUser = () => {
 
 export const getAxiosError = (error: unknown) => {
     const err = error as AxiosError;
-    if(err.response) { 
+    if(err.response && Array.isArray(err.response)) { 
         return (err.response.data as string[])[0];
     }
+    return ('Unexpected Error')
 }
 
 export const getClaims = () => {
