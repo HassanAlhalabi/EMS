@@ -27,8 +27,7 @@ const Drawer = () => {
         </div>
         <Link className="navbar-brand" to="/">
           <div className="d-flex align-items-center py-3">
-            <img className="me-2" src={Logo} alt="" width="40" />
-            <span className="font-sans-serif">falcon</span>
+            <span className="font-sans-serif">EMS</span>
           </div>
         </Link>
       </div>
@@ -61,6 +60,7 @@ const Drawer = () => {
             <NavLink title="Departments" faIcon="fas fa-people-roof" link="departments" scope='Department.View' />
             <NavLink title="Semesters" faIcon="fas fa-calendar" link="semesters" scope='Semester.View' />
             <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects" scope='StudentSuggestedSubject.View' />
+            <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects-manage" scope='StudentSuggestedSubjectForAdmin.View' />
             <NavLink title="Study Plans" faIcon="fas fa-calendar" link="study-plans" scope='StudyPlan.View' />
 
             <NavListLabel title='Transport Management' scope={['Booking.View',
@@ -74,7 +74,7 @@ const Drawer = () => {
             <NavLink title="Trips" faIcon="fas fa-car-alt" link="#" scope='' />
             <NavLink title="States" faIcon="fas fa-map-marker" link="#" scope='' />
             <NavLink title="Cities" faIcon="fas fa-city" link="#" scope='' />
-            <NavLink title="Vehicles" faIcon="fas fa-car" link="#" scope='' />
+            <NavLink title="Vehicles" faIcon="fas fa-car" link="vehicles" scope='' />
             <NavLink title="Routes" faIcon="fas fa-route" link="#" scope='' />
             <NavLink title="Bus Stops" faIcon="fas fa-bus" link="#" scope='' />
 
