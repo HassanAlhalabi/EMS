@@ -8,7 +8,6 @@ import Loader from './components/loader';
 import { IRoute } from './types/routes';
 import { ToastContainer } from 'react-toastify';
 import { useScreenLoader } from './hooks/useScreenLoader';
-import { withProfiler } from '@sentry/react';
 import { useRoutes } from './hooks/useRoutes';
 
 const renderRoutes = (routes: IRoute[]) => {
@@ -43,4 +42,4 @@ function App() {
   )
 }
 
-export default withProfiler(App)
+export default App
