@@ -78,7 +78,7 @@ export const isAuthUser = () => {
 
 export const getAxiosError = (error: unknown) => {
     const err = error as AxiosError;
-    if(err.response && Array.isArray(err.response)) { 
+    if(err.response && Array.isArray(err.response.data)) { 
         return (err.response.data as string[])[0];
     }
     return ('Unexpected Error')
