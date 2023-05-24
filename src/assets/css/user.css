@@ -76,12 +76,11 @@
     width: 2.5rem;
     height: 2.5rem;
     padding: 0;
-    background-color: #edf2f9;
+    color: #edf2f9;
     text-shadow: none;
     border-radius: 50%;
     -webkit-box-shadow: var(--falcon-box-shadow-sm);
     box-shadow: var(--falcon-box-shadow-sm);
-    opacity: .5;
 }
 
 .table-thumbnail {
