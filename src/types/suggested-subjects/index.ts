@@ -9,4 +9,5 @@ export interface SuggestedSubject {
     isSeniorStudent: boolean;
     specialtySubjectId: string;
     subjectName: string;
+    studentCount?: number;
 }

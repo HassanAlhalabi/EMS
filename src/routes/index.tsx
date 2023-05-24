@@ -137,6 +137,15 @@ export const getRoutes = () => ([
                 hasPermission: hasPermission('StudentSuggestedSubject.View')
             },
             {
+                id: 'suggested-subjects-manage',
+                name: 'Suggested Subjects',
+                path: '/suggested-subjects-manage',
+                isIndex: false,
+                childRoutes: null,
+                element: <AdminSuggestedSubjects />,
+                hasPermission: hasPermission('StudentSuggestedSubjectForAdmin.View')
+            },
+            {
                 id: 'study-plan',
                 name: 'Study Plan',
                 path: '/study-plans',
