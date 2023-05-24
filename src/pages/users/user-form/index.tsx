@@ -29,7 +29,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
         setWorkingDays(prev => [...prev, newValue]);
 
-        formik.setFieldValue('contract.workDays', [...formik.values.contract.workDays, Number(e.target.value)])
+        formik.values.contract && formik.setFieldValue('contract.workDays', [...formik.values.contract.workDays, Number(e.target.value)])
 
         e.target.value = '';
 
@@ -38,7 +38,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
     const handleRemoveCategory = (id: number) => {
         const newWorkingDays = workingDays.filter(day => day.id !== id)
         setWorkingDays(newWorkingDays);
-        formik.setFieldValue('contract.workDays', formik.values.contract.workDays.filter(day => day !== id))
+        formik.values.contract && formik.setFieldValue('contract.workDays', formik.values.contract.workDays.filter(day => day !== id))
     }
 
     const { data: faculties } = useQuery(
@@ -68,6 +68,8 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
             )
         }
     },[formik.values.contract]);
+
+    console.log(formik.errors)
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -208,7 +210,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                     onChange={formik.handleChange}>
                                 </Form.Control>            
                                 <Feedback type="invalid">
-                                    {formik.errors?.contract?.startAt as string}
+                                    {(formik.errors?.contract as unknown as Record<string, string>)?.startAt}
                                 </Feedback>
                             </Form.Group> 
                         </Col>
@@ -228,7 +230,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 
                                 </Form.Control>            
                                 <Feedback type="invalid">
-                                    {formik.errors?.contract?.endAt as string}
+                                    {(formik.errors?.contract as unknown as Record<string, string>)?.endAt}
                                 </Feedback>
                             </Form.Group> 
                         </Col>
@@ -249,7 +251,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 
                                 </Form.Control>            
                                 <Feedback type="invalid">
-                                    {formik.errors?.contract?.salary as string}
+                                    {(formik.errors?.contract as unknown as Record<string, string>)?.salary}
                                 </Feedback>
                             </Form.Group> 
                         </Col>
