@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import PopUp from "../../components/popup";
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, useGet, usePost, usePut } from "../../hooks";
+import { useBulkDelete, useGet, usePost, usePut } from "../../hooks";
 import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { addStudentSuggestedSubjectValidation } from "../../schema/suggested-subjects";
 import { NewSubjectSuggestion, SuggestedSubject } from "../../types/suggested-subjects";
@@ -52,7 +52,6 @@ const StudentSuggestedSubjectsPage = () => {
     if(studentSuggestedSubjectId && action === ACTION_TYPES.toggle) {
       handleStudentSuggestedSubjectAction();
     }
-    () => setStudentSuggestedSubjectId(null);
   },[studentSuggestedSubjectId]);
 
   const columns = useMemo(
@@ -96,7 +95,7 @@ const StudentSuggestedSubjectsPage = () => {
         id: studentSuggestedSubjectId,
        ...formik.values
       }) : action === ACTION_TYPES.delete ? 
-                useDelete('/StudentSuggestedSubject',studentSuggestedSubjectId as string)
+                useBulkDelete('/StudentSuggestedSubject',[studentSuggestedSubjectId] as string[])
              :  usePut(`/StudentSuggestedSubject/ToggleActivation/${studentSuggestedSubjectId}`);
 
   const handleStudentSuggestedSubjectAction = async () => {
@@ -149,22 +148,22 @@ const StudentSuggestedSubjectsPage = () => {
                                               onClick={() => setAction(ACTION_TYPES.add)}>   
                                                 <span className="me-1">Add</span>     
                                                 <span className="fas fa-plus"></span>
-                                                <span className="ms-2 me-2">|</span>
+                                                {/* <span className="ms-2 me-2">|</span>
                                                 <span className="me-1">Update</span>
-                                                <span className="fas fa-edit"></span>
+                                                <span className="fas fa-edit"></span> */}
                                             </button>
                                            
                                     }} 
               renderRowActions={(studentSuggestedSubject) => {
                   return  <div className="d-flex align-items-center">
-                            <button className="btn btn-falcon-info btn-sm m-1" 
+                            {/* <button className="btn btn-falcon-info btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
                                             setAction(ACTION_TYPES.update)
                                             setStudentSuggestedSubjectId(studentSuggestedSubject.specialtySubjectId);
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                            </button>
+                            </button> */}
                             <button className="btn btn-falcon-danger btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
