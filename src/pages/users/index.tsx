@@ -1,22 +1,21 @@
-import { useFormik } from "formik";
-import { useEffect, useMemo, useState, ChangeEvent } from 'react';
+import { useMemo, useState } from 'react';
 
-import { useQuery } from "react-query";
+import { useFormik } from "formik";
 import { toast } from "react-toastify";
+
 import PopUp from "../../components/popup";
 import SwitchInput from "../../components/switch-input/index.";
-
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, usePost, usePut } from "../../hooks";
-import { useScreenLoader } from "../../hooks/useScreenLoader";
 import { addUserValidation } from "../../schema/user";
 import { NewUser, User } from "../../types/users";
-import { capitalize, getAxiosError } from "../../util";
+import { capitalize } from "../../util";
 import UserForm from "./user-form";
 import PermissionsGate from "../../components/permissions-gate";
-import { useHTTP } from "../../hooks/useHTTP";
 import { useGetTableData } from "../../hooks/useGetTableData";
+import { useActions } from "../../hooks/useActions";
+import { Action } from "../../types";
+import { useGetDataById } from "../../hooks/useGetDataById";
 
 const INITIAL_VALUES: NewUser = {
   roleId: '',
@@ -40,49 +39,78 @@ const UsersPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [searchKey, setSearchKey] = useState<string>('');
-  const [action, setAction] = useState<string | null>(null);
+  const [currentAction, setCurrentAction] = useState<Action | null>(null)
   const [userId, setUserId] = useState<string | null>(null);
-  const { toggleScreenLoader } = useScreenLoader();
-  const { get } = useHTTP();
-
   const formik = useFormik({
     initialValues: INITIAL_VALUES,
     onSubmit: () => handleUserAction(),
     validationSchema: addUserValidation
-  })
+  });
+  const { setAction } = useActions()
 
     const { data, 
             status,
             isLoading, 
             isFetching, 
             refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
+    
+    useGetDataById<User>('/User/GetUser', userId, {
+      onSuccess: data => formik.setValues({
+        ...formik.values,
+        ...data.data,
+        roleId: data.data.role.id,
+        contract: data.data.contract ? {
+          ...data.data.contract,
+          endAt: (data.data.contract.endAt as string).split('T')[0],
+          startAt: (data.data.contract.startAt as string).split('T')[0]
+        } : null
+      }) 
+    });
 
-  const {  refetch: refetchUser,
-        } = useQuery(
-                    ['/User/GetUser', userId], 
-                    () => get(`/User/GetUser/${userId}`),
-                    {
-                        enabled: false,   
-                        onSuccess: data => formik.setValues({
-                          ...data.data,
-                          roleId: data.data.role.id,
-                          contract: data.data.contract ? {
-                            ...data.data.contract,
-                            endAt: data.data.contract.endAt.split('T')[0],
-                            startAt: data.data.contract.startAt.split('T')[0]
-                          } : null
-                        })                    
-        });
-
-  useEffect(() => {
-    if(userId && action === ACTION_TYPES.update) {
-      refetchUser();
+    const actionsMap = {
+      [ACTION_TYPES.add]: {
+        type: currentAction,
+        path: '/User/PostUser',
+        payload: {
+                  ...formik.values,
+                  roleId:formik.values.type === 'Student' ? null : formik.values.roleId,
+                  contract:formik.values.type === 'Student' ? null : formik.values.contract 
+                },
+        onSuccess: () => {
+          toast.success(`User Added Successfully`)
+          reset();
+        }
+      },
+      [ACTION_TYPES.update]: {
+        type:  currentAction,
+        path: '/User/PutUser',
+        payload: {
+                    id: userId,
+                  ...formik.values
+                  },
+        onSuccess: () => {
+          toast.success(`User Updated Successfully`)
+          reset();
+        },
+      },
+      [ACTION_TYPES.delete]: {
+        type: currentAction,
+        path: `/User`,
+        payload: userId,
+        onSuccess: () => {
+          toast.success(`User Deleted Successfully`)
+          reset();
+        }
+      },
+      [ ACTION_TYPES.toggle]: {
+        type: currentAction,
+        path: `/User/ToggleActivation/${userId}`,
+        onSuccess: () => {
+          toast.success(`Toggle User Done Successfully`)
+          reset();
+        }
+      } 
     }
-    if(userId && action === ACTION_TYPES.toggle) {
-      handleUserAction();
-    }
-  },[userId]);
-
 
   const columns = useMemo(
 		() => [
@@ -128,54 +156,36 @@ const UsersPage = () => {
   );
 
   const reset = () => {
-    setAction(null); 
+    setCurrentAction(null); 
     formik.resetForm();
-    setUserId(null)
+    setUserId(null);
+    refetch();
   }
 
-  const { mutateAsync , 
-          isLoading: postLoading
-        } = action === ACTION_TYPES.add ? usePost('/User/PostUser', 
-              {
-                ...formik.values,
-                roleId:formik.values.type === 'Student' ? null : formik.values.roleId,
-                contract:formik.values.type === 'Student' ? null : formik.values.contract 
-              }) : action === ACTION_TYPES.update ? 
-                     usePut('/User/PutUser', 
-          {
-            id: userId,
-          ...formik.values
-          }) : action === ACTION_TYPES.delete ? 
-                    useDelete('/User',userId as string)
-                :  usePut(`/User/ToggleActivation/${userId}`);
-
-  const handleUserAction = async () => {
-
+  const handleUserAction = () => {
       // Not Valid ... Do Nothing
-    if(!formik.isValid && action !== ACTION_TYPES.delete) {
+    if(!formik.isValid && currentAction !== ACTION_TYPES.delete) {
         formik.validateForm();
         return;
     };
-
     // If All Is Ok ... Do It
-    if(formik.isValid) {
-      try {
-        toggleScreenLoader();
-        await mutateAsync();
-        refetch();
-        toast.success(`${capitalize(action as string)} User Done Successfully`)
-        reset();
-      } catch(error) {
-        toast.error(getAxiosError(error))
-      }
-      toggleScreenLoader();
+    if(formik.isValid && currentAction) {
+      setAction(actionsMap[currentAction])
     }
   }
 
-  const handleToggleUser = async (e: ChangeEvent<HTMLInputElement>) => {
-    setAction(ACTION_TYPES.toggle);
-    setUserId(e.target.value);
-  }
+  const handleToggleUser = (userId: string) => 
+    setAction({
+      type: ACTION_TYPES.toggle as Action,
+      path: `/User/ToggleActivation/${userId}`,
+      onSuccess: () => {
+        toast.success(`Toggle User Done Successfully`)
+        reset();
+      }
+    })
+
+    console.log(formik.values)
+    console.log(actionsMap['UPDATE'])
 
   return  <>
             <Table<User>  
@@ -197,7 +207,7 @@ const UsersPage = () => {
                                     return  <PermissionsGate scope={'User.Insert'}>
                                               <button className="btn btn-falcon-success btn-sm" 
                                                 type="button" 
-                                                onClick={() => setAction(ACTION_TYPES.add)}>        
+                                                onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
                                                   <span className="fas fa-plus"></span>
                                                   <span className="ms-1">New</span>
                                               </button>
@@ -211,8 +221,8 @@ const UsersPage = () => {
                               <button className="btn btn-falcon-info btn-sm m-1" 
                                       type="button" 
                                       onClick={() => {
-                                              setAction(ACTION_TYPES.update)
-                                              setUserId(user.id);
+                                        setUserId(user.id)
+                                        setCurrentAction(ACTION_TYPES.update as Action)
                                       }}>        
                                   <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                               </button>
@@ -221,8 +231,8 @@ const UsersPage = () => {
                               <button className="btn btn-falcon-danger btn-sm m-1" 
                                       type="button" 
                                       onClick={() => {
-                                              setAction(ACTION_TYPES.delete);
-                                              setUserId(user.id);
+                                          setUserId(user.id);
+                                          setCurrentAction(ACTION_TYPES.delete as Action);
                                       }}>        
                                   <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                               </button>
@@ -231,27 +241,27 @@ const UsersPage = () => {
                               <SwitchInput 
                                 checked={user.isActive} 
                                 value={user.id} 
-                                onChange={handleToggleUser} />
+                                onChange={() => handleToggleUser(user.id)}/>
                               </PermissionsGate>
                           </div>
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} User`}
-                show={action !== null && action !== ACTION_TYPES.toggle}
+                title={`${currentAction && capitalize(currentAction)} User`}
+                show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} User`}
+                confirmText={`${currentAction} User`}
                 confirmButtonVariant={
-                  action === ACTION_TYPES.delete ? 'danger' : "primary"
+                  currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
-                confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
+                confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                 handleConfirm={handleUserAction}
-                actionLoading={postLoading}
+                actionLoading={false}
                     >
-                        {(  action === ACTION_TYPES.add || 
-                            action === ACTION_TYPES.update)
+                        {(  currentAction === ACTION_TYPES.add || 
+                            currentAction === ACTION_TYPES.update)
                                 && <UserForm formik={formik} />}
-                        {action === ACTION_TYPES.delete && 
+                        {currentAction === ACTION_TYPES.delete && 
                                     <>Are you Sure You Want to Delete This User</>
                         }
                 </PopUp>

@@ -14,7 +14,7 @@ export interface NewUser {
         endAt: Date | string,
         salary: number,
         workDays: number[]
-    }
+    } | null
 }
 
 export interface User {
@@ -26,4 +26,10 @@ export interface User {
     type: string,
     role: Role,
     isActive: boolean
+    contract: {
+        startAt: Date | string,
+        endAt: Date | string,
+        salary: number,
+        workDays: number[]
+    } | null
 }
