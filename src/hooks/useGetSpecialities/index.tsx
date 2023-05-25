@@ -79,7 +79,7 @@ export const useGetSpecialities = function() {
                             Speciality:             
                         </Form.Label>
                         <Form.Select
-                            disabled={!faculty?.id && isFetching}
+                            disabled={!faculty?.id || isFetching}
                             size="lg"
                             id="specialityId"
                             name="specialityId"
