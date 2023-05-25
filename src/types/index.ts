@@ -16,6 +16,6 @@ export interface SelectedItem {
     label: string
 }
 
-export type SelectedOption = Exclude<Option, string> | SelectedItem;
+export type SelectedOption = Exclude<Option, string> & SelectedItem;
 
 export type Action = 'ADD' | 'UPDATE' | 'DELETE' | 'TOGGLE';
