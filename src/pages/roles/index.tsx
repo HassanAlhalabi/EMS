@@ -1,18 +1,18 @@
 import { useFormik } from "formik";
-import { useMemo, useState, useEffect } from 'react';
-import { useQuery } from "react-query";
+import { useMemo, useState } from 'react';
 import PopUp from "../../components/popup";
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { useDelete, useGet, usePost, usePut } from "../../hooks";
 import { roleValidation } from "../../schema/roles";
 import RoleForm from "./role-form";
 import { toast } from "react-toastify";
-import { capitalize, getAxiosError } from "../../util";
-import { useScreenLoader } from "../../hooks/useScreenLoader";
+import { capitalize } from "../../util";
 import { Role } from "../../types/roles";
 import PermissionsGate from "../../components/permissions-gate";
 import { useGetTableData } from "../../hooks/useGetTableData";
+import { useGetDataById } from "../../hooks/useGetDataById";
+import { useActions } from "../../hooks/useActions";
+import { Action } from "../../types";
 
 const INITIAL_VALUES: {name: string, roleClaims: string[]} = {
     name: '',
@@ -24,10 +24,9 @@ const RolesPage = () => {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(15);
     const [searchKey, setSearchKey] = useState('');
-    const [action, setAction] = useState<string | null>(null);
+    const [currentAction, setCurrentAction] = useState<Action | null>(null);
     const [roleId, setRoleId] = useState<string | null>(null);
-    const { toggleScreenLoader } = useScreenLoader();
-    const get = useGet();
+    const { setAction } = useActions()
 
     const formik = useFormik({
 		initialValues: INITIAL_VALUES,
@@ -35,30 +34,18 @@ const RolesPage = () => {
 		validationSchema: roleValidation
 	})
 
-
     const { data, 
             isLoading, 
             isFetching,
             refetch } = useGetTableData('/Role/GetAllRoles', page, pageSize, searchKey)
 
-    const { refetch: refetchRole,
-			 } = useQuery(
-                        ['/Role/GetRole', roleId], 
-                        () => get(`/Role/GetRole/${roleId}`),
-                        {
-                            // @ts-ignore
-                            enabled: false,   
+    useGetDataById<Role>('/Role/GetRole', roleId,{ 
                             onSuccess: data => formik.setValues({
                                 name: data.data.name,
-                                roleClaims: data.data.roleClaims
+                                roleClaims: data.data.roleClaims as string[]
 						    })              
 			            });
 				
-	useEffect(() => {
-		if(roleId && action === ACTION_TYPES.update) {
-			refetchRole();
-		}
-	},[roleId])
     
     const columns = useMemo(
         () => [
@@ -81,47 +68,52 @@ const RolesPage = () => {
             }
             return [];
         },
-        [data, isFetching, isLoading, page]
-    );
+        [data, isFetching, isLoading, page]);
 
-    const { mutateAsync , 
-            isLoading: postLoading } = action === ACTION_TYPES.add ? usePost('/Role', 
-                                        {
-                                            name: formik.values.name,
-                                            roleClaims: formik.values.roleClaims
-                                        }) :
-                                                        action === ACTION_TYPES.update ? 
-                                                        usePut('/Role', 
-                                        {
-                                                            id: roleId,
-                                            name: formik.values.name,
-                                            roleClaims: formik.values.roleClaims
-                                        }) : useDelete('/Role',roleId as string);
+    const handleSuccess = (message: string) => {
+        toast.success(message);
+        reset();
+    }
 
-    
-      const handleRoleAction = async () => {
-
-        // Not Valid ... Do Nothing
-        if(!formik.isValid && action !== ACTION_TYPES.delete) {
-            formik.validateForm();
-            return;
-        };
-    
-        // If All Is Ok ... Do It
-        if(formik.isValid) {
-          try {
-            toggleScreenLoader();
-            await mutateAsync();
-            refetch();
-            toast.success(`${capitalize(action as string)} Role Done Successfully`)
-            setAction(null);
-			setRoleId(null);
-            formik.resetForm();
-          } catch(error) {
-            toast.error(getAxiosError(error))
-          }
-          toggleScreenLoader();
+    const actionsMap = {
+        [ACTION_TYPES.add]: {
+            type: currentAction,
+            path: '/Role',
+            payload: {
+                name: formik.values.name,
+                roleClaims: formik.values.roleClaims
+            },
+            onSuccess: () => handleSuccess('Role Added Successfully')
+        },
+        [ACTION_TYPES.update]: {
+            type:  currentAction,
+            path: '/Role',
+            payload: {
+                id: roleId,
+                name: formik.values.name,
+                roleClaims: formik.values.roleClaims
+            },
+            onSuccess: () => handleSuccess('Role Updated Successfully')
+        },
+        [ACTION_TYPES.delete]: {
+            type: currentAction,
+            path: `/Role`,
+            payload: roleId,
+            onSuccess: () => handleSuccess('Role Deleted Successfully')
         }
+    }
+    
+    const handleRoleAction = async () => {
+        if(formik.isValid && currentAction) {
+            setAction(actionsMap[currentAction])
+        }
+    }
+
+    const reset = () => {
+        setCurrentAction(null);
+        setRoleId(null);
+        formik.resetForm();
+        refetch();
     }
 
     return  <>
@@ -143,7 +135,7 @@ const RolesPage = () => {
                     return  <PermissionsGate scope={'Role.Insert'}>
                                 <button 	className="btn btn-falcon-success btn-sm" 
                                                         type="button" 
-                                                        onClick={() => setAction(ACTION_TYPES.add)}>        
+                                                        onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
                                     <span className="fas fa-plus"></span>
                                     <span className="ms-1">New</span>
                                 </button>
@@ -155,8 +147,8 @@ const RolesPage = () => {
                                         <button className="btn btn-falcon-info btn-sm m-1" 
                                                 type="button" 
                                                 onClick={() => {
-                                                        setAction(ACTION_TYPES.update)
-                                                        setRoleId(data.id);
+                                                    setCurrentAction(ACTION_TYPES.update as Action)
+                                                    setRoleId(data.id);
                                                 }}>        
                                             <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                                         </button>
@@ -165,8 +157,8 @@ const RolesPage = () => {
                                         <button className="btn btn-falcon-danger btn-sm m-1" 
                                                 type="button" 
                                                 onClick={() => {
-                                                        setAction(ACTION_TYPES.delete);
-                                                        setRoleId(data.id);
+                                                    setCurrentAction(ACTION_TYPES.delete as Action);
+                                                    setRoleId(data.id);
                                                 }}>        
                                             <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                                         </button>
@@ -175,21 +167,20 @@ const RolesPage = () => {
                     }}
                 />
 
-                <PopUp  title={`${action && capitalize(action as string)} Role`}
-								show={action !== null}
-								onHide={() => { setAction(null), formik.resetForm(), setRoleId(null) } }
-								confirmText={`${action} Role`}
+                <PopUp  title={`${currentAction && capitalize(currentAction as string)} Role`}
+								show={currentAction !== null}
+								onHide={() => { reset() }}
+								confirmText={`${currentAction} Role`}
 								confirmButtonVariant={
-									action === ACTION_TYPES.delete ? 'danger' : "primary"
+									currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
 								handleConfirm={handleRoleAction}
-								actionLoading={postLoading}
-                                confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
+                                confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                     >
-                        {(  action === ACTION_TYPES.add || 
-                            action === ACTION_TYPES.update)
+                        {(  currentAction === ACTION_TYPES.add || 
+                            currentAction === ACTION_TYPES.update)
                                 && <RoleForm formik={formik} />}
-                        {action === ACTION_TYPES.delete && 
+                        {currentAction === ACTION_TYPES.delete && 
                                     <>Are you Sure You Want to Delete This Role</>
                         }
                 </PopUp>

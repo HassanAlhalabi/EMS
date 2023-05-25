@@ -10,6 +10,6 @@ export interface RoleClaims {
 export interface Role {
     id: string,
     name: string,
-    roleClaims: RoleClaims[],
+    roleClaims: RoleClaims[] | string[],
     isDefault: boolean
 }

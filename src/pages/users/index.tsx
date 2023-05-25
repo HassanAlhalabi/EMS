@@ -48,69 +48,58 @@ const UsersPage = () => {
   });
   const { setAction } = useActions()
 
-    const { data, 
-            status,
-            isLoading, 
-            isFetching, 
-            refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
+  const { data, status, isLoading, isFetching, refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
     
-    useGetDataById<User>('/User/GetUser', userId, {
-      onSuccess: data => formik.setValues({
-        ...formik.values,
-        ...data.data,
-        roleId: data.data.role.id,
-        contract: data.data.contract ? {
-          ...data.data.contract,
-          endAt: (data.data.contract.endAt as string).split('T')[0],
-          startAt: (data.data.contract.startAt as string).split('T')[0]
-        } : null
-      }) 
-    });
+  useGetDataById<User>('/User/GetUser', userId, {
+    onSuccess: data => formik.setValues({
+      ...formik.values,
+      ...data.data,
+      roleId: data.data.role.id,
+      contract: data.data.contract ? {
+        ...data.data.contract,
+        endAt: (data.data.contract.endAt as string).split('T')[0],
+        startAt: (data.data.contract.startAt as string).split('T')[0]
+      } : null
+    }) 
+  });
 
-    const actionsMap = {
-      [ACTION_TYPES.add]: {
-        type: currentAction,
-        path: '/User/PostUser',
-        payload: {
-                  ...formik.values,
-                  roleId:formik.values.type === 'Student' ? null : formik.values.roleId,
-                  contract:formik.values.type === 'Student' ? null : formik.values.contract 
+  const handleSuccess = (message: string) => {
+    toast.success(message)
+    reset();
+  }
+
+  const actionsMap = {
+    [ACTION_TYPES.add]: {
+      type: currentAction,
+      path: '/User/PostUser',
+      payload: {
+                ...formik.values,
+                roleId:formik.values.type === 'Student' ? null : formik.values.roleId,
+                contract:formik.values.type === 'Student' ? null : formik.values.contract 
+              },
+      onSuccess: () => handleSuccess('User Added Successfully')
+    },
+    [ACTION_TYPES.update]: {
+      type:  currentAction,
+      path: '/User/PutUser',
+      payload: {
+                  id: userId,
+                ...formik.values
                 },
-        onSuccess: () => {
-          toast.success(`User Added Successfully`)
-          reset();
-        }
-      },
-      [ACTION_TYPES.update]: {
-        type:  currentAction,
-        path: '/User/PutUser',
-        payload: {
-                    id: userId,
-                  ...formik.values
-                  },
-        onSuccess: () => {
-          toast.success(`User Updated Successfully`)
-          reset();
-        },
-      },
-      [ACTION_TYPES.delete]: {
-        type: currentAction,
-        path: `/User`,
-        payload: userId,
-        onSuccess: () => {
-          toast.success(`User Deleted Successfully`)
-          reset();
-        }
-      },
-      [ ACTION_TYPES.toggle]: {
-        type: currentAction,
-        path: `/User/ToggleActivation/${userId}`,
-        onSuccess: () => {
-          toast.success(`Toggle User Done Successfully`)
-          reset();
-        }
-      } 
-    }
+      onSuccess: () => handleSuccess('User Updated Successfully')
+    },
+    [ACTION_TYPES.delete]: {
+      type: currentAction,
+      path: `/User`,
+      payload: userId,
+      onSuccess: () => handleSuccess('User Deleted Successfully')
+    },
+    [ ACTION_TYPES.toggle]: {
+      type: currentAction,
+      path: `/User/ToggleActivation/${userId}`,
+      onSuccess: () => handleSuccess('User Toggled Successfully')
+    } 
+  }
 
   const columns = useMemo(
 		() => [
@@ -148,7 +137,7 @@ const UsersPage = () => {
       }
 		],
 		[]
-	 )
+	)
 
   const users = useMemo(
     () => (isLoading || status === 'idle') ? [] : (data?.data.users),
@@ -163,12 +152,6 @@ const UsersPage = () => {
   }
 
   const handleUserAction = () => {
-      // Not Valid ... Do Nothing
-    if(!formik.isValid && currentAction !== ACTION_TYPES.delete) {
-        formik.validateForm();
-        return;
-    };
-    // If All Is Ok ... Do It
     if(formik.isValid && currentAction) {
       setAction(actionsMap[currentAction])
     }
@@ -182,7 +165,7 @@ const UsersPage = () => {
         toast.success(`Toggle User Done Successfully`)
         reset();
       }
-    })
+  })
 
   return  <>
             <Table<User>  

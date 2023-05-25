@@ -13,9 +13,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
     const [workingDays, setWorkingDays] = useState<{id: number, name: string | null}[]>([])
     const get = useGet();
 
-    const { data } = useQuery(
-                            ['/Role/GetRolesList'], 
-                        () => get(`/Role/GetRolesList`));
+    const { data } = useQuery(['/Role/GetRolesList'], () => get(`/Role/GetRolesList`));
 
     const handleSelectedDays = (e: ChangeEvent<HTMLSelectElement>) => {
 
