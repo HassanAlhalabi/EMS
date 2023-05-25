@@ -19,6 +19,7 @@ const AdminSuggestedSubjects    = lazy(() => import('../pages/admin-suggested-su
 const StudentSuggestedSubjects  = lazy(() => import('../pages/student-subjects-suggestions'));
 const StudyPlans                = lazy(() => import('../pages/study-plans'));
 const Vehicles                  = lazy(() => import('../pages/vehicles'));
+const BusStops                  = lazy(() => import('../pages/bus-stops'));
 const Page404                   = lazy(() => import('../pages/404'));
 
 export const getRoutes = () => ([
@@ -162,6 +163,15 @@ export const getRoutes = () => ([
                 childRoutes: null,
                 element: <Vehicles />,
                 hasPermission: hasPermission('Vehicle.View')
+            },
+            {
+                id: 'busstops',
+                name: 'Bus Stops',
+                path: '/bus-stops',
+                isIndex: false,
+                childRoutes: null,
+                element: <BusStops />,
+                hasPermission: hasPermission('BusStop.View')
             }
         ],
         element: <ProtectedRoute><Main /></ProtectedRoute>,
