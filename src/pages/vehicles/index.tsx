@@ -1,21 +1,19 @@
-import { useMemo, useState, useEffect, ChangeEvent } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { useQuery } from "react-query";
 
 import PopUp from "../../components/popup";
 import Table from "../../components/table"
 import { ACTION_TYPES } from "../../constants";
-import { capitalize, getAxiosError } from "../../util";
-import { useScreenLoader } from "../../hooks/useScreenLoader";
+import { capitalize} from "../../util";
 import { Vehicle, NewVehicle } from "../../types/vehicles";
 import { vehicleValidation } from "../../schema/vehicle";
 import VehicleForm from "./vehicle-form";
-import SwitchInput from "../../components/switch-input/index.";
-import { useDelete, useGet, usePost, usePostFormData, usePut, usePutFormData } from "../../hooks";
 import { useGetTableData } from "../../hooks/useGetTableData";
 import { useGetDataById } from '../../hooks/useGetDataById';
+import { Action } from '../../types';
+import { useActions } from '../../hooks/useActions';
 
 const INITIAL_VALUES = {
     vehicleBrand: "",
@@ -29,10 +27,9 @@ const VehiclesPage = () => {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(15);
     const [searchKey, setSearchKey] = useState('');
-    const [action, setAction] = useState<string | null>(null);
+    const [currentAction, setCurrentAction] = useState<Action | null>(null);
     const [vehicleId, setVehicleId] = useState<string | null>(null);
-    const { toggleScreenLoader } = useScreenLoader();
-    const get = useGet();
+    const { setAction } = useActions()
 
     const formik = useFormik<NewVehicle>({
 		initialValues: INITIAL_VALUES,
@@ -76,57 +73,44 @@ const VehiclesPage = () => {
     )
 
     const vehicles = useMemo(
-        () => {
-            if(data && data.data.vehicles) {
-                return  data.data.vehicles
-            }
-            return [];
-        },
+        () => (data && data.data.vehicles) ? data.data.vehicles : [],
         [data, isFetching, isLoading, page]
     );
 
-    const { mutateAsync , 
-            isLoading: postLoading, 
-            isError, error } = action === ACTION_TYPES.add ? usePost('/Vehicle', 
-                                        formik.values) :
-                                                        action === ACTION_TYPES.update ? 
-                                                        usePut('/Vehicle', 
-                                        {
-                                            id: vehicleId,
-                                            ...formik.values
-                                        }) : action === ACTION_TYPES.delete ? 
-                                                useDelete('/Vehicle',vehicleId as string) :
-                                                usePut(`/Vehicle/ToggleActivation/${vehicleId}`);
-
-    
-    const handleToggleVehicle = async (e: ChangeEvent<HTMLInputElement>) => {
-        setAction(ACTION_TYPES.toggle);
-        setVehicleId(e.target.value);
+    const handleSuccess = (message: string) => {
+        toast.success(message)
+        reset();
     }
 
-      const handleVehicleAction = async () => {
-
-        // Not Valid ... Do Nothing
-        if((!formik.isValid) && action !== ACTION_TYPES.delete) {
-            formik.validateForm();
-            return;
-        };
-        
-        // If All Is Ok ... Do It
-        if(formik.isValid) {
-          try {
-            toggleScreenLoader();
-            await mutateAsync();
-            refetch();
-            toast.success(`${capitalize(action as string)} Vehicle Done Successfully`)
-            setAction(null);
-			setVehicleId(null);
-            formik.resetForm();
-          } catch(error) {
-            toast.error(getAxiosError(error))
-          }
-          toggleScreenLoader();
+    const actionsMap = {
+        [ACTION_TYPES.add]: {
+          type: currentAction,
+          path: '/Vehicle',
+          payload: formik.values,
+          onSuccess: () => handleSuccess('Vehicle Added Successfully')
+        },
+        [ACTION_TYPES.update]: {
+          type:  currentAction,
+          path: '/Vehicle',
+          payload: formik.values,
+          onSuccess: () => handleSuccess('Vehicle Updated Successfully')
+        },
+        [ACTION_TYPES.delete]: {
+          type: currentAction,
+          path: `/Vehicle`,
+          payload: vehicleId,
+          onSuccess: () => handleSuccess('Vehicle Deleted Successfully')
         }
+      }
+
+    const handleVehicleAction = () => {
+        if(formik.isValid && currentAction) {
+        setAction(actionsMap[currentAction])
+    }}
+
+    const reset = () => {
+        refetch();
+        setCurrentAction(null); formik.resetForm(); setVehicleId(null);
     }
 
     return  <>
@@ -148,7 +132,7 @@ const VehiclesPage = () => {
                     return  <>
                                 <button 	className="btn btn-falcon-success btn-sm" 
                                                         type="button" 
-                                                        onClick={() => setAction(ACTION_TYPES.add)}>        
+                                                        onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
                                     <span className="fas fa-plus"></span>
                                     <span className="ms-1">New</span>
                                 </button>
@@ -159,42 +143,37 @@ const VehiclesPage = () => {
                                     <button className="btn btn-falcon-info btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
-                                                    setAction(ACTION_TYPES.update)
-                                                    setVehicleId(data.vehicleId);
+                                                setVehicleId(data.vehicleId);
+                                                setCurrentAction(ACTION_TYPES.update as Action)
                                             }}>        
                                         <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                                     </button>
                                     <button className="btn btn-falcon-danger btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
-                                                    setAction(ACTION_TYPES.delete);
-                                                    setVehicleId(data.vehicleId);
+                                                setVehicleId(data.vehicleId);
+                                                setCurrentAction(ACTION_TYPES.delete as Action);
                                             }}>        
                                         <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                                     </button>
-                                    {/* <SwitchInput 
-                                        checked={data?.isActive} 
-                                        value={data?.id} 
-                                        onChange={handleToggleVehicle} /> */}
                                 </div>
                     }}
                 />
 
-                <PopUp  title={`${action && capitalize(action as string)} Vehicle`}
-								show={action !== null && action !== ACTION_TYPES.toggle}
-								onHide={() => { setAction(null), formik.resetForm(), setVehicleId(null) } }
-								confirmText={`${action} Vehicle`}
+                <PopUp  title={`${currentAction && capitalize(currentAction as string)} Vehicle`}
+								show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
+								onHide={() => reset()}
+								confirmText={`${currentAction} Vehicle`}
 								confirmButtonVariant={
-									action === ACTION_TYPES.delete ? 'danger' : "primary"
+									currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
 								handleConfirm={handleVehicleAction}
-								actionLoading={postLoading}
-                                confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && action !== ACTION_TYPES.delete}
+                                confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && currentAction !== ACTION_TYPES.delete}
                     >
-                        {(  action === ACTION_TYPES.add || 
-                            action === ACTION_TYPES.update)
+                        {(  currentAction === ACTION_TYPES.add || 
+                            currentAction === ACTION_TYPES.update)
                                 && <VehicleForm formik={formik} />}
-                        {action === ACTION_TYPES.delete && 
+                        {currentAction === ACTION_TYPES.delete && 
                                     <>Are you Sure You Want to Delete This Vehicle</>
                         }
                 </PopUp>
