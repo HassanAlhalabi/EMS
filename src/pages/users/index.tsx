@@ -154,8 +154,7 @@ const UsersPage = () => {
   const handleUserAction = () => {
     if(formik.isValid && currentAction) {
       setAction(actionsMap[currentAction])
-    }
-  }
+  }}
 
   const handleToggleUser = (userId: string) => 
     setAction({
@@ -165,7 +164,7 @@ const UsersPage = () => {
         toast.success(`Toggle User Done Successfully`)
         reset();
       }
-  })
+    })
 
   return  <>
             <Table<User>  
