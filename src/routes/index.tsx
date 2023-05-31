@@ -1,25 +1,30 @@
 import { lazy } from "react"
+
 import ProtectedRoute from "../components/protected-route";
 import { hasPermission } from "../util";
 
 const Main                      = lazy(() => import('../pages/main'));
 const SignIn                    = lazy(() => import('../pages/auth/sign-in'));
 const Dashboard                 = lazy(() => import('../pages/dashboard'));
-const Users                     = lazy(() => import('../pages/users'));
-const Roles                     = lazy(() => import('../pages/roles'));
-const Faculties                 = lazy(() => import('../pages/faculties'));
-const FacultyForm               = lazy(() => import('../pages/faculties/faculty-form-stepper'));
-const Subjects                  = lazy(() => import('../pages/subjects'));
-const SubjectsTypes             = lazy(() => import('../pages/subjects-types'));
-const Books                     = lazy(() => import('../pages/library/books'));
-const BooksCategories           = lazy(() => import('../pages/library/categories'));
-const Departments               = lazy(() => import('../pages/departments'));
-const Semesters                 = lazy(() => import('../pages/semesters'));
-const AdminSuggestedSubjects    = lazy(() => import('../pages/admin-suggested-subjects'));
-const StudentSuggestedSubjects  = lazy(() => import('../pages/student-subjects-suggestions'));
-const StudyPlans                = lazy(() => import('../pages/study-plans'));
-const Vehicles                  = lazy(() => import('../pages/vehicles'));
-const BusStops                  = lazy(() => import('../pages/bus-stops'));
+
+const Users                     = lazy(() => import('../pages/users-management/users'));
+const Roles                     = lazy(() => import('../pages/users-management/roles'));
+
+const Faculties                 = lazy(() => import('../pages/university-management/faculties'));
+const FacultyForm               = lazy(() => import('../pages/university-management/faculties/faculty-form-stepper'));
+const Subjects                  = lazy(() => import('../pages/university-management/subjects'));
+const SubjectsTypes             = lazy(() => import('../pages/university-management/subjects-types'));
+const Books                     = lazy(() => import('../pages/university-management/library/books'));
+const BooksCategories           = lazy(() => import('../pages/university-management/library/categories'));
+const Departments               = lazy(() => import('../pages/university-management/departments'));
+const Semesters                 = lazy(() => import('../pages/university-management/semesters'));
+const AdminSuggestedSubjects    = lazy(() => import('../pages/university-management/admin-suggested-subjects'));
+const StudentSuggestedSubjects  = lazy(() => import('../pages/university-management/student-subjects-suggestions'));
+const StudyPlans                = lazy(() => import('../pages/university-management/study-plans'));
+
+const Vehicles                  = lazy(() => import('../pages/transport-management/vehicles'));
+const BusStops                  = lazy(() => import('../pages/transport-management/bus-stops'));
+
 const Page404                   = lazy(() => import('../pages/404'));
 
 export const getRoutes = () => ([
