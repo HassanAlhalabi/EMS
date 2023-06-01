@@ -76,7 +76,7 @@ const Drawer = () => {
             <NavLink title="Cities" faIcon="fas fa-city" link="#" scope='' />
             <NavLink title="Vehicles" faIcon="fas fa-car" link="vehicles" scope='Vehicle.View' />
             <NavLink title="Bus Stops" faIcon="fas fa-bus" link="bus-stops" scope='BusStop.View' />
-            <NavLink title="Routes" faIcon="fas fa-route" link="#" scope='' />
+            <NavLink title="Routes" faIcon="fas fa-route" link="routes" scope='Route.View' />
 
         </NavList>
       </div>

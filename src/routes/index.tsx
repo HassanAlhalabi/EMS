@@ -6,10 +6,13 @@ import { hasPermission } from "../util";
 const Main                      = lazy(() => import('../pages/main'));
 const SignIn                    = lazy(() => import('../pages/auth/sign-in'));
 const Dashboard                 = lazy(() => import('../pages/dashboard'));
+const Page404                   = lazy(() => import('../pages/404'));
 
+// Users Management System
 const Users                     = lazy(() => import('../pages/users-management/users'));
 const Roles                     = lazy(() => import('../pages/users-management/roles'));
 
+// University Management System
 const Faculties                 = lazy(() => import('../pages/university-management/faculties'));
 const FacultyForm               = lazy(() => import('../pages/university-management/faculties/faculty-form-stepper'));
 const Subjects                  = lazy(() => import('../pages/university-management/subjects'));
@@ -22,10 +25,10 @@ const AdminSuggestedSubjects    = lazy(() => import('../pages/university-managem
 const StudentSuggestedSubjects  = lazy(() => import('../pages/university-management/student-subjects-suggestions'));
 const StudyPlans                = lazy(() => import('../pages/university-management/study-plans'));
 
+// Transportation Management System
 const Vehicles                  = lazy(() => import('../pages/transport-management/vehicles'));
 const BusStops                  = lazy(() => import('../pages/transport-management/bus-stops'));
-
-const Page404                   = lazy(() => import('../pages/404'));
+const Routes                    = lazy(() => import('../pages/transport-management/routes'));
 
 export const getRoutes = () => ([
     {
@@ -177,7 +180,16 @@ export const getRoutes = () => ([
                 childRoutes: null,
                 element: <BusStops />,
                 hasPermission: hasPermission('BusStop.View')
-            }
+            },
+            {
+                id: 'routes',
+                name: 'Routes',
+                path: '/routes',
+                isIndex: false,
+                childRoutes: null,
+                element: <Routes />,
+                hasPermission: hasPermission('Route.View')
+            },
         ],
         element: <ProtectedRoute><Main /></ProtectedRoute>,
         hasPermission: true
