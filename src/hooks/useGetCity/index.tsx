@@ -17,12 +17,26 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
     const [selectedCity, setSelectedCity] = useState<SelectedOption[]>([]);
 
     const get = useGet();
-    const { data: statesData } = useQuery(['/State/GetStates'], 
-    () => get(`/State/GetStates`));
+    const { data: statesData, isLoading: loadingStates } = useQuery(['/State/GetStates', formik.values.stateId], 
+    () => get(`/State/GetStates`),
+    {
+        onSuccess: data => {
+            if(formik.values.stateId){
+                const selected = mapToTyphead(data?.data.states, 'stateName')
+                .filter(state => state.stateId === formik.values.stateId);
+                setSelectedState(selected)
+            }
+        }
+    });
     const { data, refetch, isFetching } = useQuery(['/City/GetAllCities', formik.values.stateId], 
                                 () => get(`/City/GetAllCities?page=1&pageSize=20&stateId=${formik.values.stateId}`),
                                 {
-                                    enabled: false
+                                    enabled: false,
+                                    onSuccess: data => {
+                                        const selected = mapToTyphead(data?.data.cities, 'cityName')
+                                                        .filter(state => state.cityId === formik.values.cityId)
+                                        setSelectedCity(selected)
+                                    }
                                 });
 
     useEffect(() => {
@@ -47,27 +61,6 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
         }
     } 
 
-    useEffect(() => {
-        // Initial Values
-        if(data && formik.values.stateId){
-            const selected = mapToTyphead(statesData?.data.states, 'stateName')
-            .filter(state => state.stateId === formik.values.stateId);
-            setSelectedState(selected)
-        }
-    },[formik.values.stateId])
-
-    useEffect(() => {
-        // Initial Values
-        if(data && formik.values.cityId) {
-            console.log(data)
-            const selected = mapToTyphead(data?.data.cities, 'cityName')
-            .filter(state => state.cityId === formik.values.cityId)
-            setSelectedCity(selected)
-        }
-    },[formik.values.cityId])
-
-    console.log(formik.values)
-
     const renderCitiesSelect = () => 
         <Row>
             <Col>
@@ -82,7 +75,7 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
                         name="state"
                         className={formik.values.stateId !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search States'
-                        onInputChange={(i) => setSelectedState([])}
+                        onInputChange={() => setSelectedState([])}
                         onChange={ handleStateChange }
                         options={statesData?.data.states ? mapToTyphead(statesData?.data.states, 'stateName') : []}
                         isInvalid={formik.values.stateId === 0 && formik.dirty}
@@ -103,7 +96,7 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
                         size="lg"
                         selected={ selectedCity }
                         disabled={ !formik.values.stateId }
-                        onInputChange={(i) => setSelectedCity([])}
+                        onInputChange={() => setSelectedCity([])}
                         className={formik.values.cityId !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search Cities'
                         onChange={handleCityChange}
