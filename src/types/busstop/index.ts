@@ -7,7 +7,7 @@ export interface NewBusStop {
 }
 
 export interface BusStop {
-    id: string;
+    busStopId: string;
     nameAr: string;
     nameEn: string;
     cityName: string;

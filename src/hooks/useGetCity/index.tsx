@@ -13,45 +13,60 @@ import { SelectedOption } from "../../types";
 
 const useGetCity = function<T extends {cityId: number, stateId: number}>(formik: FormikProps<T>) {
 
-    const [searchKey, setSearchKey] = useState('');
-    const [stateId, setStateId] = useState('');
-    const [cityId, setCityId] = useState('');
+    const [selectedState, setSelectedState] = useState<SelectedOption[]>([]);
+    const [selectedCity, setSelectedCity] = useState<SelectedOption[]>([]);
 
     const get = useGet();
     const { data: statesData } = useQuery(['/State/GetStates'], 
     () => get(`/State/GetStates`));
-    const { data, refetch } = useQuery(['/City/GetAllCities', searchKey, stateId, formik.values.stateId], 
-                                () => get(`/City/GetAllCities?page=1&pageSize=20&stateId=${stateId || formik.values.stateId}&key=${searchKey}`),
+    const { data, refetch, isFetching } = useQuery(['/City/GetAllCities', formik.values.stateId], 
+                                () => get(`/City/GetAllCities?page=1&pageSize=20&stateId=${formik.values.stateId}`),
                                 {
                                     enabled: false
                                 });
 
     useEffect(() => {
-        let searchTimeout: number; 
-        if(searchKey || stateId) {
-            searchTimeout = setTimeout(() => {
+        if(formik.values.stateId) {
             refetch();
-            },300);
-            return () => clearTimeout(searchTimeout);;
         }
-        refetch();
-        return () => clearTimeout(searchTimeout);
-    },[searchKey, stateId, formik.values.stateId]);
+    },[formik.values.stateId]);
 
-    const handleStateChange = (options: SelectedOption[]) =>  { 
-        if(options[0]) { setStateId(options[0].stateId); return; }
-        setStateId('');setCityId('');setSearchKey('');
-    }                  
-
-    const selectedState = statesData?.data.states ? 
-                          mapToTyphead(statesData?.data.states, 'stateName')
-                          .filter(state => state.stateId === formik.values.stateId) :
-                          undefined
+    const handleStateChange = (selectedOptions: SelectedOption[]) =>  { 
+        if(selectedOptions[0]) { 
+            setSelectedState(selectedOptions)
+            formik.setFieldValue('stateId', selectedOptions[0].stateId); 
+            formik.setFieldValue('stateName', selectedOptions[0].stateName); 
+        }
+    }          
     
-    const selectedCity = data?.data.cities ? 
-                            mapToTyphead(data?.data.cities, 'cityName')
-                            .filter(state => state.cityId === formik.values.cityId) :
-                            undefined
+    const handleCityChange = (selectedOptions: SelectedOption[]) =>  { 
+        if(selectedOptions[0]) { 
+            formik.setFieldValue('cityId', selectedOptions[0].cityId);
+            formik.setFieldValue('cityName', selectedOptions[0].cityName);
+            setSelectedCity(selectedOptions)
+        }
+    } 
+
+    useEffect(() => {
+        // Initial Values
+        if(data && formik.values.stateId){
+            const selected = mapToTyphead(statesData?.data.states, 'stateName')
+            .filter(state => state.stateId === formik.values.stateId);
+            setSelectedState(selected)
+        }
+    },[formik.values.stateId])
+
+    useEffect(() => {
+        // Initial Values
+        if(data && formik.values.cityId) {
+            console.log(data)
+            const selected = mapToTyphead(data?.data.cities, 'cityName')
+            .filter(state => state.cityId === formik.values.cityId)
+            setSelectedCity(selected)
+        }
+    },[formik.values.cityId])
+
+    console.log(formik.values)
 
     const renderCitiesSelect = () => 
         <Row>
@@ -61,12 +76,14 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
                         State:
                     </Form.Label>
                     <Typeahead
-                        defaultSelected={ selectedState }
+                        selected={ selectedState }
                         id="stateId"
                         size="lg"
+                        name="state"
                         className={formik.values.stateId !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search States'
-                        onChange={handleStateChange}
+                        onInputChange={(i) => setSelectedState([])}
+                        onChange={ handleStateChange }
                         options={statesData?.data.states ? mapToTyphead(statesData?.data.states, 'stateName') : []}
                         isInvalid={formik.values.stateId === 0 && formik.dirty}
                         isValid={formik.values.cityId !== 0 && formik.dirty}
@@ -84,15 +101,16 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
                     <Typeahead
                         id="cityId"
                         size="lg"
-                        defaultSelected={selectedCity}
-                        disabled={!stateId }
-                        onInputChange={input => setSearchKey(input)}
+                        selected={ selectedCity }
+                        disabled={ !formik.values.stateId }
+                        onInputChange={(i) => setSelectedCity([])}
                         className={formik.values.cityId !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search Cities'
-                        onChange={(options: Record<string,string>[]) => options[0] ? formik.setFieldValue('cityId',options[0].cityId) : setCityId('')}
+                        onChange={handleCityChange}
                         options={data?.data.cities ? mapToTyphead(data?.data.cities, 'cityName') : []}
                         isInvalid={formik.values.cityId === 0 && formik.dirty}
                         isValid={formik.values.cityId !== 0 && formik.dirty}
+                        isLoading={isFetching}
                     />
                     <Feedback type="invalid">
                         {formik.errors.cityId as string}
@@ -101,7 +119,7 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
             </Col>
         </Row>
 
-    return { renderCitiesSelect, cityId }
+    return { renderCitiesSelect }
 }
  
 export default useGetCity;

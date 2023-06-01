@@ -31,6 +31,8 @@ const BusStopsPage = () => {
     const [busStopId, setBusStopId] = useState<string | null>(null);
     const { setAction } = useActions()
 
+    console.log(busStopId)
+
     const formik = useFormik<NewBusStop>({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleBusStopAction(),
@@ -39,17 +41,12 @@ const BusStopsPage = () => {
 
     const { data, 
             isLoading, 
-            isFetching } = useGetTableData('/BusStop/GetBusStops', page, pageSize, searchKey)
+            isFetching,
+            refetch } = useGetTableData('/BusStop/GetBusStops', page, pageSize, searchKey)
 
     useGetDataById<BusStop>(    '/BusStop/GetFullBusStop',
                                 busStopId,
-                                {onSuccess: data => formik.setValues({
-                                    ...data.data,
-                                    nameAr: data.data.busStopNameAr,
-                                    nameEn: data.data.busStopNameEn,
-                                    cityId: data.data.cityId,
-                                    stateId: data.data.stateId
-                                })});
+                                {onSuccess: data => formik.setValues(data.data)});
             
     const columns = useMemo(
         () => [
@@ -73,6 +70,7 @@ const BusStopsPage = () => {
     const handleSuccess = (message: string) => {
         toast.success(message)
         reset();
+        refetch();
     }
 
     const actionsMap = {
