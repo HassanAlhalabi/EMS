@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
-import { useHTTP } from "../useHTTP";
 import { useEffect } from "react";
 
+import { useHTTP } from "../useHTTP";
 
 export const useGetTableData = (path: string, page: number = 1, pageSize: number = 15, searchKey: string = '') => {
 
@@ -30,9 +30,10 @@ export const useGetTableData = (path: string, page: number = 1, pageSize: number
         }
         refetch();
         return () => clearTimeout(searchTimeout);
-        },[page,pageSize,searchKey]);
+    },[page,pageSize,searchKey]);
 
-    return {    data, 
+    return {    
+                data, 
                 status,
                 isLoading, 
                 isFetching, 
