@@ -1,6 +1,6 @@
 import { Children, ReactNode, useState } from "react";
 import { Collapse } from "react-bootstrap";
-import { Link, To } from "react-router-dom";
+import { NavLink, To } from "react-router-dom";
 import { hasPermission } from "../../../util";
 
 interface INavLink {
@@ -11,7 +11,7 @@ interface INavLink {
     children?: ReactNode,
 }
 
-const NavLink = ({faIcon,title,link,scope, children}:INavLink) => {
+const CustomNavLink = ({faIcon,title,link,scope, children}:INavLink) => {
 
     const [expanded, setExpanded] = useState(false);
     const isParent = Children.count(children) > 0;
@@ -42,7 +42,7 @@ const NavLink = ({faIcon,title,link,scope, children}:INavLink) => {
                     </ul>
                 </Collapse>
             </li>
-    </li>) : (  <Link  
+    </li>) : (  <NavLink  
                     className={`nav-link`} 
                     to={link ? link : '/'} 
                     role="button">
@@ -52,7 +52,7 @@ const NavLink = ({faIcon,title,link,scope, children}:INavLink) => {
                         </span>
                         <span className="nav-link-text ps-1">{title}</span>
                     </div>
-                </Link>)
+                </NavLink>)
 }
 
-export default NavLink
+export default CustomNavLink
