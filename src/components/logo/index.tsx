@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import styled from 'styled-components';
 
-import LogoImage from '../../../public/logo.png';
+import LogoImage from '../../assets/img/logo.png';
 import { LayoutContext } from '../../contexts/layout-context';
 
 
