@@ -1,12 +1,11 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/img/icons/spot-illustrations/falcon.png';
 import { LayoutContext } from '../../contexts/layout-context';
 // import { drawerMenu } from '../../routes';
 import NavList from '../nav-list';
 import NavLink from '../nav-list/nav-link';
 import NavListLabel from '../nav-list/nav-list-label';
-import PermissionsGate from '../permissions-gate';
+import Logo from '../logo';
 
 const Drawer = () => {
 
@@ -27,7 +26,7 @@ const Drawer = () => {
         </div>
         <Link className="navbar-brand" to="/">
           <div className="d-flex align-items-center py-3">
-            <span className="font-sans-serif">EMS</span>
+            <Logo />
           </div>
         </Link>
       </div>

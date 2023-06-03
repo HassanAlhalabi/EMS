@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import HeaderProfile from "../header-profile"
 import { LayoutContext } from "../../../contexts/layout-context";
+import Logo from '../../logo';
 
 const HeaderNav = () => {
 
@@ -22,7 +23,7 @@ const HeaderNav = () => {
 
       <Link className="navbar-brand me-1 me-sm-3" to="/">
         <div className="d-flex align-items-center">
-          <span className="font-sans-serif">EMS</span>
+          <Logo />
         </div>
       </Link>
 
