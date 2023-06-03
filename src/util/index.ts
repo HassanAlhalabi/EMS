@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import { AxiosError } from 'axios';
 import jwt_decode from "jwt-decode";
 import { IDecodedToken } from "../types/token";
+import { SelectedOption } from "../types";
 
 declare global {
     interface Array<T> {
@@ -125,7 +126,7 @@ export const capitalize = (word: string) => {
 
 export const splitCamel = (word: string) => word.replace(/([a-z])([A-Z])/g, '$1 $2');
 
-export const mapToTyphead = <TItem extends Record<string,string | number>>(data: TItem[], nameKey = 'name') => {
+export const mapToTyphead = <TItem extends SelectedOption>(data: TItem[], nameKey = 'name') => {
     return data.map((item) => ({
         ...item,
         label: item[nameKey]

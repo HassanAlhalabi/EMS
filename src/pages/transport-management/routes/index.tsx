@@ -17,7 +17,9 @@ import { useActions } from '../../../hooks/useActions';
 
 const INITIAL_VALUES = {
     fromId: 0,
-    toId: 0
+    toId: 0,
+    fromName: '',
+    toName: '' 
 }
 
 const RoutesPage = () => {

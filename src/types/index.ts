@@ -11,11 +11,11 @@ export interface PaginationInfo {
 }
 
 export interface SelectedItem {
-    id: string,
-    name: string,
+    id?: string,
+    name?: string,
     label: string
 }
 
-export type SelectedOption = Exclude<Option, string> & SelectedItem;
+export type SelectedOption = Record<string, any> & SelectedItem;
 
 export type Action = 'ADD' | 'UPDATE' | 'DELETE' | 'TOGGLE';
