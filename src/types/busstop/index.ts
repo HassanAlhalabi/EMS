@@ -8,11 +8,9 @@ export interface NewBusStop {
 
 export interface BusStop {
     busStopId: string;
-    nameAr: string;
-    nameEn: string;
+    buStopName: string;
     cityName: string;
     cityId: number;
     stateId: number;
-    stateName: string;
-    
+    stateName: string;   
 }
