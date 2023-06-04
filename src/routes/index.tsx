@@ -29,6 +29,7 @@ const StudyPlans                = lazy(() => import('../pages/university-managem
 const Vehicles                  = lazy(() => import('../pages/transport-management/vehicles'));
 const BusStops                  = lazy(() => import('../pages/transport-management/bus-stops'));
 const Routes                    = lazy(() => import('../pages/transport-management/routes'));
+const Trips                     = lazy(() => import('../pages/transport-management/trips'));
 
 export const getRoutes = () => ([
     {
@@ -189,6 +190,15 @@ export const getRoutes = () => ([
                 childRoutes: null,
                 element: <Routes />,
                 hasPermission: hasPermission('Route.View')
+            },
+            {
+                id: 'trips',
+                name: 'Trips',
+                path: '/trips',
+                isIndex: false,
+                childRoutes: null,
+                element: <Trips />,
+                hasPermission: true
             },
         ],
         element: <ProtectedRoute><Main /></ProtectedRoute>,
