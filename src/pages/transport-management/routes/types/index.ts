@@ -1,13 +1,24 @@
 
+export interface State {
+    stateId: number,
+    stateName: string
+}
+
+export interface City {
+    cityId: number,
+    cityName: string,
+    state?: State
+}
+
 export interface Route {
     routeId: string,
-    fromId: number,
-    fromName: string,
-    toId: number,
-    toName: string
+    from: City,
+    to: City
 }
 
 export interface NewRoute {
-    toId: number,
-    fromId: number
+    from?: City;
+    to?: City;
+    fromId: number;
+    toId: number
 }

@@ -16,10 +16,16 @@ import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
 
 const INITIAL_VALUES = {
+    from :{
+        cityId: 0,
+        cityName: ''
+    },
+    to: {
+        cityId: 0,
+        cityName: ''
+    },
     fromId: 0,
-    toId: 0,
-    fromName: '',
-    toName: '' 
+    toId: 0
 }
 
 const RoutesPage = () => {
@@ -34,7 +40,7 @@ const RoutesPage = () => {
     const formik = useFormik<NewRoute>({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleRouteAction(),
-		validationSchema: routeValidation
+		// validationSchema: routeValidation
 	})
 
     const { data, 
@@ -44,17 +50,21 @@ const RoutesPage = () => {
 
     useGetDataById<Route>(    '/Route/GetRoute',
                                 routeId,
-                                {onSuccess: data => formik.setValues(data.data)});
+                                {onSuccess: data => formik.setValues({
+                                            ...data.data, 
+                                            fromId: data.data.from?.cityId,
+                                            toId: data.data.to?.cityId
+                                        })});
             
     const columns = useMemo(
         () => [
             {
                 Header: 'Departure Location',
-                accessor: 'fromName',
+                accessor: 'from.cityName',
             },
             {
                 Header: 'Destination Location',
-                accessor: 'toName',
+                accessor: 'to.cityName',
             },
             {
                 Header: 'Options',
@@ -65,7 +75,17 @@ const RoutesPage = () => {
     )
 
     const routes = useMemo(
-        () => (data && data.data.routes) ? data.data.routes : [],
+        () => (data && data.data.routes) ? data.data.routes.map((route: Route) => {
+            return {
+                ...route,
+                from: route.from ? route.from : {
+                    cityName: 'University'
+                },
+                to: route.to ? route.to : {
+                    cityName: 'University'
+                }
+            }
+        }) : [],
         [data, isFetching, isLoading, page]
     );
 

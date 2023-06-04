@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 import { useQuery } from "react-query";
 import { Col, Form, Row } from "react-bootstrap";
@@ -10,40 +10,22 @@ import Feedback from "../../components/feedback";
 import { mapToTyphead } from "../../util";
 import { SelectedOption } from "../../types";
 
-export interface State {stateId: number, stateName: string}
-export interface City {cityId: number, cityName: string}
-
 export interface UseGetCityConfig {
-    initialValues?: {state: State, city: City};
-    onStateSelect?: (state: State) => void;
-    onCitySelect?: (city: City) => void;
+    onStateSelect?: (state: {stateId: number, stateName: string}) => void;
+    onCitySelect?: (city: {cityId: number, cityName: string}) => void;
+    onStateDeSelect?: () => void;
+    onCityDeSelect?: () => void;
 }
 
 const useGetCity = function<T extends {cityId: number, stateId: number}>(formik: FormikProps<T> | null, config?: UseGetCityConfig) {
 
-    selectedState = useState<SelectedOption[]>([]);
-    selectedCit = useState<SelectedOption[]>([]);
+    const [selectedState, setSelectedState] = useState<SelectedOption[]>([]);
+    const [selectedCity, setSelectedCity] = useState<SelectedOption[]>([]);
     const [stateId, setStateId] = useState(null);
     const [stateName, setStateName] = useState('');
     const [cityId,setCityId] = useState(null);
     const [cityName, setCityName] = useState('');
-
-    // const configurations = useMemo(() => config, [config?.initialValues?.city.cityId,config?.initialValues?.state.stateId])
-
-    // Case Initil Values and No Formik
-    // useEffect(() => {
-    //     console.log('Triigeref', configurations)
-    //     if(!formik && config?.initialValues?.state.stateId) {
-    //         setSelectedState([{...config?.initialValues?.state, label: config?.initialValues?.state.stateName}]);
-    //     }
-    // },[configurations?.initialValues?.state.stateId])
-
-    // useEffect(() => {
-    //     console.log('Triigeref', configurations)
-    //     if(!formik && config?.initialValues?.city.cityId) {
-    //         setSelectedCity([{...config?.initialValues?.city, label: config?.initialValues?.city.cityName}]);
-    //     }
-    // },[configurations?.initialValues?.city.cityId])
+    const [disabled, setDisabled] = useState(false);
 
     const usedStateId = formik ? formik.values.stateId : stateId;
     const usedCityId = formik ? formik.values.cityId : cityId;
@@ -77,21 +59,39 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
         }
     },[usedStateId]);
 
+    // const reset = () => {
+    //     if(formik) {
+    //         formik.setFieldValue('stateId', null); 
+    //         formik.setFieldValue('stateName', ''); 
+    //         formik.setFieldValue('cityId', null);
+    //         formik.setFieldValue('cityName', '');
+    //     }
+    //     setStateId(null);
+    //     setStateName('');
+    //     setCityId(null);
+    //     setCityName('');
+    // }
+
     const handleStateChange = (selectedOptions: SelectedOption[]) =>  { 
         if(selectedOptions[0]) { 
             setSelectedState(selectedOptions)
             if(formik) {
-                formik.setFieldValue('stateId', selectedOptions[0].stateId); 
-                formik.setFieldValue('stateName', selectedOptions[0].stateName); 
+                formik.setFieldValue('stateId', (selectedOptions[0] as Record<string, any>).stateId); 
+                formik.setFieldValue('stateName', (selectedOptions[0] as Record<string, any>).stateName); 
             }
-            setStateId(selectedOptions[0].stateId);
-            setStateName(selectedOptions[0].stateName);
-            if(config && config.onStateSelect) {
+            setStateId((selectedOptions[0] as Record<string, any>).stateId);
+            setStateName((selectedOptions[0] as Record<string, any>).stateName);
+            if(config?.onStateSelect) {
                 config.onStateSelect({
-                    stateId: selectedOptions[0].stateId,
-                    stateName: selectedOptions[0].stateName
+                    stateId: (selectedOptions[0] as Record<string, any>).stateId,
+                    stateName: (selectedOptions[0] as Record<string, any>).stateName
                 });
             }
+            return;
+        }
+        // reset();
+        if(config?.onStateDeSelect) {
+            config.onStateDeSelect();
         }
     }   
     
@@ -100,17 +100,22 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
         if(selectedOptions[0]) {   
             setSelectedCity(selectedOptions)
             if(formik) {
-                formik.setFieldValue('cityId', selectedOptions[0].cityId);
-                formik.setFieldValue('cityName', selectedOptions[0].cityName);
+                formik.setFieldValue('cityId', (selectedOptions[0] as Record<string, any>).cityId);
+                formik.setFieldValue('cityName', (selectedOptions[0] as Record<string, any>).cityName);
             }
-            setCityId(selectedOptions[0].cityId);
-            setCityName(selectedOptions[0].cityName);
-            if(config && config.onCitySelect) {
+            setCityId((selectedOptions[0] as Record<string, any>).cityId);
+            setCityName((selectedOptions[0] as Record<string, any>).cityName);
+            if(config?.onCitySelect) {
                 config.onCitySelect({
-                    cityId: selectedOptions[0].cityId,
-                    cityName: selectedOptions[0].cityName
+                    cityId: (selectedOptions[0] as Record<string, any>).cityId,
+                    cityName: (selectedOptions[0] as Record<string, any>).cityName
                 });
             }
+            return;
+        }
+        // reset()
+        if(config?.onCityDeSelect) {
+            config.onCityDeSelect();
         }
     } 
 
@@ -122,10 +127,10 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
                         State:
                     </Form.Label>
                     <Typeahead
+                        disabled={disabled}
                         selected={ selectedState }
                         id="stateId"
                         size="lg"
-                        name="state"
                         className={usedStateId !== 0 && formik?.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search States'
                         onInputChange={() => setSelectedState([])}
@@ -148,7 +153,7 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
                         id="cityId"
                         size="lg"
                         selected={ selectedCity }
-                        disabled={ !selectedCity }
+                        disabled={ !usedStateId || disabled }
                         onInputChange={() => setSelectedCity([])}
                         className={usedCityId !== 0 && formik?.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search Cities'
@@ -165,7 +170,14 @@ const useGetCity = function<T extends {cityId: number, stateId: number}>(formik:
             </Col>
         </Row>
 
-    return { renderCitiesSelect, cityId, stateId, cityName, stateName }
+    return {    
+                renderCitiesSelect, 
+                selectedCity, 
+                setSelectedCity, 
+                selectedState, 
+                setSelectedState,
+                setDisabled
+            }
 }
  
 export default useGetCity;
