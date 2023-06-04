@@ -16,6 +16,6 @@ export interface SelectedItem {
     label: string
 }
 
-export type SelectedOption = Record<string, any> & SelectedItem;
+export type SelectedOption = Record<string, any> | string;
 
 export type Action = 'ADD' | 'UPDATE' | 'DELETE' | 'TOGGLE';
