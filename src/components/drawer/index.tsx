@@ -70,9 +70,8 @@ const Drawer = () => {
                                   'Trip.View',
                                   'Vheicle.View']} />
             <NavLink title="Bookings" faIcon="fas fa-calendar-alt" link="#" scope='' />
-            <NavLink title="Trips" faIcon="fas fa-car-alt" link="#" scope='' />
+            <NavLink title="Trips" faIcon="fas fa-car-alt" link="trips" />
             <NavLink title="States" faIcon="fas fa-map-marker" link="#" scope='' />
-            <NavLink title="Cities" faIcon="fas fa-city" link="#" scope='' />
             <NavLink title="Vehicles" faIcon="fas fa-car" link="vehicles" scope='Vehicle.View' />
             <NavLink title="Bus Stops" faIcon="fas fa-bus" link="bus-stops" scope='BusStop.View' />
             <NavLink title="Routes" faIcon="fas fa-route" link="routes" scope='Route.View' />
