@@ -126,7 +126,7 @@ export const capitalize = (word: string) => {
 
 export const splitCamel = (word: string) => word.replace(/([a-z])([A-Z])/g, '$1 $2');
 
-export const mapToTyphead = <TItem extends SelectedOption>(data: TItem[], nameKey = 'name') => {
+export const mapToTyphead = <TItem extends Record<string, any>>(data: TItem[], nameKey = 'name') => {
     return data.map((item) => ({
         ...item,
         label: item[nameKey]
