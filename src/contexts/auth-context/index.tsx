@@ -1,29 +1,26 @@
-import { createContext, useState, ReactNode, useEffect, useMemo } from 'react';
-import { getCookie } from '../../util';
+import { createContext, useState, ReactNode, useMemo } from 'react';
 
-const AUTH_INITIAL_VALUE = {
-    isAuthUser: false,
-    setAuthUser: (isAuth: boolean) => {}
+const AUTH_INITIAL_VALUE: {
+    access: string | null;
+    setAccess: (newAccess: string | null) => void
+} = {
+    access: null,
+    setAccess: (newAccess: string | null) => {}
 }
 
 export const AuthContext = createContext(AUTH_INITIAL_VALUE);
 
 export const AuthProvider = ({children}:{children: ReactNode}) => {
 
-    const [isAuthUser, setIsAuth] = useState(false);
+    const [access, setAccess] = useState<null | string>(null);
 
-    const handleAuthUser = (isAuth: boolean) => setIsAuth(isAuth);
-
-    useEffect(() => {
-        const user = getCookie('EMSUser');
-        if(user) {
-            handleAuthUser(true);
-        }
-    },[])
+    const handleAccess = (access: string | null) =>  { setAccess(access) };
 
     const AuthValue = useMemo(() => {
-        return {isAuthUser: isAuthUser, setAuthUser: handleAuthUser}
-    }, [isAuthUser])
+        return {    access, 
+                    setAccess: handleAccess
+                }
+    }, [access])
 
     return <AuthContext.Provider value={AuthValue}>
                 {children}

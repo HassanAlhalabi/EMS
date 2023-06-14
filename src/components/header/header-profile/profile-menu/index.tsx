@@ -6,11 +6,11 @@ import { removeCookie } from '../../../../util';
 const ProfileMenu = () => {
 
   const navigate = useNavigate();
-  const {setAuthUser} = useContext(AuthContext);
+  const {setAccess} = useContext(AuthContext);
 
   const handleLogOut = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    setAuthUser(false);
+    setAccess(null);
     removeCookie('EMSUser');
     navigate('/sign-in');
   }

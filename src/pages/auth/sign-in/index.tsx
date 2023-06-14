@@ -1,13 +1,15 @@
+import { useContext } from 'react';
+
 import { useFormik } from "formik";
 import { Form, Row, Spinner, Col } from "react-bootstrap"
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import Feedback from "../../../components/feedback";
 import { usePost } from "../../../hooks"
 import { signInValidation } from "../../../schema/sign-in";
-import { useContext } from 'react';
 import { AuthContext } from "../../../contexts/auth-context";
-import { useNavigate } from "react-router-dom";
 import { getAxiosError, setCookie } from "../../../util";
-import { toast } from "react-toastify";
 
 const INITIAL_VALUES = {
   name: '',
@@ -18,7 +20,8 @@ const INITIAL_VALUES = {
 const SignIn = () => {
 
   const navigate = useNavigate();
-  const { setAuthUser } = useContext(AuthContext);
+  const location = useLocation();
+  const { setAccess } = useContext(AuthContext);
 
   const formik = useFormik({
     initialValues: INITIAL_VALUES,
@@ -42,21 +45,20 @@ const SignIn = () => {
       try {
         const mutationReq = await mutateAsync();
         const user = mutationReq.data;
-        const cookieTime = formik.values.rememberMe ? 9 : null
-        if(cookieTime) {
-          setCookie('EMSUser', user, cookieTime);
-        } else {
-          setCookie('EMSUser', user);
-        }
-        setAuthUser(true);
-        navigate('/');
+        setAccess(user.token);
+        delete user.token; 
+        setCookie('EMSUser', user);
+        const from = location.state?.from || '/';
+        console.log(from)
+        navigate(from, {replace: true});
       } catch(error) {
         toast.error(getAxiosError(error));
       }
     }
  
   }
-
+  console.log(location)
+  console.log(location.state?.pathname)
   return (
     <div className="row flex-center min-vh-100 py-6">
       <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">

@@ -2,7 +2,6 @@ import Cookies from "js-cookie";
 import { AxiosError } from 'axios';
 import jwt_decode from "jwt-decode";
 import { IDecodedToken } from "../types/token";
-import { SelectedOption } from "../types";
 
 declare global {
     interface Array<T> {
@@ -70,13 +69,6 @@ export const getCookie = (key: string) => {
 
 export const removeCookie = (key: string) => Cookies.remove(key);
 
-export const isAuthUser = () => {
-    if(getCookie('EMSUser')) {
-        return true;
-    }
-    return false;
-}
-
 export const getAxiosError = (error: unknown) => {
     const err = error as AxiosError;
     if(err.response && Array.isArray(err.response.data)) { 
@@ -87,7 +79,7 @@ export const getAxiosError = (error: unknown) => {
 
 export const getClaims = () => {
     if(getCookie('EMSUser')) {
-        let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
+        let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').permissions);
         return decodedToken.Claims.map((claim: string) => {
             return claim.substring(claim.indexOf('.') + 1)
         });
@@ -96,7 +88,7 @@ export const getClaims = () => {
 }
 
 export const getClaimsMap = () => {
-    let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').token);
+    let decodedToken: IDecodedToken = jwt_decode(getCookie('EMSUser').permissions);
     const claimsMap = new Map();
     decodedToken.Claims.forEach((claim: string) => {
         const claimTitle = claim.split('.')[1];

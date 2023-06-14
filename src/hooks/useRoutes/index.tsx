@@ -1,9 +1,10 @@
-import { useContext, useMemo } from "react"
+import { useMemo } from "react"
 import { getRoutes } from "../../routes"
-import { AuthContext } from "../../contexts/auth-context";
+import useIsAuth from "../useAuth";
 
 export const useRoutes = () => {
-    const {isAuthUser} = useContext(AuthContext);
+
+    const isAuthUser = useIsAuth();
 
     const appRoutes = useMemo(() => {
         const routes = getRoutes();

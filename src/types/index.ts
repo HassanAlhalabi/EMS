@@ -1,6 +1,3 @@
-import { Option } from "react-bootstrap-typeahead/types/types";
-
-
 export interface PaginationInfo {
     hasNext: boolean,
     hasPrevious: boolean, 

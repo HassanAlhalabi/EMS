@@ -1,8 +1,9 @@
 import { Navigate } from 'react-router-dom';
-import { isAuthUser } from '../../util';
+import useIsAuth from '../../hooks/useAuth';
 
 const ProtectedRoute = ({ children }: {children: JSX.Element}) => {
-    if (!isAuthUser()) {
+  const isAuth = useIsAuth();
+    if (!isAuth) {
       return <Navigate to="/sign-in" replace />;
     }
     return children;
