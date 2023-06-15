@@ -27,6 +27,10 @@ const httpClient = axios.create({
       'Accept-Language': getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN',
       'Content-Type': "application/json",
     },
+    proxy: {
+      host: "https://alimakhlouf-002-site4.btempurl.com",
+      port: 443
+    }
 });
 
 const useHTTP = () => {
