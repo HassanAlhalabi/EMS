@@ -88,7 +88,7 @@ const BusStopsPage = () => {
         [ACTION_TYPES.update]: {
           type:  currentAction,
           path: '/BusStop',
-          payload: formik.values,
+          payload: {busStopId , ...formik.values},
           onSuccess: () => handleSuccess('BusStop Updated Successfully')
         },
         [ACTION_TYPES.delete]: {

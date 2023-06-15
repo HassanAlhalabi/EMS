@@ -67,7 +67,7 @@ const TripsPage = () => {
             },
             {
                 Header: 'Busstops',
-                accessor: 'busstops',
+                accessor: 'busStops',
             },
             {
                 Header: 'Options',
@@ -89,6 +89,8 @@ const TripsPage = () => {
             [],
         [data, isFetching, isLoading, page]
     );
+
+    console.log(trips)
 
     const handleSuccess = (message: string) => {
         toast.success(message)
