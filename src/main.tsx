@@ -1,21 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { QueryClient, QueryFunction, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import App from './App'
 import ErrorBoundary from './components/error-boundries';
 import { AuthProvider } from './contexts/auth-context'
 import { LayoutContextProvider } from './contexts/layout-context';
 import { LocalizeProvider } from './contexts/localize-context';
-import { baseURL, get } from './http';
-
-// Default Query Function
-const defaultQueryFn:  QueryFunction = async ({ queryKey }) => {
-  const { data } = await get(
-    `${baseURL}${queryKey[0]}`,
-  )
-  return data
-}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,7 +14,6 @@ const queryClient = new QueryClient({
       staleTime: 10,
       refetchOnWindowFocus: false,
       retry: 0,
-      queryFn: defaultQueryFn
     },
   },
 })
