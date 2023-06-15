@@ -7,20 +7,20 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import FormWizard from "../../../components/form-wizard";
-import { PaneHeadProps } from "../../../components/form-wizard/pane-head";
-import SwitchInput from "../../../components/switch-input/index.";
-import Table from "../../../components/table";
-import { useGet, usePost, usePut } from "../../../hooks";
-import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { facultyValidation, hallValidation, specValidation, dayValidation } from "../../../schema/faculty";
-import { NewDay, NewFaculty, NewHall, NewSpec } from "../../../types/faculties";
-import { getAxiosError } from "../../../util";
+import FormWizard from "../../../../components/form-wizard";
+import { PaneHeadProps } from "../../../../components/form-wizard/pane-head";
+import SwitchInput from "../../../../components/switch-input/index.";
+import Table from "../../../../components/table";
+import { useGet, usePost, usePut } from "../../../../hooks";
+import { useScreenLoader } from "../../../../hooks/useScreenLoader";
+import { facultyValidation, hallValidation, specValidation, dayValidation } from "../../../../schema/faculty";
+import { NewDay, NewFaculty, NewHall, NewSpec } from "../../../../types/faculties";
+import { getAxiosError } from "../../../../util";
 import FacultyForm from "./faculty-form";
 import HallsForm from "./halls-form";
 import SpecsForm from "./specs-form";
 import WorkDaysForm from "./work-days-form";
-import { WORK_DAYS, WORK_DAYS_NAMES } from "../../../constants";
+import { WORK_DAYS, WORK_DAYS_NAMES } from "../../../../constants";
 
 const formWizardHeaders: PaneHeadProps[] = [
     {   

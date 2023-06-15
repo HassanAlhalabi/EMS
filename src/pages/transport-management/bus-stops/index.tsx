@@ -7,7 +7,7 @@ import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { capitalize} from "../../../util";
-import { BusStop, NewBusStop } from "../../../types/busstop";
+import { BusStop, FullBusStop, NewBusStop } from "../../../types/busstop";
 import { busstopValidation } from "../../../schema/busstop";
 import BusStopForm from "./busstop-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
@@ -31,8 +31,6 @@ const BusStopsPage = () => {
     const [busStopId, setBusStopId] = useState<string | null>(null);
     const { setAction } = useActions()
 
-    console.log(busStopId)
-
     const formik = useFormik<NewBusStop>({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleBusStopAction(),
@@ -44,9 +42,16 @@ const BusStopsPage = () => {
             isFetching,
             refetch } = useGetTableData('/BusStop/GetBusStops', page, pageSize, searchKey)
 
-    useGetDataById<BusStop>(    '/BusStop/GetFullBusStop',
+    useGetDataById<FullBusStop>(    '/BusStop/GetFullBusStop',
                                 busStopId,
-                                {onSuccess: data => formik.setValues(data.data)});
+                                {
+                                    onSuccess: data =>formik.setValues({
+                                        cityId: data.data.cityId,
+                                        nameAr: data.data.nameAr,
+                                        nameEn: data.data.nameEn,
+                                        stateId: data.data.stateId
+                                    })
+                                });
             
     const columns = useMemo(
         () => [
@@ -63,14 +68,14 @@ const BusStopsPage = () => {
     )
 
     const busStops = useMemo(
-        () => (data && data.data.busStops) ? data.data.busStops : [],
+        () => (data?.data.busStops) ? data.data.busStops : [],
         [data, isFetching, isLoading, page]
     );
 
-    const handleSuccess = (message: string) => {
+    const handleSuccess = async (message: string) => {
         toast.success(message)
         reset();
-        refetch();
+        await refetch();
     }
 
     const actionsMap = {

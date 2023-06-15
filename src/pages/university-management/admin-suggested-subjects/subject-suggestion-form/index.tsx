@@ -10,7 +10,6 @@ import { mapToTyphead } from "../../../../util";
 import SwitchInput from "../../../../components/switch-input/index.";
 import Table from "../../../../components/table";
 import { NewSubjectSuggestion } from "../../../../types/suggested-subjects";
-import { SelectedOption } from "../../../../types";
 import { useGet } from "../../../../hooks";
 
 const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestion>}) => {
@@ -21,14 +20,14 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
         ['/Subject/GetDropDownSubjects'], 
     () => get(`/Subject/GetDropDownSubjects`));
 
-    const [selectedSubjects, setSelectedSubjects] = useState<SelectedOption[]>([]);
+    const [selectedSubjects, setSelectedSubjects] = useState<Record<string, any>[]>([]);
 
-   const handleSelectSubject = (selectedSubject: SelectedOption[]) => {
+   const handleSelectSubject = (selectedSubject: Record<string, any>[]) => {
     
         if(selectedSubject.length === 0) return;
 
         // Check If Object Already Exists
-        const objectExits = selectedSubjects.find((item) => item.id === selectedSubject[0].id);
+        const objectExits = selectedSubjects.find((item) => (item.id) === selectedSubject[0].id);
 
         if(objectExits) return;      
 
@@ -41,7 +40,7 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
             ...formik.values,
             subjectIds: [
                 ...formik.values.subjectIds,
-                selectedSubject[0].id
+                selectedSubject[0].id as string
             ]
         })
     }
@@ -88,7 +87,7 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
                         size="lg"
                         className={formik.values.subjectIds.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search Subjects'
-                        onChange={(options) => handleSelectSubject(options as SelectedOption[])}
+                        onChange={(options) => handleSelectSubject(options as Record<string, any>[])}
                         options={subjects ? mapToTyphead(subjects.data) : []}
                         isInvalid={formik.values.subjectIds.length === 0 && formik.dirty}
                         isValid={formik.values.subjectIds.length !== 0 && formik.dirty}
@@ -107,12 +106,12 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
                 </Form.Group>
             </Col>
         </Row>
-        <Table<SelectedOption>  
+        <Table<Record<string, any>>  
             columns={columns} 
             data={selectedSubjects}
             renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 
             type="button" 
-            onClick={() => handleDeleteSubject(data.id)}>        
+            onClick={() => handleDeleteSubject(data.id as string)}>        
                     <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
                 </button>}  />
     </Form>

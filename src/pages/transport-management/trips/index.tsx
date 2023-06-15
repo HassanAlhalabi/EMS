@@ -44,7 +44,12 @@ const TripsPage = () => {
 
     useGetDataById<Trip>(    '/Trip/GetTrip',
                                 tripId,
-                                {onSuccess: data => formik.setValues(data.data)});
+                                {onSuccess: data => formik.setValues({
+                                    busStops: data.data.busStops.map(busStop => busStop.busStopId),
+                                    departureHoure: data.data.departureHoure,
+                                    routeId: data.data.route.routeId,
+                                    vehicleId: data.data.vehicle.vehicleId
+                                })});
             
     const columns = useMemo(
         () => [

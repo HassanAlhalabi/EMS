@@ -37,9 +37,9 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
         }
     },[formik.values.facultyId])
 
-    const [selectedSubjects, setSelectedSubjects] = useState<SelectedOption[]>([]);
+    const [selectedSubjects, setSelectedSubjects] = useState<Record<string, any>[]>([]);
 
-   const handleSelectSubject = (selectedSubjects: SelectedOption[]) => {
+   const handleSelectSubject = (selectedSubjects: Record<string, any>[]) => {
     
         if(selectedSubjects.length === 0) return;
 
@@ -186,7 +186,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                     size="lg"
                     className={formik.values.studyPlanSubjects.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                     placeholder='Search Subjects'
-                    onChange={(options) => handleSelectSubject(options as SelectedOption[])}
+                    onChange={(options) => handleSelectSubject(options as Record<string, any>[])}
                     options={subjects ? mapToTyphead(subjects.data) : []}
                     isInvalid={formik.values.studyPlanSubjects.length === 0 && formik.dirty}
                     isValid={formik.values.studyPlanSubjects.length !== 0 && formik.dirty}
@@ -196,7 +196,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                 </Feedback>
             </Form.Group> 
         </Row> 
-        <Table<SelectedOption>  
+        <Table<Record<string, any>>  
             columns={columns} 
             data={selectedSubjects}
             renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 

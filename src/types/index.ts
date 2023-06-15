@@ -13,6 +13,6 @@ export interface SelectedItem {
     label: string
 }
 
-export type SelectedOption = Record<string, any> | string;
+export type SelectedOption = string | Record<string, any>;
 
 export type Action = 'ADD' | 'UPDATE' | 'DELETE' | 'TOGGLE';

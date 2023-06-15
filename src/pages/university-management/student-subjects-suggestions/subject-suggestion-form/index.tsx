@@ -21,9 +21,9 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
         ['/Subject/GetDropDownSubjects'], 
     () => get(`/Subject/GetDropDownSubjects`));
 
-    const [selectedSubjects, setSelectedSubjects] = useState<SelectedOption[]>([]);
+    const [selectedSubjects, setSelectedSubjects] = useState<Record<string, any>[]>([]);
 
-   const handleSelectSubject = (selectedSubject: SelectedOption[]) => {
+   const handleSelectSubject = (selectedSubject: Record<string, any>[]) => {
     
         if(selectedSubject.length === 0) return;
 
@@ -89,7 +89,7 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
                         size="lg"
                         className={formik.values.subjectIds.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
                         placeholder='Search Subjects'
-                        onChange={(options) => handleSelectSubject(options as SelectedOption[])}
+                        onChange={(options) => handleSelectSubject(options as Record<string, any>[])}
                         options={subjects ? mapToTyphead(subjects.data) : []}
                         isInvalid={formik.values.subjectIds.length === 0 && formik.dirty}
                         isValid={formik.values.subjectIds.length !== 0 && formik.dirty}
@@ -108,7 +108,7 @@ const SubjectSuggestionForm = ({formik}:{formik: FormikProps<NewSubjectSuggestio
                 </Form.Group>
             </Col>
         </Row>
-        <Table<SelectedOption>  
+        <Table<Record<string, any>>  
             columns={columns} 
             data={selectedSubjects}
             renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 
