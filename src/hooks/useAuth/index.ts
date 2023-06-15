@@ -2,7 +2,7 @@ import { getCookie } from "../../util";
 
 const useIsAuth = () => { 
 
-    const isAuth = Boolean(getCookie('EMSUser'));
+    const isAuth = Boolean(getCookie('EMSUser') || sessionStorage.getItem('EMSUser'));
     
     return isAuth;
     

@@ -47,9 +47,12 @@ const SignIn = () => {
         const user = mutationReq.data;
         setAccess(user.token);
         delete user.token; 
-        setCookie('EMSUser', user);
+        if(formik.values.rememberMe) {
+          setCookie('EMSUser', user);
+        } else {
+          sessionStorage.setItem('EMSUser', JSON.stringify(user));
+        }
         const from = location.state?.from || '/';
-        console.log(from)
         navigate(from, {replace: true});
       } catch(error) {
         toast.error(getAxiosError(error));
@@ -57,8 +60,7 @@ const SignIn = () => {
     }
  
   }
-  console.log(location)
-  console.log(location.state?.pathname)
+
   return (
     <div className="row flex-center min-vh-100 py-6">
       <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">

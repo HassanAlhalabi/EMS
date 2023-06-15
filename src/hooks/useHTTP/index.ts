@@ -65,6 +65,7 @@ const useHTTP = () => {
         // Refresh Token Expired
         setAccess(null);
         removeCookie('EMSUser');
+        sessionStorage.removeItem('EMSUser');
       }
   
       return Promise.reject(error);
@@ -80,7 +81,7 @@ const useHTTP = () => {
     if(access) {
       setAccess(access);
     }
-    if(!access && !getCookie('EMSUser') && location.pathname !== '/sign-in') {
+    if(!access && !getCookie('EMSUser') && !sessionStorage.getItem('EMSUser') && location.pathname !== '/sign-in') {
       navigate('/sign-in', {
         replace: true,
         state: {
@@ -88,7 +89,7 @@ const useHTTP = () => {
         }
       });
     }
-  },[access, getCookie('EMSUser')])
+  },[access, getCookie('EMSUser'),sessionStorage.getItem('EMSUser')])
 
   const { get, post, put, delete: deleteReq  } = httpClient;
 
