@@ -78,10 +78,8 @@ export const getAxiosError = (error: unknown) => {
 }
 
 export const getClaims = () => {
-    if(getCookie('EMSUser') || sessionStorage.getItem('EMSUser')) {
-        const permissions = getCookie('EMSUser') ? 
-                            getCookie('EMSUser').permissions :
-                            JSON.parse(sessionStorage.getItem('EMSUser') as string).permissions;
+    if(getCookie('EMSUser')) {
+        const permissions = getCookie('EMSUser').permissions
         let decodedToken: IDecodedToken = jwt_decode(permissions);
         return decodedToken.Claims.map((claim: string) => {
             return claim.substring(claim.indexOf('.') + 1)
@@ -91,9 +89,7 @@ export const getClaims = () => {
 }
 
 export const getClaimsMap = () => {
-    const permissions = getCookie('EMSUser') ? 
-                        getCookie('EMSUser').permissions :
-                        JSON.parse(sessionStorage.getItem('EMSUser') as string).permissions;
+    const permissions = getCookie('EMSUser').permissions;
     let decodedToken: IDecodedToken = jwt_decode(permissions);
     const claimsMap = new Map();
     decodedToken.Claims.forEach((claim: string) => {

@@ -12,7 +12,6 @@ const ProfileMenu = () => {
     e.preventDefault();
     setAccess(null);
     removeCookie('EMSUser');
-    sessionStorage.removeItem('EMSUser');
     navigate('/sign-in');
   }
 

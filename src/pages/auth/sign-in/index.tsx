@@ -50,7 +50,7 @@ const SignIn = () => {
         if(formik.values.rememberMe) {
           setCookie('EMSUser', user, 5);
         } else {
-          sessionStorage.setItem('EMSUser', JSON.stringify(user));
+          setCookie('EMSUser', user);
         }
         const from = location.state?.from || '/';
         navigate(from, {replace: true});
