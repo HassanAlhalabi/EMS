@@ -15,6 +15,7 @@ import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from "../../../hooks/useGetDataById";
 import { useActions } from "../../../hooks/useActions";
 import { Action } from "../../../types";
+import Button from '../../../components/button';
 
 const INITIAL_VALUES: {name: string, roleClaims: string[]} = {
     name: '',
@@ -134,37 +135,32 @@ const RolesPage = () => {
                     setSearchKey={setSearchKey}
                     pagination={data?.data.paginationInfo}
                     renderTableOptions={() => {
-                    return  <PermissionsGate scope={'Role.Insert'}>
-                                <button 	className="btn btn-falcon-success btn-sm" 
-                                                        type="button" 
-                                                        onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
+                    return  <Button scope={'Role.Insert'}
+                                    className="btn-falcon-success btn-sm"
+                                               onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
                                     <span className="fas fa-plus"></span>
                                     <span className="ms-1">New</span>
-                                </button>
-                            </PermissionsGate>
+                            </Button>
+
                     }} 
                     renderRowActions={(data) => {
                         return  <>
-                                    <PermissionsGate scope={'Role.Edit'}>
-                                        <button className="btn btn-falcon-info btn-sm m-1" 
-                                                type="button" 
+                                    <Button scope={'Role.Edit'}
+                                            className="btn-falcon-info btn-sm m-1"
                                                 onClick={() => {
                                                     setCurrentAction(ACTION_TYPES.update as Action)
                                                     setRoleId(data.id);
                                                 }}>        
-                                            <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                                        </button>
-                                    </PermissionsGate>
-                                    <PermissionsGate scope={'Role.Delete'}>
-                                        <button className="btn btn-falcon-danger btn-sm m-1" 
-                                                type="button" 
-                                                onClick={() => {
-                                                    setCurrentAction(ACTION_TYPES.delete as Action);
-                                                    setRoleId(data.id);
-                                                }}>        
-                                            <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                                        </button>
-                                    </PermissionsGate>
+                                        <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
+                                    </Button>
+                                    <Button scope={'Role.Delete'} 
+                                            className="btn-falcon-danger btn-sm m-1" 
+                                            onClick={() => {
+                                                setCurrentAction(ACTION_TYPES.delete as Action);
+                                                setRoleId(data.id);
+                                            }}>        
+                                        <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                                    </Button>
                                 </>
                     }}
                 />
