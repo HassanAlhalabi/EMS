@@ -7,49 +7,42 @@ import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { capitalize } from "../../../util";
-import { Trip, NewTrip } from "./types";
-import { tripValidation } from "./schema";
-import TripForm from './trip-form';
+import { TripBooking, NewTripBooking } from "./types";
+import { tripBookingValidation } from "./schema";
+import TripBookingForm from './booking-form';
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
 
 const INITIAL_VALUES = {
-    departureHoure: '',
-    routeId: '',
-    vehicleId: '',
-    busStops: []
+    tripId: '',
+    chairNumber: 1
 }
 
-const TripsPage = () => {
+const TripsBookingsPage = () => {
 
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(15);
     const [searchKey, setSearchKey] = useState('');
     const [currentAction, setCurrentAction] = useState<Action | null>(null);
-    const [tripId, setTripId] = useState<string | null>(null);
+    const [bookingId, setTripBookingId] = useState<string | null>(null);
     const { setAction } = useActions()
 
-    const formik = useFormik<NewTrip>({
+    const formik = useFormik<NewTripBooking>({
 		initialValues: INITIAL_VALUES,
-		onSubmit: () => handleTripAction(),
-		validationSchema: tripValidation
+		onSubmit: () => handleTripBookingAction(),
+		validationSchema: tripBookingValidation
 	})
 
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Trip/GetTrips', page, pageSize, searchKey)
+            refetch } = useGetTableData('/Booking/GetAllBookings', page, pageSize, searchKey)
 
-    useGetDataById<Trip>(    '/Trip/GetTrip',
-                                tripId,
-                                {onSuccess: data => formik.setValues({
-                                    busStops: data.data.busStops.map(busStop => ({value: busStop.busStopId, label: busStop.busStopName})),
-                                    departureHoure: data.data.departureHoure,
-                                    routeId: data.data.route.routeId,
-                                    vehicleId: data.data.vehicle.vehicleId
-                                })});
+    useGetDataById<TripBooking>(    '/Booking/GetAllBookings',
+                                    bookingId,
+                                    {onSuccess: data => {}});
             
     const columns = useMemo(
         () => [
@@ -77,15 +70,10 @@ const TripsPage = () => {
         []
     )
 
-    const trips = useMemo(
-        () => (data && data.data.trips) ? 
-            data.data.trips.map((trip: Trip)=> ({
-                ...trip,
-                vehicle: trip.vehicle.vehicleBrand,
-                route: `From ${trip.route.from ? trip.route.from.cityName : 'University'} to 
-                        ${trip.route.to ? trip.route.to.cityName : 'University'}`,
-                busStops: trip.busStops.map(busStop => busStop.busStopName).join(', ')
-            })) : 
+    const tripBookings = useMemo(
+        () => (data && data.data.bookings) ? 
+            data.data.bookings.map((booking: TripBooking)=> ({
+                ...booking})) : 
             [],
         [data, isFetching, isLoading, page]
     );
@@ -99,43 +87,38 @@ const TripsPage = () => {
     const actionsMap = {
         [ACTION_TYPES.add]: {
           type: currentAction,
-          path: '/Trip',
-          payload: {...formik.values,
-                    busStops: formik.values.busStops.map(busStop => busStop.value)                
-                    },
-          onSuccess: () => handleSuccess('Trip Added Successfully')
+          path: '/Booking',
+          payload: formik.values,
+          onSuccess: () => handleSuccess('Trip Booking Added Successfully')
         },
         [ACTION_TYPES.update]: {
           type:  currentAction,
-          path: '/Trip',
-          payload: {...formik.values,
-                    tripId,
-                    busStops: formik.values.busStops.map(busStop => busStop.value)                
-                    },
-          onSuccess: () => handleSuccess('Trip Updated Successfully')
+          path: '/Booking',
+          payload: formik.values,
+          onSuccess: () => handleSuccess('Trip Booking Updated Successfully')
         },
         [ACTION_TYPES.delete]: {
           type: currentAction,
-          path: `/Trip`,
-          payload: tripId,
-          onSuccess: () => handleSuccess('Trip Deleted Successfully')
+          path: `/Booking`,
+          payload: bookingId,
+          onSuccess: () => handleSuccess('Trip Booking Canceled Successfully')
         }
       }
 
-    const handleTripAction = () => {
+    const handleTripBookingAction = () => {
         if(formik.isValid && currentAction) {
         setAction(actionsMap[currentAction])
     }}
 
     const reset = () => {
-        setCurrentAction(null); formik.resetForm(); setTripId(null);
+        setCurrentAction(null); formik.resetForm(); setTripBookingId(null);
     }
 
     return  <>
-                <Table<Trip>  
+                <Table<TripBooking>  
                     columns={columns} 
                     hasSearch
-                    data={trips} 
+                    data={tripBookings} 
                     loading={isLoading || isFetching}
                     isBulk={false}
                     hasSort={false}
@@ -158,18 +141,18 @@ const TripsPage = () => {
                     }} 
                     renderRowActions={(data) => {
                         return  <div className="d-flex justify-content-center align-items-center">
-                                    <button className="btn btn-falcon-info btn-sm m-1" 
+                                    {/* <button className="btn btn-falcon-info btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
-                                                setTripId(data.tripId);
+                                                setTripBookingId(data.tripBookingId);
                                                 setCurrentAction(ACTION_TYPES.update as Action)
                                             }}>        
                                         <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
+                                    </button> */}
                                     <button className="btn btn-falcon-danger btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
-                                                setTripId(data.tripId);
+                                                setTripBookingId(data.bookingId);
                                                 setCurrentAction(ACTION_TYPES.delete as Action);
                                             }}>        
                                         <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
@@ -178,21 +161,21 @@ const TripsPage = () => {
                     }}
                 />
 
-                <PopUp  title={`${currentAction && capitalize(currentAction as string)} Trip`}
+                <PopUp  title={`${currentAction && capitalize(currentAction as string)} TripBooking`}
 								show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
 								onHide={() => reset()}
-								confirmText={`${currentAction} Trip`}
+								confirmText={`${currentAction} TripBooking`}
 								confirmButtonVariant={
 									currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
-								handleConfirm={handleTripAction}
+								handleConfirm={handleTripBookingAction}
                                 confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && currentAction !== ACTION_TYPES.delete}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)
-                                && <TripForm formik={formik} />}
+                                && <TripBookingForm formik={formik} />}
                         {currentAction === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This Trip</>
+                                    <>Are you Sure You Want to Delete This TripBooking</>
                         }
                 </PopUp>
 
@@ -200,4 +183,4 @@ const TripsPage = () => {
 
 }
 
-export default TripsPage
+export default TripsBookingsPage

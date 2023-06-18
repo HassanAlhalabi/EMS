@@ -30,6 +30,7 @@ const Vehicles                  = lazy(() => import('../pages/transport-manageme
 const BusStops                  = lazy(() => import('../pages/transport-management/bus-stops'));
 const Routes                    = lazy(() => import('../pages/transport-management/routes'));
 const Trips                     = lazy(() => import('../pages/transport-management/trips'));
+const TripsBookings                     = lazy(() => import('../pages/transport-management/trips-bookings'));
 
 export const getRoutes = () => ([
     {
@@ -198,6 +199,15 @@ export const getRoutes = () => ([
                 isIndex: false,
                 childRoutes: null,
                 element: <Trips />,
+                hasPermission: true
+            },
+            {
+                id: 'trips-bookings',
+                name: 'Trips Bookings',
+                path: '/trips-bookings',
+                isIndex: false,
+                childRoutes: null,
+                element: <TripsBookings />,
                 hasPermission: true
             },
         ],

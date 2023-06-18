@@ -106,6 +106,7 @@ const TripForm = ({formik}:{formik: FormikProps<NewTrip>}) => {
                                 id="busStops"
                                 name='busStops'
                                 isMulti
+                                closeMenuOnSelect={false}
                                 isLoading={busStopsLoading}
                                 options={busStopsData?.data.busStops?.map((busStop: BusStop)=> ({
                                             value: busStop.busStopId,
