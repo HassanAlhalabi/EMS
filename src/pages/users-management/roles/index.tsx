@@ -10,7 +10,6 @@ import { ACTION_TYPES } from "../../../constants";
 import { roleValidation } from "../../../schema/roles";
 import { capitalize } from "../../../util";
 import { Role } from "../../../types/roles";
-import PermissionsGate from "../../../components/permissions-gate";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from "../../../hooks/useGetDataById";
 import { useActions } from "../../../hooks/useActions";

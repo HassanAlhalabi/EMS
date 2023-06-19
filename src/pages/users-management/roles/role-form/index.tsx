@@ -20,7 +20,7 @@ const RoleForm = ({formik}:{formik: FormikProps<NewRole>}) => {
         );
     }, [rolesNum]);
 
-    // Handle Initla Roles Claims Load
+    // Handle Initial Roles Claims Load
     useEffect(() => {   
         allRolesRefs.forEach(roleRef => {
             const subClaims = Array.from((roleRef.current.closest('.accordion-header')?.nextSibling as HTMLElement)?.querySelectorAll('input'));
