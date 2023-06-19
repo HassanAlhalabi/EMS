@@ -7,9 +7,9 @@ import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { capitalize} from "../../../util";
-import { BusStop, FullBusStop, NewBusStop } from "../../../types/busstop";
-import { busstopValidation } from "../../../schema/busstop";
-import BusStopForm from "./busstop-form";
+import { BusStop, FullBusStop, NewBusStop } from "./types";
+import { busStopValidation } from "./schema";
+import BusStopForm from "./busStop-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
@@ -34,7 +34,7 @@ const BusStopsPage = () => {
     const formik = useFormik<NewBusStop>({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleBusStopAction(),
-		validationSchema: busstopValidation
+		validationSchema: busStopValidation
 	})
 
     const { data, 
