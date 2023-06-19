@@ -89,7 +89,9 @@ const UsersPage = () => {
       payload: {
                   id: userId,
                 ...formik.values,
-                contract: {
+                roleId:formik.values.type === 'Student' ? null : formik.values.roleId,
+                contract:formik.values.type === 'Student' ? null :
+                  {
                     ...formik.values.contract,
                     workDays: formik.values.contract?.workDays.map(workDay => workDay.value)
                   }

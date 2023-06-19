@@ -15,7 +15,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
     const { data } = useQuery(['/Role/GetRolesList'], () => get(`/Role/GetRolesList`));
    
-    const { renderSpecialitySelect } = useGetSpecialities()
+    const { renderSpecialitySelect } = useGetSpecialities(formik.values.facultyId, formik.values.specialtyId)
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
