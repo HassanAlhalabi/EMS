@@ -1,11 +1,14 @@
 import { Form } from 'react-bootstrap'
 import { FormCheckInputProps } from 'react-bootstrap/esm/FormCheckInput'
+import PermissionsGate from '../permissions-gate'
 
-const SwitchInput = (props: FormCheckInputProps) => {
+const SwitchInput = (props: FormCheckInputProps & {scope: string}) => {
   return (
-    <div className='switch-input'>
-        <Form.Switch {...props} />
-    </div>
+    <PermissionsGate scope={props.scope}>
+        <div className='switch-input'>
+          <Form.Switch {...props} />
+        </div>
+    </PermissionsGate>
   )
 }
 

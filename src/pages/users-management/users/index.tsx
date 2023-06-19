@@ -6,16 +6,16 @@ import { toast } from "react-toastify";
 import PopUp from "../../../components/popup";
 import SwitchInput from "../../../components/switch-input/index.";
 import Table from "../../../components/table"
-import { ACTION_TYPES } from "../../../constants";
+import { ACTION_TYPES, WORK_DAYS_NAMES } from "../../../constants";
 import { addUserValidation } from "../../../schema/user";
 import { NewUser, User } from "../../../types/users";
 import { capitalize } from "../../../util";
 import UserForm from "./user-form";
-import PermissionsGate from "../../../components/permissions-gate";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useActions } from "../../../hooks/useActions";
 import { Action } from "../../../types";
 import { useGetDataById } from "../../../hooks/useGetDataById";
+import Button from '../../../components/button';
 
 const INITIAL_VALUES: NewUser = {
   roleId: '',
@@ -29,7 +29,7 @@ const INITIAL_VALUES: NewUser = {
   contract: {
       startAt: '',
       endAt: '',
-      salary: 0,
+      salary: '',
       workDays: []
   }
 }
@@ -58,14 +58,18 @@ const UsersPage = () => {
       contract: data.data.contract ? {
         ...data.data.contract,
         endAt: (data.data.contract.endAt as string).split('T')[0],
-        startAt: (data.data.contract.startAt as string).split('T')[0]
+        startAt: (data.data.contract.startAt as string).split('T')[0],
+        workDays: data.data.contract.workDays.map(workDay => ({
+          label: WORK_DAYS_NAMES[workDay - 1],
+          value: workDay
+        }))
       } : null
     }) 
   });
 
-  const handleSuccess = (message: string) => {
+  const handleSuccess = async (message: string) => {
     toast.success(message)
-    reset();
+    await reset();
   }
 
   const actionsMap = {
@@ -84,7 +88,11 @@ const UsersPage = () => {
       path: '/User/PutUser',
       payload: {
                   id: userId,
-                ...formik.values
+                ...formik.values,
+                contract: {
+                    ...formik.values.contract,
+                    workDays: formik.values.contract?.workDays.map(workDay => workDay.value)
+                  }
                 },
       onSuccess: () => handleSuccess('User Updated Successfully')
     },
@@ -144,11 +152,11 @@ const UsersPage = () => {
     [data, isFetching, isLoading]
   );
 
-  const reset = () => {
+  const reset = async () => {
     setCurrentAction(null); 
     formik.resetForm();
     setUserId(null);
-    refetch();
+    await refetch();
   }
 
   const handleUserAction = () => {
@@ -183,45 +191,39 @@ const UsersPage = () => {
               setSearchKey={setSearchKey}
               fetchData={refetch} 
               renderTableOptions={() => {
-                                    return  <PermissionsGate scope={'User.Insert'}>
-                                              <button className="btn btn-falcon-success btn-sm" 
-                                                type="button" 
-                                                onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
-                                                  <span className="fas fa-plus"></span>
-                                                  <span className="ms-1">New</span>
-                                              </button>
-                                            </PermissionsGate>
+                                    return  <Button scope={'User.Insert'} 
+                                                    className="btn btn-falcon-success btn-sm" 
+                                                    onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
+                                                      <span className="fas fa-plus"></span>
+                                                      <span className="ms-1">New</span>
+                                            </Button>
+
                                            
                                            
                                     }} 
               renderRowActions={(user) => {
                   return  <div className="d-flex align-items-center">
-                            <PermissionsGate scope={'User.Edit'}>
-                              <button className="btn btn-falcon-info btn-sm m-1" 
-                                      type="button" 
+                            <Button scope={'User.Edit'} 
+                                    className="btn btn-falcon-info btn-sm m-1" 
                                       onClick={() => {
                                         setUserId(user.id)
                                         setCurrentAction(ACTION_TYPES.update as Action)
                                       }}>        
                                   <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                              </button>
-                            </PermissionsGate>
-                            <PermissionsGate scope={'User.Delete'}>
-                              <button className="btn btn-falcon-danger btn-sm m-1" 
-                                      type="button" 
+                            </Button>      
+                            <Button scope={'User.Delete'}
+                                    className="btn btn-falcon-danger btn-sm m-1"
                                       onClick={() => {
                                           setUserId(user.id);
                                           setCurrentAction(ACTION_TYPES.delete as Action);
                                       }}>        
                                   <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                              </button>
-                            </PermissionsGate>
-                            <PermissionsGate scope={'User.Edit'}>
-                              <SwitchInput 
-                                checked={user.isActive} 
-                                value={user.id} 
-                                onChange={() => handleToggleUser(user.id)}/>
-                              </PermissionsGate>
+                            </Button>
+                            <SwitchInput 
+                              scope={'User.Edit'}
+                              checked={user.isActive} 
+                              value={user.id} 
+                              onChange={() => handleToggleUser(user.id)} />
                           </div>
               }}/>
 

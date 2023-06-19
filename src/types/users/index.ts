@@ -12,8 +12,11 @@ export interface NewUser {
     contract: {
         startAt: Date | string,
         endAt: Date | string,
-        salary: number,
-        workDays: number[]
+        salary: number | string,
+        workDays: {
+            value: number,
+            label: string
+        }[]
     } | null
 }
 
