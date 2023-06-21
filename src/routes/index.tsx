@@ -7,6 +7,8 @@ const Main                      = lazy(() => import('../pages/main'));
 const SignIn                    = lazy(() => import('../pages/auth/sign-in'));
 const Dashboard                 = lazy(() => import('../pages/dashboard'));
 const Page404                   = lazy(() => import('../pages/404'));
+const Tickets                   = lazy(() => import('../pages/tickets-management/tickets'));
+const TicketsTypes              = lazy(() => import('../pages/tickets-management/tickets-types'));
 
 // Users Management System
 const Users                     = lazy(() => import('../pages/users-management/users'));
@@ -30,7 +32,10 @@ const Vehicles                  = lazy(() => import('../pages/transport-manageme
 const BusStops                  = lazy(() => import('../pages/transport-management/bus-stops'));
 const Routes                    = lazy(() => import('../pages/transport-management/routes'));
 const Trips                     = lazy(() => import('../pages/transport-management/trips'));
-const TripsBookings                     = lazy(() => import('../pages/transport-management/trips-bookings'));
+const TripsBookings             = lazy(() => import('../pages/transport-management/trips-bookings'));
+
+// Chat System
+const Chat                     = lazy(() => import('../pages/chat'));
 
 export const getRoutes = () => ([
     {
@@ -46,6 +51,24 @@ export const getRoutes = () => ([
                 isIndex: true,
                 childRoutes: null,
                 element: <Dashboard />,
+                hasPermission: true
+            },
+            {
+                id: 'tickets',
+                name: 'Tickets',
+                path: '/tickets',
+                isIndex: false,
+                childRoutes: null,
+                element: <Tickets />,
+                hasPermission: true
+            },
+            {
+                id: 'tickets-types',
+                name: 'Tickets Types',
+                path: '/tickets-types',
+                isIndex: false,
+                childRoutes: null,
+                element: <TicketsTypes />,
                 hasPermission: true
             },
             {
@@ -208,6 +231,15 @@ export const getRoutes = () => ([
                 isIndex: false,
                 childRoutes: null,
                 element: <TripsBookings />,
+                hasPermission: true
+            },
+            {
+                id: 'chat',
+                name: 'Chat',
+                path: '/chat',
+                isIndex: false,
+                childRoutes: null,
+                element: <Chat />,
                 hasPermission: true
             },
         ],

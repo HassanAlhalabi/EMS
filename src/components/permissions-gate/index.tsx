@@ -5,5 +5,8 @@ export default function PermissionsGate({
   children,
   scope
 }:{children: ReactNode, scope: string | string[]}) {
-    return hasPermission(scope) ? <>{children}</> : null;
+    if(scope === '' ||  hasPermission(scope)) {
+      return children
+    }
+    return null;
 }
