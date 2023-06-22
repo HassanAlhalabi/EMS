@@ -4,6 +4,10 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/auth-context";
 import { useLocation, useNavigate } from "react-router-dom";
 
+interface HTTPConfig {
+  withProgress?: boolean
+}
+
 export const baseURL = '/api';
 
 const getRefreshToken = async () => {
@@ -29,7 +33,7 @@ const httpClient = axios.create({
     },
 });
 
-const useHTTP = () => {
+const useHTTP = (HTTPconfig?: HTTPConfig) => {
 
   const navigate = useNavigate();
   const location = useLocation();

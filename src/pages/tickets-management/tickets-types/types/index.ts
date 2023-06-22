@@ -1,7 +1,7 @@
 
 export interface TicketType {
         ticketTypeId: string,
-        name: string,
+        title: string,
         description: string,
         isDoctor: true,
         isStudent: true,
@@ -19,7 +19,7 @@ export interface TicketType {
 
 export interface FullTicketType {
     ticketTypeId: string,
-    name: string,
+    title: string,
     description: string,
     isDoctor: true,
     isStudent: true,

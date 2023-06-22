@@ -14,6 +14,7 @@ import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
+import useGetTicketTypesTableColumns from './hooks/useGetTicketTypesTableColumns';
 
 const INITIAL_VALUES = {
     title: '',
@@ -44,30 +45,26 @@ const TicketsTypesPage = () => {
             isFetching,
             refetch } = useGetTableData('/TicketType/GetAllTicketTypes', page, pageSize, searchKey)
 
-    useGetDataById<FullTicketType>(    '/TicketType/GetTicketType',
+    const  { progressLoading: loadingTicket } = useGetDataById<FullTicketType>(    '/TicketType/GetTicketType',
                                 ticketTypeId,
                                 {
-                                    onSuccess: data =>formik.setValues(data.data)
+                                    onSuccess: data => { formik.setValues({
+                                        assignToDepartmentId: data.data.assignToDepartment.id,
+                                        description: data.data.description,
+                                        isDoctor: data.data.isDoctor,
+                                        isEmployee: data.data.isEmployee,
+                                        isStudent: data.data.isStudent,
+                                        title: data.data.title
+                                    })}
                                 });
-            
-    const columns = useMemo(
-        () => [
-            {
-                Header: 'TicketType Name',
-                accessor: 'ticketTypeName',
-            },
-            {
-                Header: 'Options',
-                accessor: 'options',
-            }
-        ],
-        []
-    )
+
 
     const ticketTypes = useMemo(
         () => (data?.data.ticketTypes) ? data.data.ticketTypes : [],
         [data, isFetching, isLoading, page]
     );
+
+    const ticketTypesTableColumns = useGetTicketTypesTableColumns();
 
     const handleSuccess = async (message: string) => {
         toast.success(message)
@@ -107,7 +104,7 @@ const TicketsTypesPage = () => {
 
     return  <>
                 <Table<TicketType>  
-                    columns={columns} 
+                    columns={ticketTypesTableColumns} 
                     hasSearch
                     data={ticketTypes} 
                     loading={isLoading || isFetching}
@@ -153,14 +150,15 @@ const TicketsTypesPage = () => {
                 />
 
                 <PopUp  title={`${currentAction && capitalize(currentAction as string)} TicketType`}
-								show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
-								onHide={() => reset()}
-								confirmText={`${currentAction} TicketType`}
-								confirmButtonVariant={
-									currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
-								}
-								handleConfirm={handleTicketTypeAction}
-                                confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && currentAction !== ACTION_TYPES.delete}
+                        show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
+                        onHide={() => reset()}
+                        confirmText={`${currentAction} TicketType`}
+                        confirmButtonVariant={
+                            currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
+                        }
+                        handleConfirm={handleTicketTypeAction}
+                        confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && currentAction !== ACTION_TYPES.delete}
+                        loadingData={loadingTicket}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)
