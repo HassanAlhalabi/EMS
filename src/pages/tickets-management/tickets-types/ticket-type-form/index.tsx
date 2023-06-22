@@ -7,10 +7,14 @@ import useGetDepartments from "../../../../hooks/useGetDepartments";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { mapToTyphead } from "../../../../util";
 import SwitchInput from "../../../../components/switch-input/index.";
+import { Department } from "../../../../types/departments";
+import { useState } from "react";
 
 const BusStopForm = ({formik}:{formik: FormikProps<NewTicketType>}) => {
 
     const departments = useGetDepartments();
+
+    const [selectedDep, setSelectedDep] = useState()
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -51,7 +55,10 @@ const BusStopForm = ({formik}:{formik: FormikProps<NewTicketType>}) => {
                             Assigned Department:
                         </Form.Label>
                         <Typeahead
-                            // selected={ selectedState }
+                            selected={ departments?.departments
+                                        .filter((dep: Department) => dep.id === formik.values.assignToDepartmentId) 
+                                        .map((dep: Department) => ({...dep,label: dep.name}))
+                                     }
                             id="stateId"
                             size="lg"
                             className={(formik.errors.assignToDepartmentId !== undefined && formik.dirty) ? 'is-invalid' : 'is-valid'}
