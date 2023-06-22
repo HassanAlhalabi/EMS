@@ -73,13 +73,13 @@ const TicketsPage = () => {
     }
 
     const actionsMap = {
-        [ACTION_TYPES.add]: {
+        [ACTION_TYPES.formDataAdd]: {
           type: currentAction,
           path: '/Ticket',
           payload: formik.values,
           onSuccess: () => handleSuccess('Ticket Added Successfully')
         },
-        [ACTION_TYPES.update]: {
+        [ACTION_TYPES.formDataUpdate]: {
           type:  currentAction,
           path: '/Ticket',
           payload: {ticketId , ...formik.values},

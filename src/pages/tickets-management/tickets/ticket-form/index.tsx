@@ -24,8 +24,11 @@ const BusStopForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
                             onChange={formik.handleChange}>
                                 <option disabled value=''>Choose Ticket Type</option>
                                 {
-                                    ticktTypes.ticketTypes.map((ticketType: TicketType) => {
-                                        return <option value={ticketType.ticketTypeId}>Ticket Type: {ticketType.name}</option>
+                                    ticktTypes?.ticketTypes.map((ticketType: TicketType) => {
+                                        return  <option  key={ticketType.ticketTypeId} 
+                                                        value={ticketType.ticketTypeId}>    
+                                                            {ticketType.title}
+                                                </option>
                                     } )
                                 }
                         </Form.Select>

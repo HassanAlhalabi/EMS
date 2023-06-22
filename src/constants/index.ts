@@ -15,10 +15,12 @@ export const PAGINATION_INFO = {
 }
 
 export const ACTION_TYPES = {
-    add:    'ADD',
-    update: 'UPDATE',
-    delete: 'DELETE',
-    toggle: 'TOGGLE'
+    add:            'ADD',
+    formDataAdd:    'FORM_Data_ADD',
+    update:         'UPDATE',
+    formDataUpdate: 'FORM_Data_UPDATE',
+    delete:         'DELETE',
+    toggle:         'TOGGLE',
 }
 
 export const WORK_DAYS: Record<string,number> = {

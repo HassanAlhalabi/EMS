@@ -33,11 +33,13 @@ export const usePostFormData = <T>(path: string, data: T) => {
     const { post } = useHTTP();
 
     const formData = new FormData();
-    Object.entries(data as Object).forEach(([key, value]) => {
-        if(value && value.length !== 0) {
-            formData.append(key, value)
-        }
-    })
+    if(data) {
+        Object.entries(data as Object).forEach(([key, value]) => {
+            if(value && value.length !== 0) {
+                formData.append(key, value)
+            }
+        })
+    }
 
     const mutationFn = async () => await post(path, formData, {
         headers: {
@@ -65,11 +67,13 @@ export const usePutFormData = <T>(path: string, data: T) => {
     const { put } = useHTTP();
 
     const formData = new FormData();
-    Object.entries(data as Object).forEach(([key, value]) => {
-        if(value  && value.length !== 0) {
-            formData.append(key, value)
-        }
-    })
+    if(data) {
+        Object.entries(data as Object).forEach(([key, value]) => {
+            if(value  && value.length !== 0) {
+                formData.append(key, value)
+            }
+        })
+    }
 
     const mutationFn = async () => await put(path, formData, {
         headers: {
