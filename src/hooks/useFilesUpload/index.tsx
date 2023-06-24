@@ -1,16 +1,20 @@
-import {useEffect, useState} from 'react';
+import {CSSProperties, useEffect, useState} from 'react';
 import { Stack } from 'react-bootstrap';
 
 import {DropEvent, FileRejection, useDropzone} from 'react-dropzone';
 
-const thumbsContainer = {
+interface AcceptedFile extends File {
+  preview: string
+}
+
+const thumbsContainer: CSSProperties = {
   display: 'flex',
   flexDirection: 'row',
   flexWrap: 'wrap',
   marginTop: 16
 };
 
-const thumb = {
+const thumb: CSSProperties = {
   display: 'inline-flex',
   borderRadius: 2,
   border: '1px solid #eaeaea',
@@ -19,22 +23,32 @@ const thumb = {
   width: 100,
   height: 100,
   padding: 4,
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
+  position: 'relative'
 };
 
-const thumbInner = {
+const deleteFileStyle: CSSProperties = {
+  position: 'absolute',
+  top: '3px',
+  right: '5px',
+  padding: '1px',
+  // backgroundColor: '#FFF',
+  cursor: 'pointer'
+}
+
+const thumbInner: CSSProperties = {
   display: 'flex',
   minWidth: 0,
   overflow: 'hidden'
 };
 
-const img = {
+const img: CSSProperties = {
   display: 'block',
   width: 'auto',
   height: '100%'
 };
 
-const dropZoneStyle = {
+const dropZoneStyle: CSSProperties = {
   padding: '20px',
   textAlign: "center",
   cursor: 'pointer',
@@ -43,12 +57,19 @@ const dropZoneStyle = {
   backgroundColor: '#152335'
 }
 
-interface PreviewProps {
-    files: File[];
-    handleDrop?: (<T extends File>(acceptedFiles: T[], fileRejections: FileRejection[], event: DropEvent) => void)
+const titleStyle: CSSProperties = {
+  maxWidth: '100px',
+  padding: '3px 5px',
+  fontSize: '12px'
 }
 
-function Previews({files, handleDrop}: PreviewProps) {
+interface PreviewProps {
+    files: AcceptedFile[];
+    handleDrop?: (<T extends File>(acceptedFiles: T[], fileRejections: FileRejection[], event: DropEvent) => void),
+    handleRemoveFile?: (fileName: string) => void   
+}
+
+function Previews({files, handleDrop, handleRemoveFile}: PreviewProps) {
 
   const {getRootProps, getInputProps} = useDropzone({
     accept: {
@@ -56,35 +77,38 @@ function Previews({files, handleDrop}: PreviewProps) {
     },
     onDrop: handleDrop
   });
-  
-  const thumbs = files.map(file => {
+
+  const thumbs = files.map((file,key)=> {
+    // In Case Image File
     if(/image\/*/.test(file.type)) {
-      return <Stack direction='vertical'>
+      return <Stack key={`${file.name}${key}`} direction='vertical'>
                 <div style={thumb} key={file.name}>
+                  <span style={deleteFileStyle} onClick={() => handleRemoveFile?.(file.name)}>
+                    <i className='fa fa-trash text-danger'></i>
+                  </span>
                   <div style={thumbInner}>
                     <img
                       src={file.preview}
                       style={img}
-                      // Revoke data uri after image is loaded
-                      onLoad={() => { URL.revokeObjectURL(file.preview) }}
                     />
                   </div>
                 </div>
-                <div style={{maxWidth: 'min-content'}}>{file.name}</div>
-             </Stack>
+                <div style={titleStyle}>{file.name}</div>
+              </Stack>
     }
-    return <Stack direction='vertical'>
+    return <Stack key={`${file.name}${key}`} direction='vertical'>
               <div style={thumb} key={file.name}>
+                <span style={deleteFileStyle} onClick={() => handleRemoveFile?.(file.name)}>
+                  <i className='fa fa-trash text-danger'></i>
+                </span>
                 <div style={thumbInner}>
                   <img
                     src='https://placehold.co/100x100?text=File'
                     style={img}
-                    // Revoke data uri after image is loaded
-                    onLoad={() => { URL.revokeObjectURL(file.preview) }}
                   />
                 </div>
               </div>
-              <div style={{maxWidth: 'min-content'}}>{file.name}</div>
+              <div style={titleStyle}>{file.name}</div>
             </Stack>
   });
 
@@ -109,17 +133,19 @@ function Previews({files, handleDrop}: PreviewProps) {
   );
 }
 
-const useFilesUpload = (config ?: {onUpload?: (files: File[]) => void}) => {
+const useFilesUpload = (config ?: {onUpload?: (files: AcceptedFile[]) => void}) => {
 
-    const [files, setFiles] = useState<File[]>([]);
-    const handleDrop = acceptedFiles => {
-        setFiles(acceptedFiles.map(file => Object.assign(file, {
+    const [files, setFiles] = useState<AcceptedFile[]>([]);
+    const handleDrop = (acceptedFiles: File[]) => {
+        setFiles(prev => [...prev, ...acceptedFiles.map((file) => Object.assign(file, {
           preview: URL.createObjectURL(file)
-        })));
-        config?.onUpload?.(acceptedFiles);
+        }))] );
+        config?.onUpload?.(acceptedFiles as AcceptedFile[]);
     }
+
+    const handleRemoveFile = (fileName: string) => setFiles(prev => prev.filter(file => file.name !== fileName))
     
-    const renderPreview = () => <Previews files={files} handleDrop={handleDrop} />
+    const renderPreview = () => <Previews files={files} handleDrop={handleDrop} handleRemoveFile={handleRemoveFile} />
 
     return { files, renderPreview }
 

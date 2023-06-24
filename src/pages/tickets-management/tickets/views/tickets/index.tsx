@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import PopUp from "../../../../../components/popup";
 import Table from "../../../../../components/table"
 import { ACTION_TYPES } from "../../../../../constants";
-import { capitalize} from "../../../../../util";
 import { Ticket, NewTicket } from "../../types";
 import { ticketsValidation } from "../../schema";
 import TicketForm from "../../ticket-form";
@@ -134,10 +133,10 @@ const TicketsPage = () => {
                     }}
                 />
 
-                <PopUp  title={`${currentAction && capitalize(currentAction as string)} Ticket`}
+                <PopUp  title={`Add Ticket`}
                         show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
                         onHide={() => reset()}
-                        confirmText={`${currentAction} Ticket`}
+                        confirmText={`Add Ticket`}
                         confirmButtonVariant={
                             currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
                         }
