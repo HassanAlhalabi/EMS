@@ -9,11 +9,11 @@ import { ACTION_TYPES } from "../../../constants";
 import { capitalize} from "../../../util";
 import { BusStop, FullBusStop, NewBusStop } from "./types";
 import { busStopValidation } from "./schema";
-import BusStopForm from "./busStop-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
+import BusStopForm from './busStop-form';
 
 const INITIAL_VALUES = {
     nameAr: '',
