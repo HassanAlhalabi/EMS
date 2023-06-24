@@ -1,5 +1,5 @@
-import { BusStop } from "../../../../types/busstop";
 import { Vehicle } from "../../../../types/vehicles";
+import { BusStop } from "../../bus-stops/types";
 import { Route } from "../../routes/types";
 
 export interface Trip {

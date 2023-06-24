@@ -2,7 +2,7 @@ import { Form, Row, Col } from "react-bootstrap"
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback";
-import { NewBusStop } from "../../../../types/busstop";
+import { NewBusStop } from "../types";
 import useGetCity from "../../../../hooks/useGetCity";
 
 const BusStopForm = ({formik}:{formik: FormikProps<NewBusStop>}) => {

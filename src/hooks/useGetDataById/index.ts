@@ -8,7 +8,7 @@ import { useHTTP } from "../useHTTP";
 export const useGetDataById = <TData>(  path: string, id: string | null | undefined, 
                                         config?: UseQueryOptions<AxiosResponse<TData>>) => {
 
-    const { get } = useHTTP({withProgress: true});
+    const { get } = useHTTP();
 
     const   {   refetch,
                 data,

@@ -21,7 +21,7 @@ export const useGetTableData = (path: string, page: number = 1, pageSize: number
                             );
 
     useEffect(() => {
-        let searchTimeout: number; 
+        let searchTimeout: string | number | NodeJS.Timeout | undefined; 
         if(searchKey) {
             searchTimeout = setTimeout(() => {
             refetch();

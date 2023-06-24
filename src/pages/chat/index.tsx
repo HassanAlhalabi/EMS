@@ -10,7 +10,7 @@ const ChatPage = () => {
 
     return     <Provider
                     connectEnabled={!!access}
-                    accessTokenFactory={() => access}
+                    // accessTokenFactory={() => access}
                     dependencies={[access]} //remove previous connection and create a new connection if changed
                     url={"http://alimakhlouf-002-site2.btempurl.com/"}
                 >

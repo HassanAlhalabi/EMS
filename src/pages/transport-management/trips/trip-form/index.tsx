@@ -8,7 +8,7 @@ import { NewTrip } from "../types";
 import { useGet } from "../../../../hooks";
 import { VehicleDropDown } from "../../vehicles/types";
 import { RouteDropDown } from "../../routes/types";
-import { BusStop } from "../../../../types/busstop";
+import { BusStop } from "../../bus-stops/types";
 
 const TripForm = ({formik}:{formik: FormikProps<NewTrip>}) => {
 

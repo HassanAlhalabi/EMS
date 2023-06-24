@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import Feedback from "../../../../components/feedback";
 import { NewTripBooking } from "../types";
 import { useGet } from "../../../../hooks";
+import { Trip } from "../../trips/types";
 
 const TripForm = ({formik}:{formik: FormikProps<NewTripBooking>}) => {
 
@@ -49,7 +50,7 @@ const TripForm = ({formik}:{formik: FormikProps<NewTripBooking>}) => {
                             onChange={formik.handleChange}>
                                 <option key="no-value" value="">---------------</option>
                             {
-                                trips?.data.trips.map((trip) => 
+                                trips?.data.trips.map((trip: Trip) => 
                                     <option key={trip.tripId} value={trip.tripId}>
                                         {trip.route.from ? trip.route.from.cityName : 'University'} to {trip.route.to ? trip.route.to.cityName : 'University'}
                                     </option>
