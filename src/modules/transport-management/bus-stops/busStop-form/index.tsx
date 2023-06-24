@@ -12,7 +12,7 @@ const BusStopForm = ({formik}:{formik: FormikProps<NewBusStop>}) => {
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
             <Row>
-                <Col>
+                <Col>       
                     <Form.Group className="mb-3">
                         <Form.Control
                             size="lg"

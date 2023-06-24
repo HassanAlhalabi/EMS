@@ -9,8 +9,8 @@ import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { addStudyPlanValidation } from "../../../schema/study-plan";
-import { NewStudyPlan, StudyPlan } from "../../../types/study-plan";
+import { addStudyPlanValidation } from "./schema";
+import { NewStudyPlan, StudyPlan } from "./types";
 import { capitalize, getAxiosError } from "../../../util";
 import StudyPlanForm from "./study-plan-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
@@ -181,10 +181,10 @@ const StudyPlansPage = () => {
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} StudyPlan`}
+                title={`${action && capitalize(action as string)} Study Plan`}
                 show={action !== null && action !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} StudyPlan`}
+                confirmText={`${action} Study Plan`}
                 confirmButtonVariant={
                   action === ACTION_TYPES.delete ? 'danger' : "primary"
                 }

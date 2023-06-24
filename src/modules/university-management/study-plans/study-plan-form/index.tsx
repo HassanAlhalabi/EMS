@@ -6,10 +6,9 @@ import { useQuery } from "react-query";
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback";
-import { NewStudyPlan } from "../../../../types/study-plan";
+import { NewStudyPlan } from "../types";
 import Table from "../../../../components/table";
 import { mapToTyphead } from "../../../../util";
-import { SelectedOption } from "../../../../types";
 import { useGet } from "../../../../hooks";
 
 const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
@@ -37,19 +36,21 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
         }
     },[formik.values.facultyId])
 
-    const [selectedSubjects, setSelectedSubjects] = useState<Record<string, any>[]>([]);
+    const [allSelectedSubjects, setAllSelectedSubjects] = useState<Record<string, any>[]>([]);
 
    const handleSelectSubject = (selectedSubjects: Record<string, any>[]) => {
-    
+
         if(selectedSubjects.length === 0) return;
 
+        console.log(selectedSubjects)
+        
         // Check If Object Already Exists
-        const objectExits = selectedSubjects.find(item => item.id === selectedSubjects[0].id);
+        const objectExits = allSelectedSubjects.find(item => item.id === selectedSubjects[0].id);
 
-        if(objectExits) return;      
-
-        setSelectedSubjects([
-            ...selectedSubjects,
+        if(objectExits) return;  
+        
+        setAllSelectedSubjects([
+            ...allSelectedSubjects,
             selectedSubjects[0]
         ])
         
@@ -66,15 +67,15 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
     const handleDeleteSubject = (subjectId: string) => {
         const newSubjects = formik.values.studyPlanSubjects.filter(item => {
             return (item !== subjectId) 
-        })
-        const newSubjectsForTable = selectedSubjects?.filter(item => {
+        });
+        const newSubjectsForTable = allSelectedSubjects?.filter(item => {
             return (item.id !== subjectId) 
-        })
+        });
         formik.setValues({
             ...formik.values,
             studyPlanSubjects: newSubjects
-        })
-        setSelectedSubjects(newSubjectsForTable)
+        });
+        setAllSelectedSubjects(newSubjectsForTable);
     }
 
    const columns = useMemo(
@@ -90,6 +91,8 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
         ],
         []
     )
+
+    console.log(allSelectedSubjects)
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -198,7 +201,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
         </Row> 
         <Table<Record<string, any>>  
             columns={columns} 
-            data={selectedSubjects}
+            data={allSelectedSubjects}
             renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 
             type="button" 
             onClick={() => handleDeleteSubject(data.id)}>        

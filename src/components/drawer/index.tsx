@@ -12,7 +12,7 @@ const Drawer = () => {
   const {toggleDrawer, drawerIsExpanded} = useContext(LayoutContext);
 
   return (
-    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl">
+    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl" onBlur={e => console.log('Bluuuered')}>
 
       <div className="d-flex align-items-center">
         <div className="toggle-icon-wrapper">
@@ -35,8 +35,11 @@ const Drawer = () => {
         <NavList>
 
             <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />
-            <NavLink title="Tickets" faIcon="fas fa-tasks" link="tickets" />
-            <NavLink title="Tickets Types" faIcon="fas fa-ticket" link="tickets-types" />
+            <NavLink title="Subjects Registration" faIcon="fas fa-book "link="subjects-registration" />
+
+            <NavListLabel title='Tickets Management' scope={['AllTicket.View','TicketType.Insert']}/>
+            <NavLink title="Tickets" faIcon="fas fa-tasks" link="tickets" scope='AllTicket.View'/>
+            <NavLink title="Tickets Types" faIcon="fas fa-ticket" link="tickets-types" scope='TicketType.Insert'/>
 
             <NavListLabel title='Users Management' scope={['User.View','Role.View']}/>
             <NavLink title="Users" faIcon="fas fa-users" link="users" scope='User.Insert' />

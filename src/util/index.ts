@@ -109,6 +109,7 @@ export const getAllClaimsByType = (type: string) => getClaimsMap().get(type)
 
 export const hasPermission = (scope: string | string[]) => {
     const claims = getClaims();
+    // console.log(claims)
     return  Array.isArray(scope) ? 
                 claims.hasSomeValues(scope)
             :   claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
