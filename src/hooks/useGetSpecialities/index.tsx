@@ -17,15 +17,15 @@ interface Speciality {
 
 const optionInitialState = {id: '', name: ''};
 
-export const useGetSpecialities = function() {
+export const useGetSpecialities = function(defaultFaculty?: string, defaultSpeciality?: string) {
 
     const get = useGet();
     const [faculty, setFaculty] = useState<Faculty>(optionInitialState);
-    const [speciality, setSeciality] = useState<Speciality>(optionInitialState);
+    const [speciality, setSpeciality] = useState<Speciality>(optionInitialState);
 
     const reset = () => {
         setFaculty(optionInitialState);
-        setSeciality(optionInitialState);
+        setSpeciality(optionInitialState);
     }
     
     const { data: faculties } = useQuery(
@@ -43,11 +43,30 @@ export const useGetSpecialities = function() {
         if(faculty.id) refetchSpecialities()
     },[faculty.id])
 
+    useEffect(() => {
+        if(defaultFaculty) {
+            setFaculty(prev => ({
+                ...prev,
+                id: defaultFaculty
+            }))
+        }
+    },[defaultFaculty])
+
+    useEffect(() => {
+        if(defaultSpeciality) {
+            setSpeciality(prev => ({
+                ...prev,
+                id: defaultSpeciality
+            }))
+        }
+    },[defaultSpeciality])
+
+
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
         const {target: {value, name, options}} =  event;
         const optionName = options[options.selectedIndex].textContent as string;
         if(name === 'facultyId') setFaculty({id: value, name: optionName});
-        if(name === 'specialityId') setSeciality({id: value, name: optionName})
+        if(name === 'specialityId') setSpeciality({id: value, name: optionName})
     }    
 
     const renderSpecialitySelect = () => {

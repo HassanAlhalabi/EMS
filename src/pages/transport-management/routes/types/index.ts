@@ -22,3 +22,23 @@ export interface NewRoute {
     fromId: number;
     toId: number
 }
+
+export interface RouteDropDown {
+    routeId: string,
+    from: {
+      cityId: number,
+      cityName: string,
+      state: {
+        stateId: number,
+        stateName: string
+      }
+    },
+    to: {
+        cityId: number,
+        cityName: string,
+        state: {
+          stateId: number,
+          stateName: string
+        }
+      }
+}

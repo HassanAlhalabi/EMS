@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 import { ACTION_TYPES } from "../../constants";
 import { Action } from "../../types";
-import { useDelete, usePost, usePut } from "..";
+import { useDelete, usePost, usePostFormData, usePut, usePutFormData } from "..";
 import { useScreenLoader } from "../useScreenLoader";
 import { getAxiosError } from "../../util";
 
@@ -24,12 +24,14 @@ const actionInitialState = {
 
 export const useActions = () => {
     
-    const [action, setAction] = useState<ActionItem>(actionInitialState)
+    const [action, setAction]    = useState<ActionItem>(actionInitialState)
     const { toggleScreenLoader } = useScreenLoader();
-    const addMutatation     = usePost(action.path, action.payload);
-    const updateMutatation  = usePut(action.path, action.payload);
-    const deleteMutatation  = useDelete(action.path, action.payload);
-    const toggleMutatation  = usePut(action.path, action.payload);
+    const addMutatation      = usePost(action.path, action.payload);
+    const formDataAddMutaion = usePostFormData(action.path, action.payload)
+    const updateMutatation   = usePut(action.path, action.payload);
+    const formDataPutMutaion = usePutFormData(action.path, action.payload)
+    const deleteMutatation   = useDelete(action.path, action.payload);
+    const toggleMutatation   = usePut(action.path, action.payload);
 
     const handleSuccess = () => {
         if(action.onSuccess) {
@@ -47,8 +49,16 @@ export const useActions = () => {
                         await addMutatation.mutateAsync(action.payload, 
                                 {onSuccess: handleSuccess});
                         break;
+                    case ACTION_TYPES.formDataAdd:
+                            await formDataAddMutaion?.mutateAsync(action.payload, 
+                                    {onSuccess: handleSuccess});
+                            break;
                     case ACTION_TYPES.update:
                         await updateMutatation.mutateAsync(action.payload, 
+                                {onSuccess: handleSuccess});
+                        break;
+                    case ACTION_TYPES.formDataUpdate:
+                        await formDataPutMutaion.mutateAsync(action.payload, 
                                 {onSuccess: handleSuccess});
                         break;
                     case ACTION_TYPES.delete:

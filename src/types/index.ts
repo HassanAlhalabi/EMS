@@ -15,4 +15,4 @@ export interface SelectedItem {
 
 export type SelectedOption = string | Record<string, any>;
 
-export type Action = 'ADD' | 'UPDATE' | 'DELETE' | 'TOGGLE';
+export type Action = 'ADD' | 'FORM DATA ADD' | 'UPDATE' | 'FORM DATA UPDATE' | 'DELETE' | 'TOGGLE' | 'VIEW';

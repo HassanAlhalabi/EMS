@@ -1,7 +1,9 @@
 
-import { number, object } from "yup";
+import { array, object, string } from "yup";
 
 export const tripValidation = object({
-    toId: number().required('Departure Location Is Required').min(1,'Departure Lcation Is Required'),
-    fromId: number().required('Destination Location Is Required').min(1,'Destination Location Is Required')
+    departureHoure: string().required('Departure Time Is Required'),
+    routeId: string().required('Route Is Required'),
+    vehicleId: string().required('Vehicle Is Required'),
+    busStops: array().of(object()).required().min(1,'Bus Stops Is Required')
 })

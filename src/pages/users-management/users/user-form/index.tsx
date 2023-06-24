@@ -1,61 +1,21 @@
-import { useState, ChangeEvent, useEffect } from 'react';
-
 import { Form, Row, Col } from "react-bootstrap"
 import { useQuery } from 'react-query';
 import { FormikProps } from "formik";
+import Select from 'react-select';
 
 import Feedback from "../../../../components/feedback"
-import { USERS_TYPES, WORK_DAYS, WORK_DAYS_NAMES } from "../../../../constants"
+import { USERS_TYPES, WORK_DAYS } from "../../../../constants"
 import { NewUser } from "../../../../types/users";
-import CategoryBox from "../../../../components/category-box";  
 import { useGet } from "../../../../hooks";
 import { useGetSpecialities } from "../../../../hooks/useGetSpecialities";
 
 const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
 
-    const [workingDays, setWorkingDays] = useState<{id: number, name: string | null}[]>([])
     const get = useGet();
 
     const { data } = useQuery(['/Role/GetRolesList'], () => get(`/Role/GetRolesList`));
-
-    const handleSelectedDays = (e: ChangeEvent<HTMLSelectElement>) => {
-
-        const newValue = { 
-            id: Number(e.target.value),
-            name: e.target.options[e.target.selectedIndex].textContent
-        }
-        
-        const isExisted = workingDays.find(day => day.id === newValue.id);
-        if(isExisted) return;
-
-        setWorkingDays(prev => [...prev, newValue]);
-
-        formik.values.contract && formik.setFieldValue('contract.workDays', [...formik.values.contract.workDays, Number(e.target.value)])
-
-        e.target.value = '';
-
-    }    
-    
-    const handleRemoveCategory = (id: number) => {
-        const newWorkingDays = workingDays.filter(day => day.id !== id)
-        setWorkingDays(newWorkingDays);
-        formik.values.contract && formik.setFieldValue('contract.workDays', formik.values.contract.workDays.filter(day => day !== id))
-    }
-
-    const { renderSpecialitySelect } = useGetSpecialities()
-
-    useEffect(() => {
-        if(formik.values.contract) {
-           setWorkingDays(
-               formik.values.contract.workDays.map(day => ({
-                    id: day,
-                    name: WORK_DAYS_NAMES[day - 1]
-                })) 
-            )
-        }
-    },[formik.values.contract]);
-
-    console.log(formik.errors)
+   
+    const { renderSpecialitySelect } = useGetSpecialities(formik.values.facultyId, formik.values.specialtyId)
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -160,7 +120,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                                 required
                                 id="role"
                                 name="roleId"
-                                value={formik.values.roleId as string} 
+                                value={formik.values.roleId} 
                                 onChange={formik.handleChange}>
                                     <option key="no-value" value=""></option>
                                 {
@@ -177,7 +137,8 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                 </Col>
             </Row> 
             {
-                formik.values.type !== 'Student' ?
+                (formik.values.type === 'Doctor' || 
+                formik.values.type === 'Employee') &&
                 <>
                     <h4 className="mt-3">Contract Details:</h4>
                     <Row>
@@ -246,40 +207,27 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                         <Form.Label htmlFor="role">
                             Working Days:
                         </Form.Label>
-                        <Form.Select
-                            size="lg"
-                            required
-                            id="working-days"
-                            onChange={handleSelectedDays}
-                            name="contract.workDays">
-                                <option value=""></option>
-                            {
-                                Object.entries(WORK_DAYS).map(([key, value]) => {
-                                    return <option key={key} value={value}>{key}</option>   
-                                })
-                            }
-                        </Form.Select>            
+                        <Select 
+                            isMulti
+                            name='contract.workDays'
+                            onChange={newOptions => formik.setFieldValue('contract.workDays', newOptions)}
+                            value={formik.values.contract?.workDays}
+                            options={Object.entries(WORK_DAYS).map(([key, value]) => ({
+                                label: key,
+                                value,
+                            }))} />
                         <Feedback type="invalid">
-                            {formik.errors.roleId as string}
+                            {(formik.errors?.contract as unknown as Record<string, string>)?.workDays}
                         </Feedback>
                     </Form.Group>
-                    <div className="mb-4">
-                        {
-                            workingDays.map((day) => {
-                                return  <CategoryBox key={day.id} pill>
-                                            {day.name} 
-                                            <span className="fa fa-trash fa-sm text-danger cursor-pointer ms-2 ps-2" 
-                                                    onClick={() => handleRemoveCategory(day.id)}
-                                            ></span> 
-                                        </CategoryBox>
-                            })
-                        }
-                    </div>
-                </> : 
-                <Row>
-                     {renderSpecialitySelect()}
-                </Row>
-            }
+                </> 
+                } 
+                {
+                    (formik.values.type === 'Student') &&
+                    <Row>
+                        {renderSpecialitySelect()}
+                    </Row>
+                }
         </Form>
     )
 }

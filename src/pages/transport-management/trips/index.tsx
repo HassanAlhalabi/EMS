@@ -45,7 +45,7 @@ const TripsPage = () => {
     useGetDataById<Trip>(    '/Trip/GetTrip',
                                 tripId,
                                 {onSuccess: data => formik.setValues({
-                                    busStops: data.data.busStops.map(busStop => busStop.busStopId),
+                                    busStops: data.data.busStops.map(busStop => ({value: busStop.busStopId, label: busStop.busStopName})),
                                     departureHoure: data.data.departureHoure,
                                     routeId: data.data.route.routeId,
                                     vehicleId: data.data.vehicle.vehicleId
@@ -67,7 +67,7 @@ const TripsPage = () => {
             },
             {
                 Header: 'Busstops',
-                accessor: 'busstops',
+                accessor: 'busStops',
             },
             {
                 Header: 'Options',
@@ -100,13 +100,18 @@ const TripsPage = () => {
         [ACTION_TYPES.add]: {
           type: currentAction,
           path: '/Trip',
-          payload: formik.values,
+          payload: {...formik.values,
+                    busStops: formik.values.busStops.map(busStop => busStop.value)                
+                    },
           onSuccess: () => handleSuccess('Trip Added Successfully')
         },
         [ACTION_TYPES.update]: {
           type:  currentAction,
           path: '/Trip',
-          payload: formik.values,
+          payload: {...formik.values,
+                    tripId,
+                    busStops: formik.values.busStops.map(busStop => busStop.value)                
+                    },
           onSuccess: () => handleSuccess('Trip Updated Successfully')
         },
         [ACTION_TYPES.delete]: {

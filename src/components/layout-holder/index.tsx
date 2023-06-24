@@ -8,7 +8,7 @@ const LayoutHolder = ({ children } : { children: ReactNode }) => {
   
   return (
     <div  className={`${drawerIsExpanded ? '' : 'navbar-vertical-collapsed' } 
-          ${theme === 'DARK' ? 'dark' : ''} `}>
+          ${theme === 'DARK' ? 'dark' : ''}`}>
 
       <main className="main" >
         <div className='container-fluid'>

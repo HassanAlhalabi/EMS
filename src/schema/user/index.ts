@@ -17,7 +17,7 @@ export const addUserValidation = object({
             startAt: date().required('Starting Date Is Required'),
             endAt: date().required('End Date Is Required'),
             salary: number().required('Salary Is Required'),
-            workDays: array().of(number())
+            workDays: array().of(object()).required('Work Days Is Required').min(1,'Work Days Is Required')
         })
     })
 })

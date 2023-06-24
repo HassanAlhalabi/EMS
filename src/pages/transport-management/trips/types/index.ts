@@ -1,5 +1,5 @@
-import { BusStop } from "../../../../types/busstop";
 import { Vehicle } from "../../../../types/vehicles";
+import { BusStop } from "../../bus-stops/types";
 import { Route } from "../../routes/types";
 
 export interface Trip {
@@ -14,5 +14,8 @@ export interface NewTrip {
     departureHoure: string;
     routeId: string;
     vehicleId: string;
-    busStops: string[]
+    busStops: {
+        value: string,
+        label: string
+    }[]
 }

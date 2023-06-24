@@ -7,6 +7,10 @@ const Main                      = lazy(() => import('../pages/main'));
 const SignIn                    = lazy(() => import('../pages/auth/sign-in'));
 const Dashboard                 = lazy(() => import('../pages/dashboard'));
 const Page404                   = lazy(() => import('../pages/404'));
+const TicketsPage               = lazy(() => import('../pages/tickets-management/tickets'));
+const AllTickets                = lazy(() => import('../pages/tickets-management/tickets/views/tickets'));
+const TicketDetails             = lazy(() => import('../pages/tickets-management/tickets/views/ticket-details'));
+const TicketsTypes              = lazy(() => import('../pages/tickets-management/tickets-types'));
 
 // Users Management System
 const Users                     = lazy(() => import('../pages/users-management/users'));
@@ -30,6 +34,10 @@ const Vehicles                  = lazy(() => import('../pages/transport-manageme
 const BusStops                  = lazy(() => import('../pages/transport-management/bus-stops'));
 const Routes                    = lazy(() => import('../pages/transport-management/routes'));
 const Trips                     = lazy(() => import('../pages/transport-management/trips'));
+const TripsBookings             = lazy(() => import('../pages/transport-management/trips-bookings'));
+
+// Chat System
+const Chat                     = lazy(() => import('../pages/chat'));
 
 export const getRoutes = () => ([
     {
@@ -45,6 +53,43 @@ export const getRoutes = () => ([
                 isIndex: true,
                 childRoutes: null,
                 element: <Dashboard />,
+                hasPermission: true
+            },
+            {
+                id: 'tickets',
+                name: 'Tickets',
+                path: '/tickets',
+                isIndex: false,
+                childRoutes: [
+                    {
+                        id: 'all-tickets',
+                        name: 'All Tickets',
+                        path: '/tickets',
+                        isIndex: true,
+                        childRoutes: null,
+                        element: <AllTickets />,
+                        hasPermission: true
+                    },
+                    {
+                        id: 'ticket-details',
+                        name: 'Ticket Details',
+                        path: '/tickets/:ticketId',
+                        isIndex: false,
+                        childRoutes: null,
+                        element: <TicketDetails />,
+                        hasPermission: true
+                    },
+                ],
+                element: <TicketsPage />,
+                hasPermission: true
+            },
+            {
+                id: 'tickets-types',
+                name: 'Tickets Types',
+                path: '/tickets-types',
+                isIndex: false,
+                childRoutes: null,
+                element: <TicketsTypes />,
                 hasPermission: true
             },
             {
@@ -198,6 +243,24 @@ export const getRoutes = () => ([
                 isIndex: false,
                 childRoutes: null,
                 element: <Trips />,
+                hasPermission: true
+            },
+            {
+                id: 'trips-bookings',
+                name: 'Trips Bookings',
+                path: '/trips-bookings',
+                isIndex: false,
+                childRoutes: null,
+                element: <TripsBookings />,
+                hasPermission: true
+            },
+            {
+                id: 'chat',
+                name: 'Chat',
+                path: '/chat',
+                isIndex: false,
+                childRoutes: null,
+                element: <Chat />,
                 hasPermission: true
             },
         ],

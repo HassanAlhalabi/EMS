@@ -1,16 +1,19 @@
 import { useEffect } from "react";
 
 import { UseQueryOptions, useQuery } from "react-query";
-
-import { useHTTP } from "../useHTTP";
 import { AxiosResponse } from "axios";
 
-export const useGetDataById = <TData>(path: string, id: string | null, config?: UseQueryOptions<AxiosResponse<TData>>) => {
+import { useHTTP } from "../useHTTP";
+
+export const useGetDataById = <TData>(  path: string, id: string | null | undefined, 
+                                        config?: UseQueryOptions<AxiosResponse<TData>>) => {
 
     const { get } = useHTTP();
 
     const   {   refetch,
-                data
+                data,
+                isFetching,
+                isLoadingError
             } = useQuery<AxiosResponse<TData>>(
                     [path, id], 
                     () => get(`${path}/${id}`),
@@ -25,6 +28,6 @@ export const useGetDataById = <TData>(path: string, id: string | null, config?: 
         }
     },[id]);
 
-    return { refetch, data }
+    return { refetch, data, progressLoading: isFetching && !isLoadingError }
 
 }
