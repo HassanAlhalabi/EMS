@@ -148,8 +148,9 @@ const Table = <T extends Record<any,any>>({ 	isBulk,
 	return (
 		<>
 
-			<div className="d-flex align-items-center justify-content-between mb-2 flex-wrap">
-					<div className="d-flex align-items-center justify-content-between flex-wrap">
+			<div className={`d-flex align-items-center justify-content-between mb-2 flex-wrap ${!(pagination || hasSearch || renderTableOptions) && 'd-none'}`}>
+			
+					<div className={`d-flex align-items-center justify-content-between flex-wrap`}>
 						{
 							pagination &&
 							<TablePagination
@@ -171,7 +172,6 @@ const Table = <T extends Record<any,any>>({ 	isBulk,
 							/>
 						}
 					</div>
-				
 				<TableOptions>
 					{ renderTableOptions && renderTableOptions() }
 				</TableOptions>

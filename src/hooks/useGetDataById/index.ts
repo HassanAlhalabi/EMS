@@ -5,7 +5,8 @@ import { AxiosResponse } from "axios";
 
 import { useHTTP } from "../useHTTP";
 
-export const useGetDataById = <TData>(path: string, id: string | null, config?: UseQueryOptions<AxiosResponse<TData>>) => {
+export const useGetDataById = <TData>(  path: string, id: string | null | undefined, 
+                                        config?: UseQueryOptions<AxiosResponse<TData>>) => {
 
     const { get } = useHTTP({withProgress: true});
 

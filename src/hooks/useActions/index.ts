@@ -24,7 +24,7 @@ const actionInitialState = {
 
 export const useActions = () => {
     
-    const [action, setAction] = useState<ActionItem>(actionInitialState)
+    const [action, setAction]    = useState<ActionItem>(actionInitialState)
     const { toggleScreenLoader } = useScreenLoader();
     const addMutatation      = usePost(action.path, action.payload);
     const formDataAddMutaion = usePostFormData(action.path, action.payload)
@@ -50,7 +50,7 @@ export const useActions = () => {
                                 {onSuccess: handleSuccess});
                         break;
                     case ACTION_TYPES.formDataAdd:
-                            await formDataAddMutaion.mutateAsync(action.payload, 
+                            await formDataAddMutaion?.mutateAsync(action.payload, 
                                     {onSuccess: handleSuccess});
                             break;
                     case ACTION_TYPES.update:

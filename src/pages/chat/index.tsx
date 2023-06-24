@@ -6,13 +6,13 @@ const { useSignalREffect, Provider } = createSignalRContext();
 
 const ChatPage = () => {
 
-    const {access} = useAccess();
+    const { access } = useAccess();
 
     return     <Provider
                     connectEnabled={!!access}
                     accessTokenFactory={() => access}
                     dependencies={[access]} //remove previous connection and create a new connection if changed
-                    url={"https://example/hub"}
+                    url={"http://alimakhlouf-002-site2.btempurl.com/"}
                 >
                     Chat App Here
                 </Provider>;

@@ -24,5 +24,5 @@ export interface FullTicket {
 export interface NewTicket {
     note: string;
     ticketTypeId: string;
-    Attachments: File[]
+    attachments: File[] | string[]
 }

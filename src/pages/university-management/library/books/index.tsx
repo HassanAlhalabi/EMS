@@ -107,6 +107,8 @@ const BooksPage = () => {
         [data, isFetching, isLoading, page]
     );
 
+
+    console.log(formik.values)
     const { mutateAsync , 
             isLoading: postLoading, 
             isError, error } = action === ACTION_TYPES.add ? usePostFormData('/Book', 

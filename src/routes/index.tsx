@@ -7,7 +7,9 @@ const Main                      = lazy(() => import('../pages/main'));
 const SignIn                    = lazy(() => import('../pages/auth/sign-in'));
 const Dashboard                 = lazy(() => import('../pages/dashboard'));
 const Page404                   = lazy(() => import('../pages/404'));
-const Tickets                   = lazy(() => import('../pages/tickets-management/tickets'));
+const TicketsPage               = lazy(() => import('../pages/tickets-management/tickets'));
+const AllTickets                = lazy(() => import('../pages/tickets-management/tickets/views/tickets'));
+const TicketDetails             = lazy(() => import('../pages/tickets-management/tickets/views/ticket-details'));
 const TicketsTypes              = lazy(() => import('../pages/tickets-management/tickets-types'));
 
 // Users Management System
@@ -58,8 +60,27 @@ export const getRoutes = () => ([
                 name: 'Tickets',
                 path: '/tickets',
                 isIndex: false,
-                childRoutes: null,
-                element: <Tickets />,
+                childRoutes: [
+                    {
+                        id: 'all-tickets',
+                        name: 'All Tickets',
+                        path: '/tickets',
+                        isIndex: true,
+                        childRoutes: null,
+                        element: <AllTickets />,
+                        hasPermission: true
+                    },
+                    {
+                        id: 'ticket-details',
+                        name: 'Ticket Details',
+                        path: '/tickets/:ticketId',
+                        isIndex: false,
+                        childRoutes: null,
+                        element: <TicketDetails />,
+                        hasPermission: true
+                    },
+                ],
+                element: <TicketsPage />,
                 hasPermission: true
             },
             {

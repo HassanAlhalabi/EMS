@@ -5,10 +5,14 @@ import Feedback from "../../../../components/feedback";
 import { NewTicket } from "../types";
 import useGetTickets from "../../../../hooks/useGetTickets";
 import { TicketType } from "../../tickets-types/types";
+import useFilesUpload from "../../../../hooks/useFilesUpload";
 
-const BusStopForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
+const TicketForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
 
     const ticktTypes = useGetTickets();
+    const {renderPreview} = useFilesUpload({
+        onUpload: (files) => formik.setFieldValue('attachments', files)
+    });
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -53,9 +57,17 @@ const BusStopForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
                         </Feedback>
                     </Form.Group>
                 </Col>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>
+                            Attachments:
+                        </Form.Label>
+                        {renderPreview()} 
+                    </Form.Group>         
+                </Col>  
             </Row> 
         </Form>
     )
 }
 
-export default BusStopForm
+export default TicketForm

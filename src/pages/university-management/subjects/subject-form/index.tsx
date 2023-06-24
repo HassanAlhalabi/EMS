@@ -254,7 +254,7 @@ const SubjectForm = (   {formik, loading}:
                 </Form.Group>
             </Col>
         </Row>
-        <button className="btn btn-success" onClick={handleAddFacultySubject}>
+        <button className="btn btn-success mb-2" onClick={handleAddFacultySubject}>
                 Add Faculty Pre-Requested Subject <i className="fa fa-plus"></i>
         </button>
         <Table<FacultySubjectProps>  columns={columns} 
