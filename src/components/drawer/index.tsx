@@ -35,8 +35,8 @@ const Drawer = () => {
         <NavList>
 
             <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />
-            <NavLink title="Tickets" faIcon="fas fa-chart-pie" link="tickets" />
-            <NavLink title="Tickets Types" faIcon="fas fa-chart-pie" link="tickets-types" />
+            <NavLink title="Tickets" faIcon="fas fa-tasks" link="tickets" />
+            <NavLink title="Tickets Types" faIcon="fas fa-ticket" link="tickets-types" />
 
             <NavListLabel title='Users Management' scope={['User.View','Role.View']}/>
             <NavLink title="Users" faIcon="fas fa-users" link="users" scope='User.Insert' />
