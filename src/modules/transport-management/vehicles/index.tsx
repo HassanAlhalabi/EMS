@@ -7,8 +7,8 @@ import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { capitalize} from "../../../util";
-import { Vehicle, NewVehicle } from "../../../types/vehicles";
-import { vehicleValidation } from "../../../schema/vehicle";
+import { Vehicle, NewVehicle } from "./types";
+import { vehicleValidation } from "./schema";
 import VehicleForm from "./vehicle-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';

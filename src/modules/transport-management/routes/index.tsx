@@ -8,7 +8,6 @@ import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { capitalize } from "../../../util";
 import { Route, NewRoute } from "./types";
-import { routeValidation } from "./schema";
 import RouteForm from "./route-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
