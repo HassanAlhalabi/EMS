@@ -2,7 +2,7 @@ import { Form, Row, Col } from "react-bootstrap";
 import { FormikProps } from 'formik';
 
 import Feedback from "../../../../../components/feedback"
-import { NewDay } from "../../../../../types/faculties";
+import { NewDay } from "../../types";
 import { WORK_DAYS } from "../../../../../constants";
 
 const WorkDaysForm = ({formik}:{formik: FormikProps<NewDay>}) => {

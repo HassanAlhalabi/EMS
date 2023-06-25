@@ -5,11 +5,11 @@ import { Form, Row, Spinner, Col } from "react-bootstrap"
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import Feedback from "../../../components/feedback";
-import { usePost } from "../../../hooks"
-import { signInValidation } from "../../../schema/sign-in";
-import { AuthContext } from "../../../contexts/auth-context";
-import { getAxiosError, setCookie } from "../../../util";
+import Feedback from "../../components/feedback";
+import { usePost } from "../../hooks"
+import { signInValidation } from "./schema";
+import { AuthContext } from "../../contexts/auth-context";
+import { getAxiosError, setCookie } from "../../util";
 
 const INITIAL_VALUES = {
   name: '',

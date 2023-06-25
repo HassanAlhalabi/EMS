@@ -8,7 +8,7 @@ import Feedback from "../../../../../components/feedback";
 import CategoryBox from "../../../../../components/category-box";
 import ImageUpload from "../../../../../components/image-upload";
 import { useGet } from "../../../../../hooks";
-import { BookCategory, NewBook } from "../../../../../types/books";
+import { BookCategory, NewBook } from "../../types";
 
 type SelectedCategory = {id: string, name: string}
 

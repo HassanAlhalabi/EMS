@@ -2,7 +2,7 @@ import { Form, Row, Col } from "react-bootstrap";
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback"
-import { NewSemester } from "../../../../types/semesters";
+import { NewSemester } from "../types";
 
 const SemesterForm = ({formik}:{formik: FormikProps<NewSemester>}) => {
 

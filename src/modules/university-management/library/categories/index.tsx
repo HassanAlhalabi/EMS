@@ -11,7 +11,7 @@ import { useDelete, useGet, usePostFormData, usePutFormData } from "../../../../
 import { bookCategoryValidation } from "../../../../schema/book/book-category";
 import { capitalize, getAxiosError } from "../../../../util";
 import { useScreenLoader } from "../../../../hooks/useScreenLoader";
-import { BookCategory, NewBookCategory } from "../../../../types/books";
+import { BookCategory, NewBookCategory } from "../types";
 import CategoryForm from "./category-form";
 import { useGetTableData } from '../../../../hooks/useGetTableData';
 

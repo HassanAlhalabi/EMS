@@ -5,7 +5,7 @@ import { FormikProps } from "formik";
 import { Form, Row, Col } from "react-bootstrap";
 
 import Feedback from "../../../../components/feedback";
-import { NewDepartment } from "../../../../types/departments";
+import { NewDepartment } from "../types";
 import CategoryBox from "../../../../components/category-box";
 import { useGet } from "../../../../hooks";
 

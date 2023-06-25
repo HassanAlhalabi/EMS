@@ -7,7 +7,7 @@ import useGetDepartments from "../../../../hooks/useGetDepartments";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { mapToTyphead } from "../../../../util";
 import SwitchInput from "../../../../components/switch-input/index.";
-import { Department } from "../../../../types/departments";
+import { Department } from "../../../university-management/departments/types";
 import { useState } from "react";
 
 const BusStopForm = ({formik}:{formik: FormikProps<NewTicketType>}) => {

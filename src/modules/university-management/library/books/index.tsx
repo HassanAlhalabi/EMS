@@ -9,7 +9,7 @@ import Table from "../../../../components/table"
 import { ACTION_TYPES } from "../../../../constants";
 import { capitalize, getAxiosError } from "../../../../util";
 import { useScreenLoader } from "../../../../hooks/useScreenLoader";
-import { Book, NewBook } from "../../../../types/books";
+import { Book, NewBook } from "../types";
 import { bookValidation } from "../../../../schema/book";
 import BookForm from "./book-form";
 import SwitchInput from "../../../../components/switch-input/index.";

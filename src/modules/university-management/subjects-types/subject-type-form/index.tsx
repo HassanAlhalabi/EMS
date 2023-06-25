@@ -2,7 +2,7 @@ import { Form, Row, Col } from "react-bootstrap";
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback"
-import { NewSubjectType } from "../../../../types/subjects";
+import { NewSubjectType } from "../../subjects/types";
 
 const SubjectTypeForm = ({formik}:{formik: FormikProps<NewSubjectType>}) => {
 

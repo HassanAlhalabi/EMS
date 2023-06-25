@@ -4,8 +4,9 @@ import ProtectedRoute from "../components/protected-route";
 import { hasPermission } from "../util";
 
 const Main                      = lazy(() => import('../modules/main'));
-const SignIn                    = lazy(() => import('../modules/auth/sign-in'));
+const SignIn                    = lazy(() => import('../modules/auth'));
 const Dashboard                 = lazy(() => import('../modules/dashboard'));
+const Profile                 = lazy(() => import('../modules/users-management/profile'));
 const Page404                   = lazy(() => import('../modules/404'));
 
 const SubjectsRegistration      = lazy(() => import('../modules/student-domain/subjects-registration'));
@@ -57,6 +58,15 @@ export const getRoutes = () => ([
                 isIndex: true,
                 childRoutes: null,
                 element: <Dashboard />,
+                hasPermission: true
+            },
+            {
+                id: 'profile',
+                name: 'Profile',
+                path: '/profile',
+                isIndex: false,
+                childRoutes: null,
+                element: <Profile />,
                 hasPermission: true
             },
             {

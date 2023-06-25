@@ -8,10 +8,10 @@ import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../../hooks";
-import { subjectTypeValidation } from "../../../schema/subject";
+import { subjectTypeValidation } from "../subjects/schema";
 import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import {  NewSubjectType, Subject } from "../../../types/subjects";
+import {  NewSubjectType, Subject } from "../subjects/types";
 import SubjectTypeForm from "./subject-type-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 

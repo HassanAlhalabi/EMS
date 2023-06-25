@@ -9,10 +9,10 @@ import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../../hooks";
-import { subjectValidation } from "../../../schema/subject";
+import { subjectValidation } from "./schema";
 import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { FullSubject, NewSubject, Subject } from "../../../types/subjects";
+import { FullSubject, NewSubject, Subject } from "./types";
 import SubjectForm from "./subject-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 

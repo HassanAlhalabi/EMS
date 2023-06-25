@@ -2,7 +2,7 @@ import { Form, Row, Col } from "react-bootstrap";
 import { FormikProps } from 'formik';
 
 import Feedback from "../../../../../components/feedback";
-import { NewFaculty } from "../../../../../types/faculties";
+import { NewFaculty } from "../../types";
 import SwitchInput from "../../../../../components/switch-input/index.";
 
 const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {

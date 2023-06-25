@@ -9,8 +9,8 @@ import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { addSemesterValidation } from "../../../schema/semesters";
-import { NewSemester, Semester } from "../../../types/semesters";
+import { addSemesterValidation } from "./schema";
+import { NewSemester, Semester } from "./types";
 import { capitalize, getAxiosError } from "../../../util";
 import SemesterForm from "./semester-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";

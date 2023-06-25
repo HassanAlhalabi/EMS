@@ -2,7 +2,7 @@ import { FormikProps } from "formik"
 import { Form, Row, Col } from "react-bootstrap"
 
 import Feedback from "../../../../../components/feedback"
-import { NewHall } from "../../../../../types/faculties"
+import { NewHall } from "../../types"
 import SwitchInput from "../../../../../components/switch-input/index."
 
 const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {

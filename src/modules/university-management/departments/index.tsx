@@ -9,9 +9,9 @@ import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { addDepartmentValidation } from "../../../schema/department";
-import { NewDepartment, Department } from "../../../types/departments";
-import { Faculty } from "../../../types/faculties";
+import { addDepartmentValidation } from "./schema";
+import { NewDepartment, Department } from "./types";
+import { Faculty } from "../faculties/types";
 import { capitalize, getAxiosError } from "../../../util";
 import DepartmentForm from "./department-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";

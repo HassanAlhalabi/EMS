@@ -4,7 +4,7 @@ import { Form, Row, Col } from "react-bootstrap";
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback";
-import { NewSubject } from "../../../../types/subjects";
+import { NewSubject } from "../types";
 import Table from "../../../../components/table";
 import { useGetSpecialities } from "../../../../hooks/useGetSpecialities";
 import SwitchInput from "../../../../components/switch-input/index.";

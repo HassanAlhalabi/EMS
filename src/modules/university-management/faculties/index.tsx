@@ -7,7 +7,7 @@ import SwitchInput from "../../../components/switch-input/index.";
 import Table from "../../../components/table"
 import {  useDelete, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import { Faculty } from "../../../types/faculties";
+import { Faculty } from "./types";
 import {  capitalize, getAxiosError } from "../../../util";
 import { ACTION_TYPES } from '../../../constants';
 import PopUp from '../../../components/popup';

@@ -2,7 +2,7 @@ import { FormikProps } from "formik";
 import { Form, Row, Col } from "react-bootstrap";
 
 import Feedback from "../../../../../components/feedback";
-import { NewSpec } from "../../../../../types/faculties";
+import { NewSpec } from "../../types";
 
 const SpecsForm = ({formik}: {formik: FormikProps<NewSpec>}) => {
   return (

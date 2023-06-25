@@ -2,7 +2,7 @@ import { Form, Row, Col } from "react-bootstrap"
 import { FormikProps } from "formik";
 import { useQuery } from "react-query";
 
-import { BookCategory, NewBookCategory } from "../../../../../types/books";
+import { BookCategory, NewBookCategory } from "../../types";
 import Feedback from "../../../../../components/feedback";
 import ImageUpload from "../../../../../components/image-upload";
 import { useGet } from "../../../../../hooks";

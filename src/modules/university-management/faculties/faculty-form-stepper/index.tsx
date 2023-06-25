@@ -14,7 +14,7 @@ import Table from "../../../../components/table";
 import { useGet, usePost, usePut } from "../../../../hooks";
 import { useScreenLoader } from "../../../../hooks/useScreenLoader";
 import { facultyValidation, hallValidation, specValidation, dayValidation } from "../../../../schema/faculty";
-import { NewDay, NewFaculty, NewHall, NewSpec } from "../../../../types/faculties";
+import { NewDay, NewFaculty, NewHall, NewSpec } from "../types";
 import { getAxiosError } from "../../../../util";
 import FacultyForm from "./faculty-form";
 import HallsForm from "./halls-form";
