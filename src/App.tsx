@@ -1,14 +1,17 @@
-// import './assets/css/theme-rtl.min.css';
 import { Suspense } from 'react';
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import './assets/css/theme.min.css';
+
+import { Route, BrowserRouter } from 'react-router-dom';
 import "react-toastify/dist/ReactToastify.css";
-import './assets/css/user.css';
-import Loader from './components/loader';
-import { IRoute } from './types/routes';
 import { ToastContainer } from 'react-toastify';
+import SlideRoutes from 'react-slide-routes';
+
 import { useScreenLoader } from './hooks/useScreenLoader';
 import { useRoutes } from './hooks/useRoutes';
+import './assets/css/user.css';
+import Loader from './components/loader';
+// import './assets/css/theme-rtl.min.css';
+import './assets/css/theme.min.css';
+import { IRoute } from './types';
 
 const renderRoutes = (routes: IRoute[]) => {
   return routes.map(route => {
@@ -31,9 +34,9 @@ function App() {
     <div className="App position-relative">
       <BrowserRouter>
         <Suspense fallback={<Loader />}>
-          <Routes>
+          <SlideRoutes>
             {renderRoutes(appRoutes)}
-          </Routes>
+          </SlideRoutes>
         </Suspense>
       </BrowserRouter>
       {isScreenLoading && <Loader />}

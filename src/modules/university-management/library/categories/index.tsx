@@ -8,7 +8,7 @@ import PopUp from "../../../../components/popup";
 import Table from "../../../../components/table"
 import { ACTION_TYPES } from "../../../../constants";
 import { useDelete, useGet, usePostFormData, usePutFormData } from "../../../../hooks";
-import { bookCategoryValidation } from "../../../../schema/book/book-category";
+import { bookCategoryValidation } from "../schema/book-category";
 import { capitalize, getAxiosError } from "../../../../util";
 import { useScreenLoader } from "../../../../hooks/useScreenLoader";
 import { BookCategory, NewBookCategory } from "../types";

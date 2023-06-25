@@ -20,12 +20,12 @@ const getRefreshToken = async () => {
     }
 }
 
-const httpClient = axios.create({
+export const httpClient = axios.create({
   baseURL,
   headers: {
       'Accept': '*/*',
+      "Content-Type": 'application/json',
       'Accept-Language': getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN',
-      'Content-Type': "application/json",
     },
   proxy: {
     protocol: 'https',

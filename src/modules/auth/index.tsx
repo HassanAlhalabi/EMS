@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import { useFormik } from "formik";
 import { Form, Row, Spinner, Col } from "react-bootstrap"
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import Feedback from "../../components/feedback";
@@ -117,7 +117,7 @@ const SignIn = () => {
                   </Form.Group>
                 </Col>
                 <Col className="d-flex justify-content-end">
-                  <a className="fs--1" href="forgot-password.html">Forgot Password?</a>
+                  <Link className="fs--1" to="/forget-password">Forgot Password?</Link>
                 </Col>
               </Row>
                   

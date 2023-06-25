@@ -34,9 +34,7 @@ const HeaderProfile = () => {
                                                             }}>
           <label className="mb-0 theme-control-toggle-label theme-control-toggle-light" htmlFor="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" title="" data-bs-original-title="Switch to light theme" aria-label="Switch to light theme">
               {
-                currentLang === 'EN' ? 
-                'EN' :
-                'AR'
+                currentLang === 'EN' ? 'EN' : 'AR'
               }
           </label>
         </div>
