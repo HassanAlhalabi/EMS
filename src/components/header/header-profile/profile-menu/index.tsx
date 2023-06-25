@@ -17,14 +17,14 @@ const ProfileMenu = () => {
 
   return (
       <>
-        <a className="dropdown-item fw-bold text-warning" href="#!"> <span className="fas fa-crown me-1"></span> <span>Go Pro</span></a>
-        <div className="dropdown-divider"></div>
-        <a className="dropdown-item" href="#!">Set status</a>
-        <Link className="dropdown-item" to="/profile">Profile &amp; account</Link>
-        <a className="dropdown-item" href="#!">Feedback</a>
-        <div className="dropdown-divider"></div>
-        <a className="dropdown-item" href="pages/user/settings.html">Settings</a>
-        <a className="dropdown-item" href="#" onClick={e => handleLogOut(e)}>Logout</a>
+        {/* <a className="dropdown-item fw-bold text-warning" href="#!"> <span className="fas fa-crown me-1"></span> <span>Go Pro</span></a> */}
+        {/* <div className="dropdown-divider"></div> */}
+        {/* <a className="dropdown-item" href="#!">Set status</a> */}
+        <Link className="dropdown-item" to="/profile"> <span className="fas fa-user me-1"></span>  Profile &amp; account</Link>
+        {/* <a className="dropdown-item" href="#!">Feedback</a> */}
+        {/* <div className="dropdown-divider"></div> */}
+        {/* <a className="dropdown-item" href="pages/user/settings.html"> <span className="fas fa-gear me-1"></span>  Settings</a> */}
+        <a className="dropdown-item" href="#" onClick={e => handleLogOut(e)}> <span className="fas fa-sign-out me-1"></span>  Logout</a>
       </>
   )
 }
