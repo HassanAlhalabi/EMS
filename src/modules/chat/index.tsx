@@ -1,32 +1,43 @@
-import { createSignalRContext } from "react-signalr";
-
-import useAccess from "../../hooks/useAccess";
 import { useState } from "react";
 
-const { useSignalREffect, Provider } = createSignalRContext();
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+
+import useAccess from "../../hooks/useAccess";
+import Button from "../../components/button";
 
 const ChatPage = () => {
 
-    const { access } = useAccess();
+  const [connection, setConnection] = useState<HubConnection>();
+
+  const { access } = useAccess();
+
+  const createConnection = async (user?: string, room?: string) => {
+    try {
+      const connection = new HubConnectionBuilder()
+      .withUrl('/api/Message', { accessTokenFactory: () => access as string })
+      .configureLogging(LogLevel.Information)
+      .build();
+  
+      connection.on("ReceiveMessage", (user, message) => {
+        console.log(user, message)
+      });
+  
+      await connection.start();
+  
+      return connection;
+  
+    } catch(error) {
+      console.log(error);
+      return error
+    } 
+  }
     
-    const [messages, setMessage] = useState([]);
+  const [messages, setMessage] = useState([]);
 
-    useSignalREffect(
-      "event name",
-      (message) => {
-        setMessage([...messages, message]);
-      },
-      [messages],
-    );
-
-    return     <Provider
-                    connectEnabled={!!access}
-                    accessTokenFactory={() => access  as string}
-                    dependencies={[access]} //remove previous connection and create a new connection if changed
-                    url={"http://alimakhlouf-002-site2.btempurl.com/"}
-                >
+    return     <>
                     Chat App Here
-                </Provider>;
+                    <Button onClick={() => createConnection()} scope={""}>Create Connection</Button>
+                </>;
 }
  
 export default ChatPage;
