@@ -7,9 +7,9 @@ import { toast } from "react-toastify";
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { roleValidation } from "../../../schema/roles";
+import { roleValidation } from "./schema";
 import { capitalize } from "../../../util";
-import { Role } from "../../../types/roles";
+import { Role } from "./types";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from "../../../hooks/useGetDataById";
 import { useActions } from "../../../hooks/useActions";
@@ -41,7 +41,7 @@ const RolesPage = () => {
             isFetching,
             refetch } = useGetTableData('/Role/GetAllRoles', page, pageSize, searchKey)
 
-    useGetDataById<Role>('/Role/GetRole', roleId,{ 
+    const {progressLoading} = useGetDataById<Role>('/Role/GetRole', roleId,{ 
                             onSuccess: data => formik.setValues({
                                 name: data.data.name,
                                 roleClaims: data.data.roleClaims as string[]
@@ -165,14 +165,15 @@ const RolesPage = () => {
                 />
 
                 <PopUp  title={`${currentAction && capitalize(currentAction as string)} Role`}
-								show={currentAction !== null}
-								onHide={() => { reset() }}
-								confirmText={`${currentAction} Role`}
-								confirmButtonVariant={
-									currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
-								}
-								handleConfirm={handleRoleAction}
-                                confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
+                        show={currentAction !== null}
+                        onHide={() => { reset() }}
+                        confirmText={`${currentAction} Role`}
+                        confirmButtonVariant={
+                            currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
+                        }
+                        handleConfirm={handleRoleAction}
+                        confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
+                        loadingData={progressLoading}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)

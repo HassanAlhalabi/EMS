@@ -7,8 +7,8 @@ import PopUp from "../../../components/popup";
 import SwitchInput from "../../../components/switch-input/index.";
 import Table from "../../../components/table"
 import { ACTION_TYPES, WORK_DAYS_NAMES } from "../../../constants";
-import { addUserValidation } from "../../../schema/user";
-import { NewUser, User } from "../../../types/users";
+import { addUserValidation } from "./schema";
+import { NewUser, User } from "./types";
 import { capitalize } from "../../../util";
 import UserForm from "./user-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
@@ -50,7 +50,7 @@ const UsersPage = () => {
 
   const { data, status, isLoading, isFetching, refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
     
-  useGetDataById<User>('/User/GetUser', userId, {
+  const {progressLoading} = useGetDataById<User>('/User/GetUser', userId, {
     onSuccess: data => formik.setValues({
       ...formik.values,
       ...data.data,
@@ -240,6 +240,7 @@ const UsersPage = () => {
                 confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                 handleConfirm={handleUserAction}
                 actionLoading={false}
+                loadingData={progressLoading}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)

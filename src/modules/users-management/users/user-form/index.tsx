@@ -5,7 +5,7 @@ import Select from 'react-select';
 
 import Feedback from "../../../../components/feedback"
 import { USERS_TYPES, WORK_DAYS } from "../../../../constants"
-import { NewUser } from "../../../../types/users";
+import { NewUser } from "../types";
 import { useGet } from "../../../../hooks";
 import { useGetSpecialities } from "../../../../hooks/useGetSpecialities";
 

@@ -5,7 +5,7 @@ import { Row, Col, Form, FormLabel, Accordion } from "react-bootstrap"
 
 import Feedback from "../../../../components/feedback"
 import { getAllClaimsByType, getClaimsMap, splitCamel } from "../../../../util";
-import { NewRole } from "../../../../types/roles";
+import { NewRole } from "../types";
 
 const RoleForm = ({formik}:{formik: FormikProps<NewRole>}) => {
 

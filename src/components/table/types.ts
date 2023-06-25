@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, ReactNode } from 'react';
 import { Column } from "react-table";
 import { PaginationInfo } from "../../types";
-import { Role } from '../../types/roles';
+import { Role } from '../../modules/users-management/roles/types';
 
 export interface ITable<T> {
 	columns: readonly Column<{}>[],
