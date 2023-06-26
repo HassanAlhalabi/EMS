@@ -316,7 +316,7 @@ export const getRoutes = () => ([
         path: '/reset-password',
         isIndex: false,
         childRoutes: null,
-        element: <ForgetPassword />,
+        element: <ResetPassword />,
         hasPermission: true
     },
     {

@@ -1,31 +1,42 @@
-import { replace, useFormik } from "formik";
+import { useFormik } from "formik";
 import { Card, Container, Form } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import Feedback from "../../../components/feedback";
 import Button from "../../../components/button";
-import { getCodeValidation } from "./schema";
+import { resetPasswordValidation } from "./schema";
 import { httpClient } from "../../../hooks/useHTTP";
-import { toast } from "react-toastify";
 import { getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
+import { useEffect } from "react";
 
 
 
 const ResetPassword = () => {
+    
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if(!location?.state?.userName) {
+            return navigate('/sign-in',{
+                replace: true
+            })
+        }    
+    },[])
 
     const { toggleScreenLoader } = useScreenLoader();
-    const navigate = useNavigate();
 
-    const handleGetCode = async () => {
+    const handleResetPassword = async () => {
 
         try {
             toggleScreenLoader();
-            await httpClient.put('/User/ForgetPassword', formik.values);  
-            toast.success('An Email Has Been Sent With Your Code');
-            navigate('/reset-password',{
+            await httpClient.put('/User/ResetPassword', formik.values);  
+            toast.success('An Email Has Been Sent With Your New Password');
+            navigate('/sign-in',{
                 state: {
-                    userName: formik.values.userName
+                    userName: ''
                 },
                 replace: true
             })
@@ -41,9 +52,10 @@ const ResetPassword = () => {
     const formik = useFormik({
         initialValues: {
             userName: '',
+            code: '',
         },
-        onSubmit: () => handleGetCode(),
-        validationSchema: getCodeValidation
+        onSubmit: () => handleResetPassword(),
+        validationSchema: resetPasswordValidation
     })
 
     return  <Container>
@@ -73,6 +85,22 @@ const ResetPassword = () => {
                                     onChange={formik.handleChange} />
                                 <Feedback type="invalid">
                                     {formik.errors.userName as string}
+                                </Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label htmlFor="userName">
+                                    Enter Your Code:
+                                </Form.Label>
+                                <Form.Control
+                                    size="lg"
+                                    required
+                                    type="text" 
+                                    placeholder="User Name"
+                                    name="code"
+                                    value={formik.values.code} 
+                                    onChange={formik.handleChange} />
+                                <Feedback type="invalid">
+                                    {formik.errors.code as string}
                                 </Feedback>
                             </Form.Group>
                             <Button disabled={!formik.isValid || !formik.dirty} 
