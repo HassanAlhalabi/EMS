@@ -24,7 +24,6 @@ export interface NewFaculty {
         maxHours: number,
         minHours: number,
         minGradePointAverage: number,
-        // maxCount: number
     }
 }
 
@@ -61,3 +60,46 @@ export interface NewHall {
     maxCount: number | string
     isLabratory: boolean
 }
+
+export interface FullFaculty {
+    id: string,
+    nameEn: string,
+    nameAr: string,
+    descriptionEn: string,
+    descriptionAr: string,
+    minCountToSubject: number,
+    maxStudCountInGroup: number,
+    studingYearsCount: number,
+    isManySpecialty: boolean,
+    specialtyYearNum: number,
+    isActive: true,
+    workDay: {
+        id: string,
+        dayNumber: number,
+        workStartAt: string,
+        workEndAt: string
+    }[],
+    halls: {
+        id: string,
+        nameEn: string,
+        nameAr: string,
+        descriptionEn: string,
+        descriptionAr: string,
+        maxCount: number,
+        isLabratory: boolean
+      }[],
+    specialties: {
+        id: string,
+        nameEn: string,
+        nameAr: string,
+        descriptionEn: string,
+        descriptionAr: string,
+        isDefault: boolean
+      }[],
+    semesterRegistrationRequirement: {
+      id: string,
+      maxHours: number,
+      minHours: number,
+      minGradePointAverage: number
+    }
+  }

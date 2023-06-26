@@ -1,19 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { UseQueryOptions, useQuery } from "react-query";
 import { AxiosResponse } from "axios";
 
 import { useHTTP } from "../useHTTP";
+import useLoadingBar from "../useLoadingBar";
 
 export const useGetDataById = <TData>(  path: string, id: string | null | undefined, 
-                                        config?: UseQueryOptions<AxiosResponse<TData>>) => {
+                                        config?: UseQueryOptions<AxiosResponse<TData>> & {
+                                            onRefetch?: (data: AxiosResponse<TData, any> | undefined) => void
+                                        }) => {
 
     const { get } = useHTTP();
+
+    const { toggleProgressLoader } = useLoadingBar();
 
     const   {   refetch,
                 data,
                 isFetching,
-                isLoadingError
+                isLoading,
+                isFetched
             } = useQuery<AxiosResponse<TData>>(
                     [path, id], 
                     () => get(`${path}/${id}`),
@@ -22,12 +28,25 @@ export const useGetDataById = <TData>(  path: string, id: string | null | undefi
                         enabled: false,                
                     });
 
+                    // console.log(isLoading || (isFetching && !isFetched) && !isLoadingError)
+
     useEffect(() => {
         if(id) {
-            refetch();
+            toggleProgressLoader(true);
         }
+        if(id && !isFetched) {
+            refetch().then(res => config?.onRefetch?.(res.data));
+            return;
+        }
+        config?.onRefetch?.(data);
     },[id]);
 
-    return { refetch, data, progressLoading: isFetching && !isLoadingError }
+    useEffect(() => {
+        if(isFetched) {
+            toggleProgressLoader(false);
+        }
+    },[isFetched])
+
+    return { refetch, data, isFetching, isLoading }
 
 }

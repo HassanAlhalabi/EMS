@@ -15,6 +15,7 @@ import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { FullSubject, NewSubject, Subject } from "./types";
 import SubjectForm from "./subject-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
+import { useGetDataById } from '../../../hooks/useGetDataById';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -47,40 +48,25 @@ const SubjectsPage = () => {
             isFetching,
             refetch } = useGetTableData('/Subject/GetAllSubjects', page, pageSize, searchKey)
 
-    const   {   data: subject, 
-                isLoading: loadingSubject, 
-                isFetching: fetchingSubject,
-                refetch: refetchSubject,
-            } = useQuery(
-                            ['/Subject/GetFullSubject', subjectId], 
-                        () => get(`/Subject/GetFullSubject/${subjectId}`),
-                        {
-                            // @ts-ignore
-                            enabled: false,   
-                            onSuccess: (data: AxiosResponse<FullSubject>) => {
-                                formik.setValues({
-                                    ...data.data,
-                                    subjectTypeId: data.data.subjectType.id,
-                                    specialtySubjects: data.data.specialtySubjects.map((fs) => {
-                                        return {
-                                            facultyId: fs.faculty.id,
-                                            facultyName: fs.faculty.name,
-                                            specialtyId: fs.specialty.id,
-                                            specialtyName: fs.specialty.name,
-                                            superSubjectId: fs.superSubject ? fs.superSubject.id : '',
-                                            superSubjectName: fs.superSubject ? fs.superSubject.name : '',
-                                        }
-                                    })
-                                })
-                            }              
-			            });                   
-				
-	useEffect(() => {
-		if(subjectId && action === ACTION_TYPES.update) {
-			refetchSubject();
-		}
-		() => setSubjectId(null);
-	},[subjectId])
+    useGetDataById<FullSubject>('/Subject/GetFullSubject', subjectId, {
+        onRefetch: data => {
+            data &&
+            formik.setValues({
+                ...data.data,
+                subjectTypeId: data.data.subjectType.id,
+                specialtySubjects: data.data.specialtySubjects.map((fs) => {
+                    return {
+                        facultyId: fs.faculty.id,
+                        facultyName: fs.faculty.name,
+                        specialtyId: fs.specialty.id,
+                        specialtyName: fs.specialty.name,
+                        superSubjectId: fs.superSubject ? fs.superSubject.id : '',
+                        superSubjectName: fs.superSubject ? fs.superSubject.name : '',
+                    }
+                })
+            })
+        }
+    })                      
     
     const columns = useMemo(
         () => [
@@ -202,7 +188,7 @@ const SubjectsPage = () => {
                     >
                         {(  action === ACTION_TYPES.add || 
                             action === ACTION_TYPES.update)
-                                && <SubjectForm formik={formik} loading={loadingSubject || fetchingSubject} />}
+                                && <SubjectForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
                                     <>Are you Sure You Want to Delete This Subject</>
                         }

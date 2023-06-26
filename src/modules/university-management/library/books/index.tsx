@@ -2,19 +2,19 @@ import { useMemo, useState, useEffect, ChangeEvent } from 'react';
 
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { useQuery } from "react-query";
 
 import PopUp from "../../../../components/popup";
 import Table from "../../../../components/table"
 import { ACTION_TYPES } from "../../../../constants";
 import { capitalize, getAxiosError } from "../../../../util";
 import { useScreenLoader } from "../../../../hooks/useScreenLoader";
-import { Book, NewBook } from "../types";
-import { bookValidation } from "../../../../schema/book";
+import { Book, FullBook, NewBook } from "../types";
+import { bookValidation } from "../schema";
 import BookForm from "./book-form";
 import SwitchInput from "../../../../components/switch-input/index.";
-import { useDelete, useGet, usePostFormData, usePut, usePutFormData } from "../../../../hooks";
+import { useDelete, usePostFormData, usePut, usePutFormData } from "../../../../hooks";
 import { useGetTableData } from '../../../../hooks/useGetTableData';
+import { useGetDataById } from '../../../../hooks/useGetDataById';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -25,7 +25,8 @@ const INITIAL_VALUES = {
     descriptionEn: '',
     cover: null,
     categoryId: [],
-    attachment: null
+    attachment: null,
+    imagePath: ''
 }
 
 const BooksPage = () => {
@@ -36,7 +37,6 @@ const BooksPage = () => {
     const [action, setAction] = useState<string | null>(null);
     const [bookId, setBookId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
-    const get = useGet();
 
     const formik = useFormik<NewBook>({
 		initialValues: INITIAL_VALUES,
@@ -49,24 +49,18 @@ const BooksPage = () => {
             isFetching,
             refetch } = useGetTableData('/Book/GetAllBooks', page, pageSize, searchKey)
 
-    const { data: book, 
-            isLoading: loadingBook, 
-            isFetching: fetchingBook,
-            refetch: refetchBook,
-			 } = useQuery(
-                        ['/Book/GetFullBook', bookId], 
-                        () => get(`/Book/GetFullBook/${bookId}`),
-                        {
-                            enabled: false,   
-                            onSuccess: data => {
-                                formik.setValues(data.data)
-                            }              
-			            });
+    useGetDataById<FullBook>('/Book/GetFullBook', bookId, {
+        onRefetch: data => {
+            data && formik.setValues({
+                ...data.data,
+                updateImage: true,
+                imagePath: data.data.thumbnail || '',
+                categoryId: data.data.categoryIds,
+            })
+        }
+    })        
 				
 	useEffect(() => {
-		if(bookId && action === ACTION_TYPES.update) {
-			refetchBook();
-		}
         if(bookId && action === ACTION_TYPES.toggle) {
             handleBookAction();
         }
@@ -107,8 +101,6 @@ const BooksPage = () => {
         [data, isFetching, isLoading, page]
     );
 
-
-    console.log(formik.values)
     const { mutateAsync , 
             isLoading: postLoading, 
             isError, error } = action === ACTION_TYPES.add ? usePostFormData('/Book', 

@@ -14,13 +14,14 @@ import Table from "../../../../components/table";
 import { useGet, usePost, usePut } from "../../../../hooks";
 import { useScreenLoader } from "../../../../hooks/useScreenLoader";
 import { facultyValidation, hallValidation, specValidation, dayValidation } from "../schema";
-import { NewDay, NewFaculty, NewHall, NewSpec } from "../types";
+import { Faculty, FullFaculty, NewDay, NewFaculty, NewHall, NewSpec, WorkDay } from "../types";
 import { getAxiosError } from "../../../../util";
 import FacultyForm from "./faculty-form";
 import HallsForm from "./halls-form";
 import SpecsForm from "./specs-form";
 import WorkDaysForm from "./work-days-form";
 import { WORK_DAYS, WORK_DAYS_NAMES } from "../../../../constants";
+import { useGetDataById } from "../../../../hooks/useGetDataById";
 
 const formWizardHeaders: PaneHeadProps[] = [
     {   
@@ -96,36 +97,29 @@ const FacultyFormPage = () => {
     const {toggleScreenLoader} = useScreenLoader();
     const get = useGet();
 
-    const {refetch: refetchFaculty } = useQuery(['faculty', facultyId], 
-                                 () => get(`/Faculty/GetFullFaculty/${facultyId}`),{
-                                            enabled: false,
-                                            onSuccess: (data: AxiosResponse) => {
-                                                facultyDetailsFormik.setValues({
-                                                    nameAr: data.data.nameAr,
-                                                    nameEn: data.data.nameEn,
-                                                    descriptionAr: data.data.descriptionAr,
-                                                    descriptionEn: data.data.descriptionEn,
-                                                    studingYearsCount: data.data.studingYearsCount,
-                                                    isManySpecialty: data.data.isManySpecialty,
-                                                    specialtyYearNum: data.data.specialtyYearNum,
-                                                    minCountToSubject: data.data.minCountToSubject,
-                                                    maxStudCountInGroup: data.data.maxStudCountInGroup,
-                                                    semesterRegistrationRequirement: data.data.semesterRegistrationRequirement
-                                                });
-                                                setWorkDays(data.data.workDay.map((day: NewDay)=> ({
-                                                    ...day,
-                                                    name: WORK_DAYS_NAMES[day.dayNumber]
-                                                })))
-                                                setSpecs(data.data.specialties);
-                                                setHalls(data.data.halls)
-                                            }
-                                        })                                 
-
-    useEffect(() => {
-        if(facultyId) {
-            refetchFaculty();
+    useGetDataById<FullFaculty>('/Faculty/GetFullFaculty/',facultyId, {
+        onRefetch: data => {
+                    if(!data) return;
+                    facultyDetailsFormik.setValues({
+                        nameAr: data.data.nameAr,
+                        nameEn: data.data.nameEn,
+                        descriptionAr: data.data.descriptionAr,
+                        descriptionEn: data.data.descriptionEn,
+                        studingYearsCount: data.data.studingYearsCount,
+                        isManySpecialty: data.data.isManySpecialty,
+                        specialtyYearNum: data.data.specialtyYearNum,
+                        minCountToSubject: data.data.minCountToSubject,
+                        maxStudCountInGroup: data.data.maxStudCountInGroup,
+                        semesterRegistrationRequirement: data.data.semesterRegistrationRequirement
+                    })
+                    setWorkDays(data.data.workDay.map((day)=> ({
+                        ...day,
+                        name: WORK_DAYS_NAMES[day.dayNumber]
+                    })))
+                    setSpecs(data.data.specialties);
+                    setHalls(data.data.halls)
         }
-    },[facultyId])
+    })                           
 
     const [workDays, setWorkDays] = useState<NewDay[]>([]);
     const [specs, setSpecs] = useState<NewSpec[]>([]);

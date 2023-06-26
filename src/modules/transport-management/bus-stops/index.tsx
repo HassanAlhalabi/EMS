@@ -45,12 +45,14 @@ const BusStopsPage = () => {
     useGetDataById<FullBusStop>(    '/BusStop/GetFullBusStop',
                                 busStopId,
                                 {
-                                    onSuccess: data =>formik.setValues({
+                                    onRefetch: data => {
+                                        data &&
+                                        formik.setValues({
                                         cityId: data.data.cityId,
                                         nameAr: data.data.nameAr,
                                         nameEn: data.data.nameEn,
                                         stateId: data.data.stateId
-                                    })
+                                    })}
                                 });
             
     const columns = useMemo(

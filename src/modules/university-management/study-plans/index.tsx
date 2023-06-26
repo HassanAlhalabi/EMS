@@ -7,13 +7,14 @@ import { toast } from "react-toastify";
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, useGet, usePost, usePut } from "../../../hooks";
+import { useDelete, usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { addStudyPlanValidation } from "./schema";
-import { NewStudyPlan, StudyPlan } from "./types";
+import { FullStudyPlan, NewStudyPlan, StudyPlan } from "./types";
 import { capitalize, getAxiosError } from "../../../util";
 import StudyPlanForm from "./study-plan-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
+import { useGetDataById } from '../../../hooks/useGetDataById';
 
 const INITIAL_VALUES: NewStudyPlan = {
   nameAr:	'',
@@ -30,7 +31,6 @@ const StudyPlansPage = () => {
   const [action, setAction] = useState<string | null>(null);
   const [studyPlanId, setStudyPlanId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
-  const get = useGet();
 
   const { data, 
           status,
@@ -38,20 +38,14 @@ const StudyPlansPage = () => {
           isFetching, 
           refetch } = useGetTableData('/StudyPlan/GetAllStudyPlans', page, pageSize, searchKey)
 
-  const { data: studyPlan, 
-          refetch: refetchStudyPlan,
-        } = useQuery(
-                    ['/StudyPlan/GetFullStudyPlan', studyPlanId], 
-                    () => get(`/StudyPlan/GetFullStudyPlan/${studyPlanId}`),
-                    {
-                        enabled: false,   
-                        onSuccess: data => formik.setValues(data.data)              
-        });
+  useGetDataById<FullStudyPlan>('/StudyPlan/GetFullStudyPlan',studyPlanId,{
+    onRefetch: data => {
+      data &&
+      formik.setValues(data.data)
+    }
+  })
 
   useEffect(() => {
-    if(studyPlanId && action === ACTION_TYPES.update) {
-      refetchStudyPlan();
-    }
     if(studyPlanId && action === ACTION_TYPES.toggle) {
       handleStudyPlanAction();
     }
@@ -63,6 +57,10 @@ const StudyPlansPage = () => {
       {
         Header: 'StudyPlan Name',
         accessor: 'name',
+      },
+      {
+        Header: 'Description',
+        accessor: 'description',
       },
       {
         Header: 'Options',

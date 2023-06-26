@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, ChangeEvent } from 'react';
 
 import { useFormik } from "formik";
-import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
 import PopUp from "../../../components/popup";
@@ -10,11 +9,11 @@ import { ACTION_TYPES } from "../../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { addDepartmentValidation } from "./schema";
-import { NewDepartment, Department } from "./types";
-import { Faculty } from "../faculties/types";
+import { NewDepartment, Department, FullDepartment } from "./types";
 import { capitalize, getAxiosError } from "../../../util";
 import DepartmentForm from "./department-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
+import { useGetDataById } from '../../../hooks/useGetDataById';
 
 const INITIAL_VALUES: NewDepartment = {
   nameAr:	'',
@@ -41,23 +40,16 @@ const DepartmentsPage = () => {
           isFetching, 
           refetch } = useGetTableData('/Department/GetAllDepartments', page, pageSize, searchKey)
 
-  const { data: department, 
-          refetch: refetchDepartment,
-        } = useQuery(
-                    ['/Department/GetFullDepartment', departmentId], 
-                    () => get(`/Department/GetFullDepartment/${departmentId}`),
-                    {
-                        enabled: false,   
-                        onSuccess: data => formik.setValues({
-                          ...data.data,
-                          facultiesIds: data.data.faculties.map((faculty: Faculty) => faculty.id)
-                        })              
-        });
+  useGetDataById<FullDepartment>('/Department/GetFullDepartment', departmentId, {
+        onRefetch: data => {
+            data && formik.setValues({
+                    ...data.data,
+                    facultiesIds: data.data.faculties?.map((faculty) => faculty.id)
+                  }) 
+        }
+      })
 
   useEffect(() => {
-    if(departmentId && action === ACTION_TYPES.update) {
-      refetchDepartment();
-    }
     if(departmentId && action === ACTION_TYPES.toggle) {
       handleDepartmentAction();
     }

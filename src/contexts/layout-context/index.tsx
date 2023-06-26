@@ -11,6 +11,9 @@ const INITIAL_STATE = {
     isScreenLoading: false,
     toggleScreenLoader: () => {},
 
+    isProgressLoading: false,
+    toggleProgressLoader: (loaderState: boolean) => {},
+
 }
 
 export type ThemeMode = 'LIGHT' | 'DARK';
@@ -29,10 +32,12 @@ export const LayoutContextProvider = ({children}:{children: ReactNode}) => {
     const [drawerIsExpanded, setIsExpanded] = useState(false);
     const [theme, setTheme] = useState<ThemeMode>('DARK');
     const [isScreenLoading, setIsScreenLoading] = useState<boolean>(false);
+    const [isProgressLoading, setProgressLoading] = useState<boolean>(false);
 
     const toggleDrawer =  useCallback(() => setIsExpanded(prev => !prev),[]);
     const toggleTheme = useCallback(() => setTheme(prev => prev === 'LIGHT' ? 'DARK' : 'LIGHT'),[]);
     const toggleScreenLoader = () => setIsScreenLoading(prev => !prev);
+    const toggleProgressLoader = (loaderState: boolean) => setProgressLoading(loaderState);
 
     useEffect(() => {
         handleToggleTheme(theme);
@@ -44,7 +49,9 @@ export const LayoutContextProvider = ({children}:{children: ReactNode}) => {
                                             theme, 
                                             toggleTheme,
                                             isScreenLoading,
-                                            toggleScreenLoader 
+                                            toggleScreenLoader,
+                                            isProgressLoading,
+                                            toggleProgressLoader 
                                         }}>
                 {children}
             </LayoutContext.Provider>

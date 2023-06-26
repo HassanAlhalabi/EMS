@@ -41,11 +41,13 @@ const RolesPage = () => {
             isFetching,
             refetch } = useGetTableData('/Role/GetAllRoles', page, pageSize, searchKey)
 
-    const {progressLoading} = useGetDataById<Role>('/Role/GetRole', roleId,{ 
-                            onSuccess: data => formik.setValues({
+    useGetDataById<Role>('/Role/GetRole', roleId,{ 
+                            onRefetch: data => { 
+                                data &&
+                                formik.setValues({
                                 name: data.data.name,
                                 roleClaims: data.data.roleClaims as string[]
-						    })              
+						    })}            
 			            });
 				
     
@@ -173,7 +175,6 @@ const RolesPage = () => {
                         }
                         handleConfirm={handleRoleAction}
                         confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
-                        loadingData={progressLoading}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)

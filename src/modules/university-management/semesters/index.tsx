@@ -10,10 +10,11 @@ import { ACTION_TYPES } from "../../../constants";
 import { useDelete, useGet, usePost, usePut } from "../../../hooks";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { addSemesterValidation } from "./schema";
-import { NewSemester, Semester } from "./types";
+import { FullSemester, NewSemester, Semester } from "./types";
 import { capitalize, getAxiosError } from "../../../util";
 import SemesterForm from "./semester-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
+import { useGetDataById } from '../../../hooks/useGetDataById';
 
 const INITIAL_VALUES: NewSemester = {
   nameAr:	'',
@@ -44,20 +45,13 @@ const SemestersPage = () => {
           isFetching, 
           refetch } = useGetTableData('/Semester/GetAllSemesters', page, pageSize, searchKey)
 
-  const { data: semester, 
-          refetch: refetchSemester,
-        } = useQuery(
-                    ['/Semester/GetFullSemester', semesterId], 
-                    () => get(`/Semester/GetFullSemester/${semesterId}`),
-                    {
-                        enabled: false,   
-                        onSuccess: data => formik.setValues(data.data)              
-        });
+  useGetDataById<FullSemester>('/Semester/GetFullSemester', semesterId, {
+    onRefetch: data => {
+      data && formik.setValues(data.data) 
+    }
+  })
 
   useEffect(() => {
-    if(semesterId && action === ACTION_TYPES.update) {
-      refetchSemester();
-    }
     if(semesterId && action === ACTION_TYPES.toggle) {
       handleSemesterAction();
     }

@@ -12,7 +12,7 @@ const Drawer = () => {
   const {toggleDrawer, drawerIsExpanded} = useContext(LayoutContext);
 
   return (
-    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl" onBlur={e => console.log('Bluuuered')}>
+    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl w-100 w-sm-50 ps-3">
 
       <div className="d-flex align-items-center">
         <div className="toggle-icon-wrapper">

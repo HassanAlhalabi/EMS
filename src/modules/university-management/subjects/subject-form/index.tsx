@@ -20,8 +20,8 @@ type FacultySubjectProps = {
     superSubjectName: string
 }
 
-const SubjectForm = (   {formik, loading}:
-                        {formik: FormikProps<NewSubject>, loading: boolean}
+const SubjectForm = (   {formik}:
+                        {formik: FormikProps<NewSubject>}
                     ) => {
 
     const [facultySubjects, setFacultySubjects] = useState<FacultySubjectProps[]>([]);
@@ -87,7 +87,7 @@ const SubjectForm = (   {formik, loading}:
                 superSubjectName: facultySubject.superSubjectName
             }
         }))
-    },[loading])
+    },[formik.values?.subjectTypeId])
 
     const handleDeleteFacultySubject = (facultyId: string, specialtyId: string) => {
         const newFacultySubjects = formik.values.specialtySubjects.filter(item => {

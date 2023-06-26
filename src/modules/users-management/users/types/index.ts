@@ -26,6 +26,7 @@ export interface User {
     lastName: string,
     userName: string,
     email: string,
+    phoneNumber: string,
     type: string,
     role: Role,
     isActive: boolean

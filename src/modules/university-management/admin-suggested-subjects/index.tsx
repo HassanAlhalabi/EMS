@@ -125,10 +125,10 @@ const AdminSuggestedSubjectsPage = () => {
     }
   }
 
-  const handleToggleStudentSuggestedSubject = async (e: ChangeEvent<HTMLInputElement>) => {
-    setAction(ACTION_TYPES.toggle);
-    setStudentSuggestedSubjectId(e.target.value);
-  }
+  // const handleToggleStudentSuggestedSubject = async (e: ChangeEvent<HTMLInputElement>) => {
+  //   setAction(ACTION_TYPES.toggle);
+  //   setStudentSuggestedSubjectId(e.target.value);
+  // }
 
   return  <>
             <Table<SuggestedSubject>  

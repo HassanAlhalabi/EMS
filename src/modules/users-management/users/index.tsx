@@ -50,22 +50,25 @@ const UsersPage = () => {
 
   const { data, status, isLoading, isFetching, refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
     
-  const {progressLoading} = useGetDataById<User>('/User/GetUser', userId, {
-    onSuccess: data => formik.setValues({
-      ...formik.values,
-      ...data.data,
-      roleId: data.data.role.id,
-      contract: data.data.contract ? {
-        ...data.data.contract,
-        endAt: (data.data.contract.endAt as string).split('T')[0],
-        startAt: (data.data.contract.startAt as string).split('T')[0],
-        workDays: data.data.contract.workDays.map(workDay => ({
-          label: WORK_DAYS_NAMES[workDay - 1],
-          value: workDay
-        }))
-      } : null
-    }) 
-  });
+  useGetDataById<User>('/User/GetUser', userId, {
+          onRefetch: data => {
+            data && 
+            formik.setValues({
+            ...formik.values,
+            ...data.data,
+            roleId: data.data.role.id,
+            contract: data.data.contract ? {
+              ...data.data.contract,
+              endAt: (data.data.contract.endAt as string).split('T')[0],
+              startAt: (data.data.contract.startAt as string).split('T')[0],
+              workDays: data.data.contract.workDays.map(workDay => ({
+                label: WORK_DAYS_NAMES[workDay - 1],
+                value: workDay
+              }))
+            } : null
+          })
+        }
+     });
 
   const handleSuccess = async (message: string) => {
     toast.success(message)
@@ -240,7 +243,6 @@ const UsersPage = () => {
                 confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                 handleConfirm={handleUserAction}
                 actionLoading={false}
-                loadingData={progressLoading}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)

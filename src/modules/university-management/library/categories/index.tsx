@@ -1,7 +1,6 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useFormik } from "formik";
-import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
 import PopUp from "../../../../components/popup";
@@ -11,9 +10,10 @@ import { useDelete, useGet, usePostFormData, usePutFormData } from "../../../../
 import { bookCategoryValidation } from "../schema/book-category";
 import { capitalize, getAxiosError } from "../../../../util";
 import { useScreenLoader } from "../../../../hooks/useScreenLoader";
-import { BookCategory, NewBookCategory } from "../types";
+import { BookCategory, BookFullCategory, NewBookCategory } from "../types";
 import CategoryForm from "./category-form";
 import { useGetTableData } from '../../../../hooks/useGetTableData';
+import { useGetDataById } from '../../../../hooks/useGetDataById';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -43,29 +43,15 @@ const CategoriesPage = () => {
             isFetching,
             refetch } = useGetTableData('/Category/GetAllCategories', page, pageSize, searchKey)
 
-    const { data: category, 
-				isLoading: loadingCategory, 
-				isFetching: fetchingCategory,
-				refetch: refetchCategory,
-			 } = useQuery(
-                        ['/Category/GetFullCategory', categoryId], 
-                        () => get(`/Category/GetFullCategory/${categoryId}`),
-                        {
-                            enabled: false,   
-                            onSuccess: data => {
-                                formik.setValues({
-                                    ...data.data,
-                                    superCategoryId: data.data.superCategoryId ? data.data.superCategoryId : ''
-                                })
-                            }             
-			            });
-				
-	useEffect(() => {
-		if(categoryId && action === ACTION_TYPES.update) {
-			refetchCategory();
-		}
-		() => setCategoryId(null);
-	},[categoryId])
+    useGetDataById<BookFullCategory>('/Category/GetFullCategory', categoryId, {
+        onRefetch: data => {
+            data && formik.setValues({
+                        ...data.data,
+                        superCategoryId: data.data.superCategoryId ? data.data.superCategoryId : '',
+                        updateImage: true
+                    })
+        }
+    })
     
     const columns = useMemo(
         () => [

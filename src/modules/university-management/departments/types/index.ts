@@ -9,6 +9,7 @@ export interface FullDepartment {
     nameEn:	string,
     descriptionAr: string,
     descriptionEn: string,
+    faculties?: {id: string, name: string}[]
 }
 
 export interface NewDepartment {

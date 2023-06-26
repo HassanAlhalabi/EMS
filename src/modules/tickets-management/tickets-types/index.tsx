@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
@@ -45,19 +45,20 @@ const TicketsTypesPage = () => {
             isFetching,
             refetch } = useGetTableData('/TicketType/GetAllTicketTypes', page, pageSize, searchKey)
 
-    const  { progressLoading: loadingTicket } = useGetDataById<FullTicketType>(    '/TicketType/GetTicketType',
-                                ticketTypeId,
-                                {
-                                    onSuccess: data => { formik.setValues({
-                                        assignToDepartmentId: data.data.assignToDepartment.id,
-                                        description: data.data.description,
-                                        isDoctor: data.data.isDoctor,
-                                        isEmployee: data.data.isEmployee,
-                                        isStudent: data.data.isStudent,
-                                        title: data.data.title
-                                    })}
-                                });
-
+    useGetDataById<FullTicketType>('/TicketType/GetTicketType',ticketTypeId, {
+                onRefetch: data => {
+                    data &&
+                    formik.setValues({
+                        assignToDepartmentId: data.data.assignToDepartment.id,
+                        description: data.data.description,
+                        isDoctor: data.data.isDoctor,
+                        isEmployee: data.data.isEmployee,
+                        isStudent: data.data.isStudent,
+                        title: data.data.title
+                    })
+                }
+            }); 
+                                                  
 
     const ticketTypes = useMemo(
         () => (data?.data.ticketTypes) ? data.data.ticketTypes : [],
@@ -99,7 +100,9 @@ const TicketsTypesPage = () => {
     }}
 
     const reset = () => {
-        setCurrentAction(null); formik.resetForm(); setTicketTypeId(null);
+        setCurrentAction(null); 
+        formik.resetForm(); 
+        setTicketTypeId(null);
     }
 
     return  <>
@@ -158,7 +161,6 @@ const TicketsTypesPage = () => {
                         }
                         handleConfirm={handleTicketTypeAction}
                         confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && currentAction !== ACTION_TYPES.delete}
-                        loadingData={loadingTicket}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)

@@ -12,6 +12,7 @@ import Loader from './components/loader';
 // import './assets/css/theme-rtl.min.css';
 import './assets/css/theme.min.css';
 import { IRoute } from './types';
+import useLoadingBar from './hooks/useLoadingBar';
 
 const renderRoutes = (routes: IRoute[]) => {
   return routes.map(route => {
@@ -28,7 +29,8 @@ const renderRoutes = (routes: IRoute[]) => {
 function App() {
 
   const { isScreenLoading } = useScreenLoader();
-  const {appRoutes} = useRoutes();
+  const { renderLoadingBar } = useLoadingBar();
+  const { appRoutes } = useRoutes();
 
   return (
     <div className="App position-relative">
@@ -40,6 +42,7 @@ function App() {
         </Suspense>
       </BrowserRouter>
       {isScreenLoading && <Loader />}
+      { renderLoadingBar() }
       <ToastContainer />
     </div>
   )

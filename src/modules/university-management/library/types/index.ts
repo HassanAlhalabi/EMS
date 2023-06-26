@@ -4,24 +4,28 @@ export interface NewBook {
     nameEn: string,
     authorNameAr: string,
     authorNameEn: string,
-    descriptionAr: string,
-    descriptionEn: string,
-    cover: File | null,
+    descriptionAr: string | null,
+    descriptionEn: string | null,
+    cover: string | null | File,
     categoryId: string[],
-    imagePath?: string,
     updateImage?: boolean,
-    attachment: File | null
+    attachment: File | null,
+    imagePath: string
 }
 
 export interface FullBook {
+    attachment: File | null;
+    authorNameAr: string,
+    authorNameEn: string,
+    categoryIds: string[],
+    cover: null | File;
+    descriptionAr: string | null,
+    descriptionEn: string | null,
     id: string,
+    isActive: boolean
     nameAr: string,
     nameEn: string,
-    descriptionAr: string,
-    descriptionEn: string,
-    imagePath: string,
-    subCategories: string[],
-    superCategoryId: string
+    thumbnail: string | null;
 }
 
 export interface Book {

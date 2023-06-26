@@ -53,7 +53,7 @@ export interface FullSubject {
                 name: string,
             } | null
         }[];
-    subjectType: FullSubjectTyoe
+    subjectType: FullSubjectType
 }
 
 export interface SubjectType {
@@ -63,7 +63,7 @@ export interface SubjectType {
     maxHours: number
 }
 
-export interface FullSubjectTyoe{
+export interface FullSubjectType{
     id: string;
     nameAr: string,
     nameEn: string,

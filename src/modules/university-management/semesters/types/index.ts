@@ -25,3 +25,17 @@ export interface Semester {
     semesterStartAt: Date | string,
     semesterEndAt: Date | string
 }
+
+export interface FullSemester {
+    id: string,
+    nameEn: string,
+    nameAr: string,
+    collectingSuggestionsStartAt: Date | string,
+    collectingSuggestionsEndAt: Date | string,
+    reviewSuggestionsStartAt: Date | string,
+    reviewSuggestionsEndAt: Date | string,
+    subjectsRegistrationStartAt: Date | string,
+    subjectsRegistrationEndAt: Date | string,
+    semesterStartAt: Date | string,
+    semesterEndAt: Date | string
+}

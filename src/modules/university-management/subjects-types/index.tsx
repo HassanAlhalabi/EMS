@@ -1,8 +1,7 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { useQuery } from "react-query";
 
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
@@ -11,9 +10,10 @@ import { useDelete, useGet, usePost, usePut } from "../../../hooks";
 import { subjectTypeValidation } from "../subjects/schema";
 import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import {  NewSubjectType, Subject } from "../subjects/types";
+import {  FullSubjectType, NewSubjectType, Subject } from "../subjects/types";
 import SubjectTypeForm from "./subject-type-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
+import { useGetDataById } from '../../../hooks/useGetDataById';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -42,26 +42,13 @@ const SubjectsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/SubjectType/GetAllSubjectTypes', page, pageSize, searchKey)
+            refetch } = useGetTableData('/SubjectType/GetAllSubjectTypes', page, pageSize, searchKey);
 
-    const { data: subject, 
-				isLoading: loadingSubject, 
-				isFetching: fetchingSubject,
-				refetch: refetchSubject,
-			 } = useQuery(
-                        ['/SubjectType/GetFullSubjectType', subjectId], 
-                        () => get(`/SubjectType/GetFullSubjectType/${subjectId}`),
-                        {
-                            enabled: false,   
-                            onSuccess: data => formik.setValues(data.data)            
-			            });
-				
-	useEffect(() => {
-		if(subjectId && action === ACTION_TYPES.update) {
-			refetchSubject();
-		}
-		() => setSubjectId(null);
-	},[subjectId])
+    useGetDataById<FullSubjectType>('/SubjectType/GetFullSubjectType',subjectId, {
+        onRefetch: data => {
+            data && formik.setValues(data.data)
+        } 
+    })        
     
     const columns = useMemo(
         () => [
