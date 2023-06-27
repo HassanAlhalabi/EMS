@@ -40,8 +40,10 @@ const StudyPlansPage = () => {
 
   useGetDataById<FullStudyPlan>('/StudyPlan/GetFullStudyPlan',studyPlanId,{
     onRefetch: data => {
-      data &&
-      formik.setValues(data.data)
+      // data &&
+      // formik.setValues({
+      //   ...data.data,
+      // })
     }
   })
 

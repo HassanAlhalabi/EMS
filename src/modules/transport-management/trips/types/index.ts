@@ -1,6 +1,6 @@
-import { Vehicle } from "../../../../types/vehicles";
 import { BusStop } from "../../bus-stops/types";
 import { Route } from "../../routes/types";
+import { Vehicle } from "../../vehicles/types";
 
 export interface Trip {
     tripId: string;

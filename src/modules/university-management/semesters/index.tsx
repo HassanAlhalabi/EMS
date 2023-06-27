@@ -37,7 +37,6 @@ const SemestersPage = () => {
   const [action, setAction] = useState<string | null>(null);
   const [semesterId, setSemesterId] = useState<string | null>(null);
   const { toggleScreenLoader } = useScreenLoader();
-  const get = useGet();
 
   const { data, 
           status,
@@ -47,7 +46,9 @@ const SemestersPage = () => {
 
   useGetDataById<FullSemester>('/Semester/GetFullSemester', semesterId, {
     onRefetch: data => {
-      data && formik.setValues(data.data) 
+      data && formik.setValues({
+        ...data.data,
+      }) 
     }
   })
 

@@ -10,7 +10,7 @@ const TicketDetils = () => {
 
     const { ticketId } = useParams();
 
-    const { progressLoading: loadingTicket, data} = useGetDataById<FullTicket>( '/Ticket/GetTicket', ticketId);
+    const { data } = useGetDataById<FullTicket>( '/Ticket/GetTicket', ticketId);
 
     const columns = useMemo(
         () => [
@@ -40,7 +40,7 @@ const TicketDetils = () => {
 
     const tickets = useMemo(
         () => (data?.data) ? [data.data] : [],
-        [loadingTicket]
+        [data]
     );
 
     
@@ -54,7 +54,6 @@ const TicketDetils = () => {
                 <Table<Ticket>  
                     columns={columns} 
                     data={tickets} 
-                    loading={loadingTicket}
                     isBulk={false}
                     hasSort={false}
                 />

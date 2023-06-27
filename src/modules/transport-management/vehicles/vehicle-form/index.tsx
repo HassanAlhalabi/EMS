@@ -2,7 +2,7 @@ import { Form, Row, Col } from "react-bootstrap"
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback";
-import { NewVehicle } from "../../../../types/vehicles";
+import { NewVehicle } from "../types";
 
 const BookForm = ({formik}:{formik: FormikProps<NewVehicle>}) => {
 

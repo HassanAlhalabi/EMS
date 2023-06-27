@@ -28,8 +28,6 @@ export const useGetDataById = <TData>(  path: string, id: string | null | undefi
                         enabled: false,                
                     });
 
-                    // console.log(isLoading || (isFetching && !isFetched) && !isLoadingError)
-
     useEffect(() => {
         if(id) {
             toggleProgressLoader(true);
