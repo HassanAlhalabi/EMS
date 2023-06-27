@@ -33,6 +33,8 @@ export const useActions = () => {
     const deleteMutatation   = useDelete(action.path, action.payload);
     const toggleMutatation   = usePut(action.path, action.payload);
 
+    console.log(action)
+
     const handleSuccess = () => {
         if(action.onSuccess) {
             action.onSuccess();

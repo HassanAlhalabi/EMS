@@ -37,3 +37,9 @@ export interface User {
         workDays: number[]
     } | null
 }
+
+export interface NewPassword {
+    userName?: string;
+    newPassword: string;
+    confirmPassword: string;
+}

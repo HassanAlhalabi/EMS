@@ -51,7 +51,8 @@ const IndeterminateCheckbox = forwardRef<HTMLInputElement, IndeterminateCheckbox
 	}
 )
 
-const Table = <T extends Record<any,any>>({ 	isBulk, 
+const Table = <T extends Record<any,any>>({ 	
+					isBulk, 
 					hasSort,
 					hasSearch,
 				 	columns, 
@@ -165,7 +166,7 @@ const Table = <T extends Record<any,any>>({ 	isBulk,
 						/>
 						}
 						{
-							hasSearch &&
+							hasSearch && rows.length > 0 &&
 							<TableSearch
 								searchKey={searchKey as string}
 								handleSearchChange={handleSearchChange}

@@ -98,12 +98,12 @@ const SemesterSubjectPage = () => {
                     pagination={data?.data.paginationInfo}
                     renderTableOptions={() => {
                         return  <>
-                                    <button className="btn btn-falcon-success btn-sm" 
+                                    {/* <button className="btn btn-falcon-success btn-sm" 
                                             type="button" 
                                             onClick={() => setCurrentAction(ACTION_TYPES.formDataAdd as Action)}>        
                                         <span className="fas fa-plus"></span>
                                         <span className="ms-1">New</span>
-                                    </button>
+                                    </button> */}
                                 </>
                     }} 
                     renderRowActions={(data) => {
