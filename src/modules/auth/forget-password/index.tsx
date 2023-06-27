@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { Card, Container, Form } from "react-bootstrap";
+import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 import Feedback from "../../../components/feedback";
@@ -47,39 +47,45 @@ const ForgetPassword = () => {
     })
 
     return  <Container>
-                <Link to="/login">
-                    <Button scope={""} className="mt-3 mb-3 btn-falcon-primary">
-                        <i className="fa fa-arrow-left"></i>
-                    </Button>
-                </Link>
                 <div className="vh-75 d-flex">
                     <Card className="w-75 d-block p-4 m-auto" style={{height: 'fit-content'}}>
-                        <Form   noValidate 
-                                validated={formik.dirty} 
-                                autoComplete="off" 
-                                className="m-auto"
-                                onSubmit={e => {e.preventDefault(); formik.handleSubmit()}}>
-                            <Form.Group className="mb-3">
-                                <Form.Label htmlFor="userName">
-                                    Enter Your User Name:
-                                </Form.Label>
-                                <Form.Control
-                                    size="lg"
-                                    required
-                                    type="text" 
-                                    placeholder="User Name"
-                                    name="userName"
-                                    value={formik.values.userName} 
-                                    onChange={formik.handleChange} />
-                                <Feedback type="invalid">
-                                    {formik.errors.userName as string}
-                                </Feedback>
-                            </Form.Group>
-                            <Button disabled={!formik.isValid || !formik.dirty} 
-                                    className="btn-falcon-primary" 
-                                    type="submit"
-                                    scope={""}>Get Your Code</Button>
-                        </Form>    
+                        <Row>
+                            <Col xs={1}>
+                                <Link to="/login">
+                                    <Button scope={""} className="mt-3 mb-3 btn-falcon-primary">
+                                        <i className="fa fa-arrow-left"></i>
+                                    </Button>
+                                </Link>
+                            </Col>
+                            <Col>
+                                <Form   noValidate 
+                                    validated={formik.dirty} 
+                                    autoComplete="off" 
+                                    className="m-auto"
+                                    onSubmit={e => {e.preventDefault(); formik.handleSubmit()}}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label htmlFor="userName">
+                                            Enter Your User Name:
+                                        </Form.Label>
+                                        <Form.Control
+                                            size="lg"
+                                            required
+                                            type="text" 
+                                            placeholder="User Name"
+                                            name="userName"
+                                            value={formik.values.userName} 
+                                            onChange={formik.handleChange} />
+                                        <Feedback type="invalid">
+                                            {formik.errors.userName as string}
+                                        </Feedback>
+                                    </Form.Group>
+                                    <Button disabled={!formik.isValid || !formik.dirty} 
+                                            className="btn-falcon-primary" 
+                                            type="submit"
+                                            scope={""}>Get Your Code</Button>
+                                </Form> 
+                            </Col>
+                        </Row>   
                     </Card>
                 </div>
             </Container>;
