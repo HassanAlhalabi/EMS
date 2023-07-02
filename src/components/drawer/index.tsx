@@ -12,7 +12,7 @@ const Drawer = () => {
   const {toggleDrawer, drawerIsExpanded} = useContext(LayoutContext);
 
   return (
-    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl w-100 w-sm-50 ps-3">
+    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl ps-3">
 
       <div className="d-flex align-items-center">
         <div className="toggle-icon-wrapper">
@@ -31,7 +31,7 @@ const Drawer = () => {
         </Link>
       </div>
 
-      <div className={`collapse navbar-collapse ${drawerIsExpanded ? 'show' : ''}`}>
+      <div className={`collapse navbar-collapse w-100 ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
 
             <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />

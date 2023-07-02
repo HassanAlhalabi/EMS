@@ -36,7 +36,7 @@ const SemesterSubjectPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/StudentSemesterSubjects/GetAllSubjectsRegister', page, pageSize, searchKey)
+            refetch } = useGetTableData('/Subject/GetAllSubjectsForRegister', page, pageSize, searchKey)
             
     const columns = useMemo(
         () => [
