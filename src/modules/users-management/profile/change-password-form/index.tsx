@@ -1,5 +1,5 @@
 
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Button, Stack } from "react-bootstrap";
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback"
@@ -12,8 +12,8 @@ const ChangePsswordForm = ({formik}:{formik: FormikProps<NewPassword>}) => {
             <h4 className="mb-3">
                 Update Your Password:
             </h4>
-            <Row className="align-items-start">
-                <Col md="5" className="mb-3">
+            <Stack className="d-block d-sm-flex gap-2">
+                <div  className="mb-3 flex-1">
                     <Form.Group>
                         <Form.Control   name="newPassword" 
                                         placeholder="New Password..."
@@ -25,8 +25,8 @@ const ChangePsswordForm = ({formik}:{formik: FormikProps<NewPassword>}) => {
                     <Feedback type="invalid">
                             {formik.errors.newPassword as string}
                         </Feedback>
-                </Col>
-                <Col md="5" className="mb-3">
+                </div>
+                <div className="mb-3 flex-1">
                     <Form.Group>
                         <Form.Control   required
                                         type="password"
@@ -38,14 +38,14 @@ const ChangePsswordForm = ({formik}:{formik: FormikProps<NewPassword>}) => {
                             {formik.errors.confirmPassword as string}
                         </Feedback>
                     </Form.Group>
-                </Col>
-                <Col md="2" className="mb-3">
+                </div>
+                <div className="mb-3">
                     <Button className="btn-falcon-primary" 
                             disabled={!formik.dirty || !formik.isValid }
                             onClick={() => formik.handleSubmit()}
                             >Change Password</Button>
-                </Col>
-            </Row>
+                </div>
+            </Stack>
         </Form>
     )
 }

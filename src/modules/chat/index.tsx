@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
@@ -7,6 +7,9 @@ import GroupsList from "./components/groups-list";
 import { Group, Message as IMessage } from "./types";
 import ChatMessage from "./components/message";
 import ChatRoom from "./components/chat-room";
+import { useHTTP } from "../../hooks/useHTTP";
+import { browserNotify, dateFromNow } from "../../util";
+import dayjs from "dayjs";
 
 const groups: Group[] = [{
   groupName: 'GroupName1',
@@ -30,7 +33,7 @@ const groups: Group[] = [{
   description: 'sdsdsd'
 }];
 
-const messages: IMessage[] = [
+const oldMessages: IMessage[] = [
   {
     date: '1 day ago',
     userId: '123',
@@ -98,9 +101,10 @@ const messages: IMessage[] = [
 
 const ChatPage = () => {
 
-  const [connection, setConnection] = useState<HubConnection>();
-
+  const [connection, setConnection] = useState<HubConnection | null>(null);
   const { access } = useAccess();
+  const  { post } = useHTTP();     
+  const [messages, setMessages] = useState(oldMessages);
 
   const createConnection = async (user?: string, room?: string) => {
     try {
@@ -109,12 +113,31 @@ const ChatPage = () => {
       .configureLogging(LogLevel.Information)
       .build();
   
-      connection.on("ReceiveMessage", (user, message) => {
-        console.log(user, message)
+      connection.on("ReceiveMessage", (message) => {
+
+        // browserNotify('New Group Message', message);
+
+        setMessages(prev => ([
+          ...prev,
+          {
+            date: dateFromNow(Date.now())+'ago',
+            userId: '3434',
+            fullName: 'Ahmad Hassan',
+            message,
+            thumbnail: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-3.webp" 
+          }
+        ]))
+
       });
   
-      await connection.start();
-  
+
+      connection.onclose(e => {
+        setConnection(null)
+      })
+
+      await connection?.start();
+      setConnection(connection);
+
       return connection;
   
     } catch(error) {
@@ -122,12 +145,34 @@ const ChatPage = () => {
       return error
     } 
   }
-    
-      // const [messages, setMessages] = useState([]);
 
-    const  sendMessage = (msg: string) => {
-      console.log(msg)
+  useEffect(() => {
+    if(!connection) {
+      createConnection();
     }
+  },[])
+
+  const  sendMessage = async (msg: string) => {
+    if(!msg) return;
+    // Preview Message In Room
+    setMessages(prev => ([
+      ...prev,
+      {
+        date: dateFromNow(Date.now())+'ago',
+        userId: '3434',
+        fullName: 'Ahmad Hassan',
+        message: msg,
+        thumbnail: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-3.webp" 
+      }
+    ]))
+    try {
+      await post('/Message',{
+        content: msg
+      })
+    } catch(error) {
+      console.log(error)
+    }
+  }
 
 
     return     <div  id="chat3" style={{borderRadius: "15px"}}>

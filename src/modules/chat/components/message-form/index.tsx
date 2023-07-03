@@ -17,7 +17,8 @@ const MessageForm = ({handleSendMessage}:{handleSendMessage: (msg: string) => vo
 
                     <a className="ms-1 text-muted" href="#!"><i className="fas fa-paperclip"></i></a>
                     <a className="ms-3 text-muted" href="#!"><i className="fas fa-smile"></i></a>
-                    <Button className="ms-3 btn-falcon-primary" 
+                    <Button 
+                            className="ms-3 btn-falcon-primary" 
                             onClick={() => handleSendMessage(messageInput.current?.value   as string)}>
                             <i className="fas fa-paper-plane"></i>
                     </Button>    

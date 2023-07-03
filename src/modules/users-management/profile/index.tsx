@@ -13,7 +13,7 @@ import useGetData from "../../../hooks/useGetData";
 const ProfilePage = () => {
     
 
-    const { data } = useGetData(`/User/GetUserProfile`);
+    const { data } = useGetData<User>(`/User/GetUserProfile`);
     const { setAction } = useActions()
 
     const handleSuccess = async (message: string) => {
