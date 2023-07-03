@@ -131,7 +131,7 @@ const ChatPage = () => {
 
 
     return     <div  id="chat3" style={{borderRadius: "15px"}}>
-              
+              <button onClick={() => createConnection()}>create connection</button>
                   <div className="row">
 
                       <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">

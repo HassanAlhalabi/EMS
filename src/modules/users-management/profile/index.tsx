@@ -1,7 +1,5 @@
 import { Card, Col, Image, Row, Stack } from "react-bootstrap";
 import ProfileImage from '../../../assets/img/team/3.jpg';
-import { getCookie } from "../../../util";
-import { useGetDataById } from "../../../hooks/useGetDataById";
 import { NewPassword, User } from "../users/types";
 import ChangePsswordForm from "./change-password-form";
 import { useFormik } from "formik";
@@ -9,11 +7,13 @@ import { newPasswordValidation } from "./schema";
 import { ACTION_TYPES } from "../../../constants";
 import { toast } from "react-toastify";
 import { ActionItem, useActions } from "../../../hooks/useActions";
+import useGetData from "../../../hooks/useGetData";
 
 
 const ProfilePage = () => {
     
-    const { data } = useGetDataById<User>(`/User/GetUser`, getCookie('EMSUser')?.id);
+
+    const { data } = useGetData(`/User/GetUserProfile`);
     const { setAction } = useActions()
 
     const handleSuccess = async (message: string) => {
