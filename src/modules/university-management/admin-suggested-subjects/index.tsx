@@ -1,19 +1,18 @@
-import { useEffect, useMemo, useState, ChangeEvent } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useFormik } from "formik";
-import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useBulkDelete, useGet, usePost, usePut } from "../../../hooks";
-import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { addStudentSuggestedSubjectValidation } from "../../../schema/suggested-subjects";
 import { NewSubjectSuggestion, SuggestedSubject } from "../../../types/suggested-subjects";
-import { capitalize, getAxiosError } from "../../../util";
+import { capitalize } from "../../../util";
 import SubjectSuggestionForm from "./subject-suggestion-form";
 import { useGetTableData } from '../../../hooks/useGetTableData';
+import { ActionItem, useActions } from '../../../hooks/useActions';
+import { Action } from '../../../types';
 
 const INITIAL_VALUES: NewSubjectSuggestion = {
   subjectIds: [],
@@ -25,34 +24,22 @@ const AdminSuggestedSubjectsPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [searchKey, setSearchKey] = useState<string>('');
-  const [action, setAction] = useState<string | null>(null);
+  const [bulkData, setBulkData] = useState<SuggestedSubject[]>([]);
   const [studentSuggestedSubjectId, setStudentSuggestedSubjectId] = useState<string | null>(null);
-  const { toggleScreenLoader } = useScreenLoader();
-  const get = useGet();
+  const [currentAction, setCurrentAction] = useState<Action | null>(null);
+  const { setAction } = useActions();
+
+  const formik = useFormik<NewSubjectSuggestion>({
+    initialValues: INITIAL_VALUES,
+    onSubmit: () => handleStudentSuggestedSubjectAction(),
+    validationSchema: addStudentSuggestedSubjectValidation
+})
 
   const { data, 
           status,
           isLoading, 
           isFetching, 
           refetch } = useGetTableData('/StudentSuggestedSubject/GetAllStudentSuggestedSubjectsForAdmin', page, pageSize, searchKey)
-
-  const { refetch: refetchStudentSuggestedSubject,
-        } = useQuery(
-                    ['/StudentSuggestedSubject/GetStudentSuggestedSubject', studentSuggestedSubjectId], 
-                    () => get(`/StudentSuggestedSubject/GetStudentSuggestedSubject/${studentSuggestedSubjectId}`),
-                    {
-                        enabled: false,   
-                        onSuccess: data => formik.setValues(data.data)              
-        });
-
-  useEffect(() => {
-    if(studentSuggestedSubjectId && action === ACTION_TYPES.update) {
-      refetchStudentSuggestedSubject();
-    }
-    if(studentSuggestedSubjectId && action === ACTION_TYPES.toggle) {
-      handleStudentSuggestedSubjectAction();
-    }
-  },[studentSuggestedSubjectId]);
 
   const columns = useMemo(
 		() => [
@@ -77,58 +64,41 @@ const AdminSuggestedSubjectsPage = () => {
     [data, isFetching, isLoading]
   );
 
-  const formik = useFormik<NewSubjectSuggestion>({
-      initialValues: INITIAL_VALUES,
-      onSubmit: () => handleStudentSuggestedSubjectAction(),
-      validationSchema: addStudentSuggestedSubjectValidation
-  })
-
-  const reset = () => {
-    setAction(null); 
-    formik.resetForm();
-    setStudentSuggestedSubjectId(null)
+  const handleSuccess = async (message: string) => {
+    toast.success(message)
+    reset();
+    await refetch();
   }
 
-  const { mutateAsync , 
-          isLoading: postLoading
-        } = action === ACTION_TYPES.add ? usePost('/StudentSuggestedSubject', 
-              formik.values) :
-              action === ACTION_TYPES.update ? 
-              usePut('/StudentSuggestedSubject', 
-{
-        id: studentSuggestedSubjectId,
-       ...formik.values
-      }) : action === ACTION_TYPES.delete ? 
-                useBulkDelete('/StudentSuggestedSubject',[studentSuggestedSubjectId] as string[])
-             :  usePut(`/StudentSuggestedSubject/ToggleActivation/${studentSuggestedSubjectId}`);
-
-  const handleStudentSuggestedSubjectAction = async () => {
-
-      // Not Valid ... Do Nothing
-    if(!formik.isValid && action !== ACTION_TYPES.delete) {
-        formik.validateForm();
-        return;
-    };
-
-    // If All Is Ok ... Do It
-    if(formik.isValid) {
-      try {
-        toggleScreenLoader();
-        await mutateAsync();
-        refetch();
-        toast.success(`${capitalize(action as string)} Student Suggested Subjects Done Successfully`)
-        reset();
-      } catch(error) {
-        toast.error(getAxiosError(error))
-      }
-      toggleScreenLoader();
+  const actionsMap = {
+    [ACTION_TYPES.add]: {
+      type: currentAction,
+      path: '/StudentSuggestedSubject',
+      payload: formik.values,
+      onSuccess: () => handleSuccess('Subject Suggestion Added Successfully')
+    },
+    [ACTION_TYPES.bulkUpdate]: {
+      type:  ACTION_TYPES.bulkUpdate,
+      path: '/StudentSuggestedSubject/AcceptStudentSuggestedSubject',
+      payload: {specialtySubjectIds: bulkData.map(subject => subject.specialtySubjectId)},
+      onSuccess: () => handleSuccess('Subjects Were Accepted Successfully')
+    },
+    [ACTION_TYPES.delete]: {
+      type: currentAction,
+      path: `/StudentSuggestedSubject`,
+      payload: studentSuggestedSubjectId,
+      onSuccess: () => handleSuccess('Subject Suggestion Deleted Successfully')
     }
   }
 
-  // const handleToggleStudentSuggestedSubject = async (e: ChangeEvent<HTMLInputElement>) => {
-  //   setAction(ACTION_TYPES.toggle);
-  //   setStudentSuggestedSubjectId(e.target.value);
-  // }
+  const handleStudentSuggestedSubjectAction = () => {
+    if(formik.isValid && currentAction) {
+    setAction(actionsMap[currentAction] as ActionItem)
+  }}
+
+  const reset = () => {
+    setCurrentAction(null); formik.resetForm(); setStudentSuggestedSubjectId(null);
+  }
 
   return  <>
             <Table<SuggestedSubject>  
@@ -146,18 +116,25 @@ const AdminSuggestedSubjectsPage = () => {
               searchKey={searchKey}
               setSearchKey={setSearchKey}
               fetchData={refetch} 
+              getBulkData={data => setBulkData(data)}
               renderTableOptions={() => {
                                     return  <button 	className="btn btn-falcon-success btn-sm" 
                                               type="button" 
-                                              onClick={() => setAction(ACTION_TYPES.add)}>   
+                                              onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>   
                                                 <span className="me-1">Add</span>     
                                                 <span className="fas fa-plus"></span>
-                                                {/* <span className="ms-2 me-2">|</span>
-                                                <span className="me-1">Update</span>
-                                                <span className="fas fa-edit"></span> */}
                                             </button>
                                            
                                     }} 
+              renderBulkOptions={data => <button 	className="btn btn-falcon-success btn-sm" 
+                                            type="button" 
+                                            onClick={() => setAction(actionsMap[ACTION_TYPES.bulkUpdate] as ActionItem)}>   
+                                              <span className="me-1">Accept</span>     
+                                              <span className="fas fa-check"></span>
+                                              {/* <span className="ms-2 me-2">|</span>
+                                              <span className="me-1">Update</span>
+                                              <span className="fas fa-edit"></span> */}
+                                          </button>}
               renderRowActions={(studentSuggestedSubject) => {
                   return  <div className="d-flex align-items-center">
                             {/* <button className="btn btn-falcon-info btn-sm m-1" 
@@ -168,14 +145,14 @@ const AdminSuggestedSubjectsPage = () => {
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
                             </button> */}
-                            <button className="btn btn-falcon-danger btn-sm m-1" 
+                            {/* <button className="btn btn-falcon-danger btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
-                                            setAction(ACTION_TYPES.delete);
+                                            setCurrentAction(ACTION_TYPES.delete as string);
                                             setStudentSuggestedSubjectId(studentSuggestedSubject.specialtySubjectId);
                                     }}>        
                                 <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                            </button>
+                            </button> */}
                         {/* <SwitchInput 
                               checked={studentSuggestedSubject.isActive} 
                               value={studentSuggestedSubject.id} 
@@ -184,21 +161,20 @@ const AdminSuggestedSubjectsPage = () => {
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action)} Student Suggested Subjects`}
-                show={action !== null && action !== ACTION_TYPES.toggle}
+                title={`${currentAction && capitalize(currentAction)} Student Suggested Subjects`}
+                show={currentAction === ACTION_TYPES.add}
                 onHide={() => { reset() } }
-                confirmText={`${action} Student Suggested Subject`}
+                confirmText={`${currentAction} Student Suggested Subject`}
                 confirmButtonVariant={
-                  action === ACTION_TYPES.delete ? 'danger' : "primary"
+                  currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
                 handleConfirm={handleStudentSuggestedSubjectAction}
-                actionLoading={postLoading}
-                confirmButtonIsDisabled={action !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
+                confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete && (!formik.isValid || !formik.dirty)}
                     >
-                        {(  action === ACTION_TYPES.add || 
-                            action === ACTION_TYPES.update)
+                        {(  currentAction === ACTION_TYPES.add || 
+                            currentAction === ACTION_TYPES.update)
                                 && <SubjectSuggestionForm formik={formik} />}
-                        {action === ACTION_TYPES.delete && 
+                        {currentAction === ACTION_TYPES.delete && 
                                     <>Are you Sure You Want to Delete This Subject</>
                         }
                 </PopUp>
