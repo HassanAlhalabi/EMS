@@ -23,7 +23,7 @@ const actionInitialState = {
 }
 
 export const useActions = () => {
-    
+  
     const [action, setAction]    = useState<ActionItem>(actionInitialState)
     const { toggleScreenLoader } = useScreenLoader();
     const addMutatation      = usePost(action.path, action.payload);
@@ -32,8 +32,6 @@ export const useActions = () => {
     const formDataPutMutaion = usePutFormData(action.path, action.payload)
     const deleteMutatation   = useDelete(action.path, action.payload);
     const toggleMutatation   = usePut(action.path, action.payload);
-
-    console.log(action)
 
     const handleSuccess = () => {
         if(action.onSuccess) {
@@ -56,6 +54,10 @@ export const useActions = () => {
                                     {onSuccess: handleSuccess});
                             break;
                     case ACTION_TYPES.update:
+                        await updateMutatation.mutateAsync(action.payload, 
+                                {onSuccess: handleSuccess});
+                        break;
+                    case ACTION_TYPES.bulkUpdate:
                         await updateMutatation.mutateAsync(action.payload, 
                                 {onSuccess: handleSuccess});
                         break;
@@ -82,12 +84,12 @@ export const useActions = () => {
         }
 
     useEffect(() => {
-        if(action.type) {
-            doAction();
+        if(action.type) { 
+            doAction()
         }
-        return setAction(actionInitialState);
+        () => setAction(actionInitialState)
     },[action.type])
 
-    return {setAction};
+    return { setAction };
 
 }

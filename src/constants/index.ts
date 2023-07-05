@@ -18,8 +18,10 @@ export const ACTION_TYPES = {
     add:            'ADD',
     formDataAdd:    'FORM DATA ADD',
     update:         'UPDATE',
+    bulkUpdate:     'BULK UPDATE',
     formDataUpdate: 'FORM DATA UPDATE',
     delete:         'DELETE',
+    bulkDelete:     'BULK DELETE',
     toggle:         'TOGGLE',
     view:           'VIEW'
 }
