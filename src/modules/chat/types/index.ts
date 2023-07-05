@@ -13,7 +13,8 @@ export interface Group {
     groupId?: string;
     groupName: string;
     description?: string;
-    newMessagesCount: number;
-    groupMembersCount?: number;
+    newMessagesCount?: number;
     thumbnail?: string;
+    groupNum: number,
+    groupMembersCount: number,
 }

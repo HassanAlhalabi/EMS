@@ -10,28 +10,7 @@ import ChatRoom from "./components/chat-room";
 import { useHTTP } from "../../hooks/useHTTP";
 import { browserNotify, dateFromNow } from "../../util";
 import dayjs from "dayjs";
-
-const groups: Group[] = [{
-  groupName: 'GroupName1',
-  groupMembersCount: 230,
-  thumbnail: 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp',
-  newMessagesCount: 2,
-  description: 'sdsdsd'
-},
-{
-  groupName: 'GroupName2',
-  groupMembersCount: 200,
-  thumbnail: 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp',
-  newMessagesCount: 0,
-  description: 'sdsdsd  fdfd'
-},
-{
-  groupName: 'GroupName3',
-  groupMembersCount: 114,
-  thumbnail: 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp',
-  newMessagesCount: 4,
-  description: 'sdsdsd'
-}];
+import useGetData from "../../hooks/useGetData";
 
 const oldMessages: IMessage[] = [
   {
@@ -104,6 +83,9 @@ const ChatPage = () => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const { access } = useAccess();
   const  { post } = useHTTP();     
+
+  const {data: groups} = useGetData<Group>('/Group/GetAllGroups')
+
   const [messages, setMessages] = useState(oldMessages);
 
   const createConnection = async (user?: string, room?: string) => {
@@ -180,7 +162,7 @@ const ChatPage = () => {
                   <div className="row">
 
                       <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-                          <GroupsList groups={groups} />
+                          {groups && <GroupsList groups={groups} />}
                       </div>
 
                       <div className="col-md-6 col-lg-7 col-xl-8">
