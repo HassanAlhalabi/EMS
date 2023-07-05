@@ -7,7 +7,8 @@ import {ChangeEvent,
 import { useRowSelect, 
 		 useTable, 
 		 usePagination, 
-		 useSortBy } from "react-table";
+		 useSortBy, 
+		 Row} from "react-table";
 import Image from 'react-bootstrap/Image'
 import TableLoader from "../table-loader";
 import NoDataCard from "./no-data-card";
@@ -67,6 +68,8 @@ const Table = <T extends Record<any,any>>({
 					setSearchKey,
 					renderTableOptions,
 					renderRowActions,
+					getBulkData,
+					renderBulkOptions
 				} : ITable<T>) => {
 	
 	
@@ -124,6 +127,12 @@ const Table = <T extends Record<any,any>>({
 		}
     });
 
+	useEffect(() => {
+		if(isBulk) {
+			getBulkData?.(selectedFlatRows.map((row: Row) => row.original))
+		}	
+	},[selectedFlatRows])
+
 	// Pagination Actions
 	const handlePrevPage = () => setPage && setPage((prev: number) => prev - 1);
 	const handleNextPage = () => setPage && setPage((prev: number) => prev + 1)
@@ -143,7 +152,7 @@ const Table = <T extends Record<any,any>>({
 		setPage && setPage(newPageNumber);
 	}
 	const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setSearchKey && setSearchKey(e.target.value)
+		setSearchKey?.(e.target.value)
 	} 
 
 	return (
@@ -155,26 +164,27 @@ const Table = <T extends Record<any,any>>({
 						{
 							pagination &&
 							<TablePagination
-							loading={loading as boolean}
-							pagination={pagination}
-							pageNumber={pageNumber}
-							pageSize={pageSize as number}
-							handlePrevPage={handlePrevPage}
-							handleNextPage={handleNextPage}
-							handleGoToPage={handleGoToPage}
-							handlePageSize={handlePageSize}
-						/>
+								loading={loading as boolean}
+								pagination={pagination}
+								pageNumber={pageNumber}
+								pageSize={pageSize as number}
+								handlePrevPage={handlePrevPage}
+								handleNextPage={handleNextPage}
+								handleGoToPage={handleGoToPage}
+								handlePageSize={handlePageSize}
+							/>
 						}
 						{
 							hasSearch && rows.length > 0 &&
-							<TableSearch
-								searchKey={searchKey as string}
-								handleSearchChange={handleSearchChange}
-							/>
+								<TableSearch
+									searchKey={searchKey as string}
+									handleSearchChange={handleSearchChange}
+								/>
 						}
 					</div>
 				<TableOptions>
-					{ renderTableOptions && renderTableOptions() }
+					{isBulk && selectedFlatRows.length > 0 && renderBulkOptions?.()}
+					{ renderTableOptions?.() }
 				</TableOptions>
 			
 			</div>
@@ -239,10 +249,7 @@ const Table = <T extends Record<any,any>>({
 												}
 												if(cell.column.id === 'options') {
 													return 	<td className="align-middle d-flex text-align-center justify-content-center" {...cell.getCellProps()}>
-																{	
-																	renderRowActions && 
-																	renderRowActions(cell.row.original as T) 
-																}
+																{	renderRowActions?.(cell.row.original as T) }
 															</td>
 												}
 												return 	<td className="align-middle" 

@@ -17,10 +17,11 @@ export interface ITable<T> {
 	pagination?: PaginationInfo,
 	searchKey?: string,
 	setSearchKey?: Dispatch<SetStateAction<string>>,
-	getBulkIds?: () => string[]
+	getBulkData?: (data: T[]) => void
 	renderTableOptions?: () => ReactNode,
 	renderRowActions?: (data: T) => ReactNode,
-	fetchData?: () => void
+	renderBulkOptions?: (data?: T) => ReactNode,
+	fetchData?: () => void,
 }
 
 export interface IndeterminateCheckboxProps {
