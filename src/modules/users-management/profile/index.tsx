@@ -51,7 +51,7 @@ const ProfilePage = () => {
                     <Col md={4}>
                         <Card className="p-4 bg-dark-blue h-100">
                             <Stack direction="vertical" className="text-center">
-                                <Image className="w-100 p-4" src={ProfileImage} roundedCircle/>
+                                <Image className="w-100 p-4" src={ProfileImage} roundedCircle style={{maxWidth: 300}} />
                                 <h3>{data?.data.firstName} {data?.data.lastName}</h3>
                                 <p></p>
                             </Stack>
@@ -82,7 +82,7 @@ const ProfilePage = () => {
                                 <hr/>
                                 <Row>
                                     <Col><b>Role</b></Col>
-                                    <Col>{data?.data.role.name}</Col>
+                                    <Col>{data?.data.role}</Col>
                                 </Row>
                                 <hr/>
                             </Stack>
