@@ -16,6 +16,7 @@ import { FullSubject, NewSubject, Subject } from "./types";
 import SubjectForm from "./subject-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
+import Button from '../../../components/button';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -143,34 +144,30 @@ const SubjectsPage = () => {
                     searchKey={searchKey}
                     setSearchKey={setSearchKey}
                     pagination={data?.data.paginationInfo}
-                    renderTableOptions={() => {
-                    return  <>
-                                <button 	className="btn btn-falcon-success btn-sm" 
-                                                        type="button" 
-                                                        onClick={() => setAction(ACTION_TYPES.add)}>        
-                                    <span className="fas fa-plus"></span>
-                                    <span className="ms-1">New</span>
-                                </button>
-                            </>
-                    }} 
+                    renderTableOptions={() => <Button scope='Subject.Insert' className="btn btn-falcon-success btn-sm" 
+                                                type="button" 
+                                                onClick={() => setAction(ACTION_TYPES.add)}>        
+                                                    <span className="fas fa-plus"></span>
+                                                    <span className="ms-1">New</span>
+                                            </Button>} 
                     renderRowActions={(data) => {
                         return  <>
-                                    <button className="btn btn-falcon-info btn-sm m-1" 
+                                    <Button scope='Subject.Edit' className="btn btn-falcon-info btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
                                                     setAction(ACTION_TYPES.update)
                                                     setSubjectId(data.id);
                                             }}>        
                                         <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
-                                    <button className="btn btn-falcon-danger btn-sm m-1" 
+                                    </Button>
+                                    <Button scope='Subject.Delete' className="btn btn-falcon-danger btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
                                                     setAction(ACTION_TYPES.delete);
                                                     setSubjectId(data.id);
                                             }}>        
                                         <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
+                                    </Button>
                                 </>
                     }}
                 />
