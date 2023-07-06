@@ -38,6 +38,24 @@ export interface User {
     } | null
 }
 
+export interface UserProfile {
+    id: string,
+    firstName: string,
+    lastName: string,
+    userName: string,
+    email: string,
+    phoneNumber: string,
+    type: string,
+    role: string,
+    isActive: boolean
+    contract: {
+        startAt: Date | string,
+        endAt: Date | string,
+        salary: number,
+        workDays: number[]
+    } | null
+}
+
 export interface NewPassword {
     userName?: string;
     newPassword: string;

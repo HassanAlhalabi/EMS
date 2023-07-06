@@ -84,7 +84,7 @@ const ChatPage = () => {
   const { access } = useAccess();
   const  { post } = useHTTP();     
 
-  const {data: groups} = useGetData<Group>('/Group/GetAllGroups')
+  const {data: groups} = useGetData<Group[]>('/Group/GetAllGroups')
 
   const [messages, setMessages] = useState(oldMessages);
 
@@ -162,7 +162,7 @@ const ChatPage = () => {
                   <div className="row">
 
                       <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-                          {groups && <GroupsList groups={groups} />}
+                          {groups && <GroupsList groups={(groups as unknown as Group[])} />}
                       </div>
 
                       <div className="col-md-6 col-lg-7 col-xl-8">

@@ -1,6 +1,6 @@
 import { Card, Col, Image, Row, Stack } from "react-bootstrap";
 import ProfileImage from '../../../assets/img/team/3.jpg';
-import { NewPassword, User } from "../users/types";
+import { NewPassword, User, UserProfile } from "../users/types";
 import ChangePsswordForm from "./change-password-form";
 import { useFormik } from "formik";
 import { newPasswordValidation } from "./schema";
@@ -13,7 +13,7 @@ import useGetData from "../../../hooks/useGetData";
 const ProfilePage = () => {
     
 
-    const { data } = useGetData<User>(`/User/GetUserProfile`);
+    const { data } = useGetData<UserProfile>(`/User/GetUserProfile`);
     const { setAction } = useActions()
 
     const handleSuccess = async (message: string) => {
