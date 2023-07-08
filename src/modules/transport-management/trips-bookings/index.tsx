@@ -60,7 +60,7 @@ const TripsBookingsPage = () => {
                 accessor: 'bookingDate',
             },
             {
-                Header: 'Chair Numbers',
+                Header: 'Chairs Number',
                 accessor: 'chairNumber',
             },
             {
