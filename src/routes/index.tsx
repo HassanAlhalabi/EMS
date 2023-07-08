@@ -11,7 +11,8 @@ const Dashboard                 = lazy(() => import('../modules/dashboard'));
 const Profile                   = lazy(() => import('../modules/users-management/profile'));
 const Page404                   = lazy(() => import('../modules/404'));
 
-const SubjectsRegistration      = lazy(() => import('../modules/student-domain/subjects-registration'));
+const SubjectsRegistration      = lazy(() => import('../modules/user-domain/subjects-registration'));
+const MyBookings      = lazy(() => import('../modules/user-domain/my-bookings'));
 
 // Tickets Management System
 const TicketsPage               = lazy(() => import('../modules/tickets-management/tickets'));
@@ -78,6 +79,15 @@ export const getRoutes = () => ([
                 isIndex: false,
                 childRoutes: null,
                 element: <SubjectsRegistration />,
+                hasPermission: hasPermission('SubjectRegister.View')
+            },
+            {
+                id: 'my-bookings',
+                name: 'My Bookings',
+                path: '/my-bookings',
+                isIndex: false,
+                childRoutes: null,
+                element: <MyBookings />,
                 hasPermission: true
             },
             {

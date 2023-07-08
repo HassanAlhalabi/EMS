@@ -251,7 +251,7 @@ const Table = <T extends Record<any,any>>({
 													return 	<td className="align-middle d-flex text-align-center justify-content-center" {...cell.getCellProps()}>
 																{	renderRowActions?.(cell.row.original as T) }
 															</td>
-												}
+												} 
 												return 	<td className="align-middle" 
 															{...cell.getCellProps()}>
 																{cell.render('Cell')}

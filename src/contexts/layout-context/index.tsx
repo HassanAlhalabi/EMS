@@ -5,7 +5,7 @@ const INITIAL_STATE = {
     drawerIsExpanded: true,
     
     toggleDrawer: () => {},
-    theme: 'DARK',   
+    theme: localStorage.getItem('themeMode') ? localStorage.getItem('themeMode') : 'DARK',   
     toggleTheme: () => {},
 
     isScreenLoading: false,
@@ -20,9 +20,13 @@ export type ThemeMode = 'LIGHT' | 'DARK';
 
 const handleToggleTheme = (currentTheme: ThemeMode) => {
     const root = document.querySelector('html');
-    currentTheme === 'DARK' ? 
-        root?.classList.add('dark') :
-        root?.classList.remove('dark')
+    if(currentTheme === 'DARK') {
+        root?.classList.add('dark');
+        localStorage.setItem('themeMode','DARK');
+        return;
+    }
+    root?.classList.remove('dark');
+    localStorage.setItem('themeMode','LIGHT');
 }
 
 export const LayoutContext = createContext(INITIAL_STATE);
@@ -30,7 +34,11 @@ export const LayoutContext = createContext(INITIAL_STATE);
 export const LayoutContextProvider = ({children}:{children: ReactNode}) => {
 
     const [drawerIsExpanded, setIsExpanded] = useState(false);
-    const [theme, setTheme] = useState<ThemeMode>('DARK');
+    const [theme, setTheme] = useState<ThemeMode>(
+                                localStorage.getItem('themeMode') ? 
+                                (localStorage.getItem('themeMode') as ThemeMode) : 
+                                'DARK'
+    );
     const [isScreenLoading, setIsScreenLoading] = useState<boolean>(false);
     const [isProgressLoading, setProgressLoading] = useState<boolean>(false);
 

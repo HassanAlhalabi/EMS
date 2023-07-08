@@ -14,6 +14,7 @@ import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
+import Button from '../../../components/button';
 
 const INITIAL_VALUES = {
     vehicleBrand: "",
@@ -130,32 +131,35 @@ const VehiclesPage = () => {
                     pagination={data?.data.paginationInfo}
                     renderTableOptions={() => {
                     return  <>
-                                <button 	className="btn btn-falcon-success btn-sm" 
-                                                        type="button" 
-                                                        onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
+                                <Button 	className="btn btn-falcon-success btn-sm" 
+                                            type="button" 
+                                            onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}
+                                            scope="Vehicle.Insert">        
                                     <span className="fas fa-plus"></span>
                                     <span className="ms-1">New</span>
-                                </button>
+                                </Button>
                             </>
                     }} 
                     renderRowActions={(data) => {
                         return  <div className="d-flex justify-content-center align-items-center">
-                                    <button className="btn btn-falcon-info btn-sm m-1" 
+                                    <Button className="btn btn-falcon-info btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
                                                 setVehicleId(data.vehicleId);
                                                 setCurrentAction(ACTION_TYPES.update as Action)
-                                            }}>        
+                                            }}
+                                            scope="Vehicle.Edit">        
                                         <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
-                                    <button className="btn btn-falcon-danger btn-sm m-1" 
+                                    </Button>
+                                    <Button className="btn btn-falcon-danger btn-sm m-1" 
                                             type="button" 
                                             onClick={() => {
                                                 setVehicleId(data.vehicleId);
                                                 setCurrentAction(ACTION_TYPES.delete as Action);
-                                            }}>        
+                                            }}
+                                            scope="Vehicle.Delete">        
                                         <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                                    </button>
+                                    </Button>
                                 </div>
                     }}
                 />
