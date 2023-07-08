@@ -7,13 +7,14 @@ import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
 import { capitalize } from "../../../util";
-import { TripBooking, NewTripBooking } from "./types";
+import { TripBooking, NewTripBooking, UserBooking } from "./types";
 import { tripBookingValidation } from "./schema";
 import TripBookingForm from './booking-form';
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
+import dayjs from 'dayjs';
 
 const INITIAL_VALUES = {
     tripId: '',
@@ -43,25 +44,33 @@ const TripsBookingsPage = () => {
     useGetDataById<TripBooking>(    '/Booking/GetAllBookings',
                                     bookingId,
                                     {onSuccess: data => {}});
-            
+
     const columns = useMemo(
         () => [
             {
-                Header: 'Departure Time',
-                accessor: 'departureHoure',
+                Header: 'Full Name',
+                accessor: 'userFullName'
             },
             {
-                Header: 'Vehicle',
-                accessor: 'vehicle',
+                Header: 'User Name',
+                accessor: 'userName'
+            },
+            {
+                Header: 'Booking Date',
+                accessor: 'bookingDate',
+            },
+            {
+                Header: 'Chair Numbers',
+                accessor: 'chairNumber',
             },
             {
                 Header: 'Route',
                 accessor: 'route',
             },
-            {
-                Header: 'Busstops',
-                accessor: 'busStops',
-            },
+            // {
+            //     Header: 'Busstops',
+            //     accessor: 'busStops',
+            // },
             {
                 Header: 'Options',
                 accessor: 'options',
@@ -70,13 +79,16 @@ const TripsBookingsPage = () => {
         []
     )
 
-    const tripBookings = useMemo(
-        () => (data && data.data.bookings) ? 
-            data.data.bookings.map((booking: TripBooking)=> ({
-                ...booking})) : 
-            [],
-        [data, isFetching, isLoading, page]
-    );
+  const tripBookings = useMemo(
+    () => (data && data.data.bookings) ? 
+        data.data.bookings.map((booking: UserBooking)=> ({
+            ...booking,
+            bookingDate: dayjs(booking.bookingDate).format('DD/MM/YYYY HH:mm'),
+            route: `From ${booking.trip.route.from ? booking.trip.route.from.cityName : 'University'} 
+                    to ${booking.trip.route.to ? booking.trip.route.to.cityName : 'University'}`
+        })) : 
+        [],
+    [data, isFetching, isLoading, page])
 
     const handleSuccess = (message: string) => {
         toast.success(message)
