@@ -156,7 +156,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                     <Form.Label htmlFor="specialtyId">
                         Speciality:             
                     </Form.Label>
-                    {/* <Form.Select
+                    <Form.Select
                         required
                         disabled={!Boolean(formik.values.facultyId)}
                         size="lg"
@@ -170,7 +170,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                                 <option key={speciality.id} value={speciality.id}>{speciality.name}</option>
                             )
                         }
-                    </Form.Select>   */}
+                    </Form.Select>  
                     <Feedback type="invalid">
                         {formik.errors.specialtyId as string}
                     </Feedback>          
@@ -182,7 +182,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                 <Form.Label>
                     Choose Subjects:
                 </Form.Label>
-                {/* <Typeahead
+                <Typeahead
                     id="studyPlanSubjects"
                     size="lg"
                     className={formik.values?.studyPlanSubjects.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
@@ -191,7 +191,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                     options={subjects ? mapToTyphead(subjects.data) : []}
                     isInvalid={formik.values.studyPlanSubjects.length === 0 && formik.dirty}
                     isValid={formik.values.studyPlanSubjects.length !== 0 && formik.dirty}
-                /> */}
+                />
                 <Feedback type="invalid">
                     {formik.errors.studyPlanSubjects as string}
                 </Feedback>
