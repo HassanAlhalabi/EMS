@@ -45,7 +45,8 @@ const DepartmentsPage = () => {
         onRefetch: data => {
             data && formik.setValues({
                     ...data.data,
-                    facultiesIds: data.data.faculties?.map((faculty) => ({id: faculty.id, label: faculty.name}))
+                    facultiesIds: data.data.faculties?.map((faculty) => ({id: faculty.id, label: faculty.name})),
+                    usersIds: data.data.users ? data.data.users.map(user => user.id) : []
                   }) 
         }
       })
@@ -84,6 +85,8 @@ const DepartmentsPage = () => {
     reset();
     refetch();
 }
+
+console.log(formik.values.usersIds)
 
 const actionsMap: Record<string, ActionItem> = {
     [ACTION_TYPES.add]: {
