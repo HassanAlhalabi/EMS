@@ -37,7 +37,7 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
          formik.setValues({
              ...formik.values,
              usersIds: [
-                 ...formik.values.usersIds,
+                 ...formik.values.usersIds as string[],
                  selectedUser[0].id
              ]
          })
@@ -117,7 +117,7 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
                 type="text" 
                 placeholder="Arabic Description"
                 name="descriptionAr"
-                value={formik.values.descriptionAr as string} 
+                value={formik.values.descriptionAr} 
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
                 {formik.errors.descriptionAr as string}
@@ -130,7 +130,7 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
                 type="text" 
                 placeholder="English Description"
                 name="descriptionEn"
-                value={formik.values.descriptionEn as string} 
+                value={formik.values.descriptionEn} 
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
                 {formik.errors.descriptionEn as string}
