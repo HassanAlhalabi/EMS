@@ -256,3 +256,12 @@ table tr td:last-of-type {
     margin-left: 2.9rem;
     margin-top: -.75rem;
 }
+
+.dropdown-indicator:after {
+    right: 25px
+}
+
+[dir="rtl"] .dropdown-indicator:after {
+    right: auto;
+    left: 25px
+}
