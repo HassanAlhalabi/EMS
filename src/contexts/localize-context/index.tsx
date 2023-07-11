@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { createContext, useState, ReactNode, useEffect, useCallback, useLayoutEffect } from 'react';
 import { setCookie } from '../../util';
 import i18n from '../../i18n';
 import { queryClient } from '../../main';
@@ -30,12 +30,16 @@ export const LocalizeProvider = ({children}:{children: ReactNode}) => {
         handleCurrentLang(LOCALIZE_INITIAL_VALUE.currentLang as string);
     },[])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if(currentLang) {
-            queryClient.resetQueries();
-            queryClient.refetchQueries();
+            document.querySelector('html')?.setAttribute('lang',currentLang)
+            if(currentLang === 'ar') {
+                document.querySelector('html')?.setAttribute('dir','rtl')
+            } else {
+                document.querySelector('html')?.setAttribute('dir','ltr')
+            }
         }
-    }, [currentLang])
+    }, [])
 
     return <LocalizeContext.Provider value={{currentLang, handleCurrentLang}}>
                 {children}

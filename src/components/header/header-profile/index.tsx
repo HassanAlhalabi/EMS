@@ -30,6 +30,7 @@ const HeaderProfile = () => {
         <div className="theme-control-toggle pl-2" onClick={() => { currentLang === 'en' ? 
                                                                   handleCurrentLang('ar') : 
                                                                   handleCurrentLang('en');
+                                                                  window.location.reload();
                                                             }}>
           <label className="mb-0 theme-control-toggle-label theme-control-toggle-light" htmlFor="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" title="" data-bs-original-title="Switch to light theme" aria-label="Switch to light theme">
               {
