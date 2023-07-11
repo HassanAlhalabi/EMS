@@ -10,14 +10,13 @@ import { NewStudyPlan } from "../types";
 import Table from "../../../../components/table";
 import { mapToTyphead } from "../../../../util";
 import { useGet } from "../../../../hooks";
+import useGetDropdownFaculties from "../../../../hooks/useGetDropdownFaculties";
 
 const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
 
     const get = useGet();
 
-    const { data: faculties } = useQuery(
-        ['/Faculty/GetDropDownFaculties'], 
-        () => get(`/Faculty/GetDropDownFaculties`));
+    const { data: faculties } = useGetDropdownFaculties()
 
     const { data: specialities, refetch: refetchSpecialities } = useQuery(
         ['/Specialty/GetDropDownSpecialties', formik.values.facultyId], 

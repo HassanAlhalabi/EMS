@@ -25,4 +25,6 @@ export interface IRoute {
     childRoutes: IRoute[] | null,
     element: JSX.Element,
     hasPermission: boolean
-  }
+}
+
+export type UserType = 'Doctor' | 'Student' | 'Employee' | string & {}

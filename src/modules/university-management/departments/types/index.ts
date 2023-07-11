@@ -18,6 +18,5 @@ export interface NewDepartment {
     descriptionAr: string,
     descriptionEn: string,
     usersIds?: string[],
-    facultiesIds?: string[]
-    faculties?: {id: string, name: string}[]
+    facultiesIds?: {id: string, label: string}[]
 }

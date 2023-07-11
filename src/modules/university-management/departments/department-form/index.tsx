@@ -1,56 +1,80 @@
-import { ChangeEvent, useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 
-import { useQuery } from 'react-query';
 import { FormikProps } from "formik";
 import { Form, Row, Col } from "react-bootstrap";
+import Select from 'react-select';
 
 import Feedback from "../../../../components/feedback";
 import { NewDepartment } from "../types";
-import CategoryBox from "../../../../components/category-box";
-import { useGet } from "../../../../hooks";
-
-type selectedDepartment = {
-    id: string,
-    name: string
-}
+import useGetDropdownFaculties from '../../../../hooks/useGetDropdownFaculties';
+import useGetDropdownUsers from '../../../../hooks/useGetDropdownUsers';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import Table from '../../../../components/table';
+import { mapToTyphead } from '../../../../util';
 
 const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
 
-    const [selectedFaculties, setSelectedFaculties] = useState<selectedDepartment[]>([]);
-    const get = useGet();
+    const { data: faculties } = useGetDropdownFaculties();
 
-    useEffect(() => {
-        setSelectedFaculties((prev) =>   
-            formik.values.faculties ? 
-            formik.values.faculties.map(faculty =>( {
-                id: faculty.id,
-                name: faculty.name
-            })) : [])
-        
-    },[formik.values.faculties])
+    const { data: usersRes } = useGetDropdownUsers('Employee');
 
-    const { data: faculties } = useQuery(
-        ['/Faculty/GetDropDownFaculties'], 
-    () => get(`/Faculty/GetDropDownFaculties`));
+    const [allSelectedUsers, setAllSelectedUsers] = useState<Record<string, any>[]>([]);
 
-    const handleAddFaculty = (event: ChangeEvent<HTMLSelectElement>) => {
-        const newSelectedFaculties = [
-            ...selectedFaculties,
+    const handleSelectUser = (selectedUser: Record<string, any>[]) => {
+ 
+         if(selectedUser.length === 0) return;
+         
+         // Check If Object Already Exists
+         const objectExits = allSelectedUsers.find(item => item.id === selectedUser[0].id);
+ 
+         if(objectExits) return;  
+         
+         setAllSelectedUsers([
+             ...allSelectedUsers,
+             selectedUser[0]
+         ])
+         
+         formik.setValues({
+             ...formik.values,
+             usersIds: [
+                 ...formik.values.usersIds,
+                 selectedUser[0].id
+             ]
+         })
+     }
+     
+ 
+     const handleDeleteUser = (userId: string) => {
+         const newSubjects = formik.values?.usersIds?.filter(item => {
+             return (item !== userId) 
+         });
+         const newSubjectsForTable = allSelectedUsers?.filter(item => {
+             return (item.id !== userId) 
+         });
+         formik.setValues({
+             ...formik.values,
+             usersIds: newSubjects
+         });
+         setAllSelectedUsers(newSubjectsForTable);
+     }
+
+     const columns = useMemo(
+        () => [
             {
-                id: event.target.value,
-                name: event.target.options[event.target.selectedIndex].textContent as string
+                Header: 'Full Name',
+                accessor: 'fullName',
+            },
+            {
+                Header: 'User Name',
+                accessor: 'userName',
+            },
+            {
+                Header: 'Options',
+                accessor: 'options',
             }
-        ]
-        setSelectedFaculties(newSelectedFaculties)
-        formik.setFieldValue('facultiesIds',[...(formik.values.facultiesIds as string[]), event.target.value])
-    }
-
-    const handleRemoveCategory = (facultyId: string) => {
-        setSelectedFaculties(prev => {
-            return [...prev.filter(faculty => faculty.id !== facultyId)]
-        })
-        formik.setFieldValue('facultiesIds',[...(formik.values.facultiesIds as string[]).filter(faculty => faculty !== facultyId)])
-    }
+        ],
+        []
+    )
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
@@ -113,34 +137,48 @@ const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
             </Feedback> 
         </Form.Group>  
         <Form.Group className="mb-3">
-            <Form.Label htmlFor="type">
+            <Form.Label htmlFor="facultiesIds">
                 Faculties:
             </Form.Label>
-            <Form.Select
-                size="lg"
-                id=""
-                name="facultiesIds" 
-                onChange={handleAddFaculty}>
-                    <option key="no-value" value=""></option>
-                {
-                    faculties?.data.map((faculty: {id: string, name: string}) => 
-                        <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
-                    )
-                }
-            </Form.Select>            
+            <Select 
+                id="facultiesIds"
+                isMulti
+                name='facultiesIds'
+                onChange={newOptions => formik.setFieldValue('facultiesIds', newOptions)}
+                value={formik.values.facultiesIds}
+                options={faculties?.data.map((faculty: {id: string, name: string}) => ({ 
+                    id: faculty.id,
+                    label: faculty.name,
+                }))} />  
+                <Feedback type="invalid">
+                    {formik.errors?.facultiesIds}
+                </Feedback>         
         </Form.Group>
-        <div className="mb-4">
-            {
-                selectedFaculties.map((faculty: selectedDepartment) => {
-                    return  <CategoryBox key={faculty.id} pill>
-                                {faculty.name} 
-                                <span className="fa fa-trash fa-sm text-danger cursor-pointer ms-2 ps-2" 
-                                        onClick={() => handleRemoveCategory(faculty.id)}
-                                ></span> 
-                            </CategoryBox>
-                })
-            }
-        </div>
+        <Row>
+            <Form.Group className="mb-3">
+                <Form.Label htmlFor='usersIds'>
+                    Add Users:
+                </Form.Label>
+                <Typeahead
+                    id="usersIds"
+                    size="lg"
+                    placeholder='Search Users'
+                    onChange={(options) => handleSelectUser(options as Record<string, any>[])}
+                    options={usersRes?.data ? mapToTyphead(usersRes.data,'fullName', item => `${item.userName} - ${item.fullName}`) : []}
+                />
+                <Feedback type="invalid">
+                    {formik.errors.usersIds as string}
+                </Feedback>
+            </Form.Group> 
+        </Row> 
+        <Table<Record<string, any>>  
+            columns={columns} 
+            data={allSelectedUsers}
+            renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 
+            type="button" 
+            onClick={() => handleDeleteUser(data.id)}>        
+                    <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
+                </button>}  />
     </Form>
   )
 }

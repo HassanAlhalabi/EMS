@@ -7,19 +7,22 @@ import { Action } from "../../types";
 import { useDelete, usePost, usePostFormData, usePut, usePutFormData } from "..";
 import { useScreenLoader } from "../useScreenLoader";
 import { getAxiosError } from "../../util";
+import { AxiosError } from "axios";
 
 export interface ActionItem {
     type: Action | null;
     path: string;
     payload?: any;
-    onSuccess?: () => void
+    onSuccess?: () => void,
+    onError?: (error: unknown) => void
 }
 
 const actionInitialState = {
     type: null,
     payload: null,
     path: "",
-    onSuccess: () => {}
+    onSuccess: () => {},
+    onError: () => {}
 }
 
 export const useActions = () => {
@@ -34,9 +37,12 @@ export const useActions = () => {
     const toggleMutatation   = usePut(action.path, action.payload);
 
     const handleSuccess = () => {
-        if(action.onSuccess) {
-            action.onSuccess();
-        }
+        action?.onSuccess?.();
+        setAction(actionInitialState)
+    }
+
+    const handleError = (error: unknown) => {
+        action?.onError?.(error)
         setAction(actionInitialState)
     }
 
@@ -47,31 +53,38 @@ export const useActions = () => {
                 switch (action.type) {
                     case ACTION_TYPES.add:
                         await addMutatation.mutateAsync(action.payload, 
-                                {onSuccess: handleSuccess});
+                                {onSuccess: handleSuccess,
+                                onError: error => handleError(error)});
                         break;
                     case ACTION_TYPES.formDataAdd:
                             await formDataAddMutaion?.mutateAsync(action.payload, 
-                                    {onSuccess: handleSuccess});
+                                {onSuccess: handleSuccess,
+                                onError: error => handleError(error)});
                             break;
                     case ACTION_TYPES.update:
                         await updateMutatation.mutateAsync(action.payload, 
-                                {onSuccess: handleSuccess});
+                                {onSuccess: handleSuccess,
+                                onError: error => handleError(error)});
                         break;
                     case ACTION_TYPES.bulkUpdate:
                         await updateMutatation.mutateAsync(action.payload, 
-                                {onSuccess: handleSuccess});
+                                {onSuccess: handleSuccess,
+                                onError: error => handleError(error)});
                         break;
                     case ACTION_TYPES.formDataUpdate:
                         await formDataPutMutaion.mutateAsync(action.payload, 
-                                {onSuccess: handleSuccess});
+                                {onSuccess: handleSuccess,
+                                onError: error => handleError(error)});
                         break;
                     case ACTION_TYPES.delete:
                         await deleteMutatation.mutateAsync(action.payload, 
-                                {onSuccess: handleSuccess});
+                                {onSuccess: handleSuccess,
+                                onError: error => handleError(error)});
                         break;
                     case ACTION_TYPES.toggle:
                         await toggleMutatation.mutateAsync(action.payload,
-                                {onSuccess: handleSuccess});
+                                {onSuccess: handleSuccess,
+                                onError: error => handleError(error)});
                         break;
                     default:
                         break;

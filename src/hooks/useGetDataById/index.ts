@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 import { UseQueryOptions, useQuery } from "react-query";
 import { AxiosResponse } from "axios";
