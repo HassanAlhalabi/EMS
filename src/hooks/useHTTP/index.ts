@@ -3,6 +3,7 @@ import { getCookie, removeCookie } from "../../util";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/auth-context";
 import { useLocation, useNavigate } from "react-router-dom";
+import i18n from "../../i18n";
 
 export const baseURL = '/api';
 
@@ -25,7 +26,7 @@ export const httpClient = axios.create({
   headers: {
       'Accept': '*/*',
       "Content-Type": 'application/json',
-      'Accept-Language': getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN',
+      'Accept-Language': i18n.resolvedLanguage,
     },
   proxy: {
     protocol: 'https',
@@ -43,8 +44,10 @@ const useHTTP = () => {
 
   const updateHTTPClient = (authToken?: string | null) => { 
 
+    console.log(i18n.resolvedLanguage);
+
     httpClient.defaults.headers['Authorization'] = authToken ? `Bearer ${authToken}` : '';
-    httpClient.defaults.headers['Accept-Language'] = getCookie("EMSSystemLang") ? getCookie("EMSSystemLang") : 'EN';
+    httpClient.defaults.headers['Accept-Language'] = i18n.resolvedLanguage as string;
   
     // Request interceptor
     httpClient.interceptors.request.use(function (config) {

@@ -27,14 +27,13 @@ const HeaderProfile = () => {
     <ul className="navbar-nav navbar-nav-icons ms-auto flex-row align-items-center">
 
       <li className="nav-item me-2">
-        <div className="theme-control-toggle pl-2" onClick={() => { currentLang === 'EN' ? 
-                                                                  handleCurrentLang('AR') : 
-                                                                  handleCurrentLang('EN');
-                                                                  window.location.reload()
+        <div className="theme-control-toggle pl-2" onClick={() => { currentLang === 'en' ? 
+                                                                  handleCurrentLang('ar') : 
+                                                                  handleCurrentLang('en');
                                                             }}>
           <label className="mb-0 theme-control-toggle-label theme-control-toggle-light" htmlFor="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" title="" data-bs-original-title="Switch to light theme" aria-label="Switch to light theme">
               {
-                currentLang === 'EN' ? 'EN' : 'AR'
+                currentLang === 'en' ? 'AR' : 'EN'
               }
           </label>
         </div>

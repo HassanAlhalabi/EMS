@@ -7,8 +7,9 @@ import ErrorBoundary from './components/error-boundries';
 import { AuthProvider } from './contexts/auth-context'
 import { LayoutContextProvider } from './contexts/layout-context';
 import { LocalizeProvider } from './contexts/localize-context';
+import './i18n';
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 10,
