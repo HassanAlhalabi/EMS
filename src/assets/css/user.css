@@ -257,7 +257,7 @@ table tr td:last-of-type {
     margin-top: -.75rem;
 }
 
-.dropdown-indicator:after {
+[dir="ltr"] .dropdown-indicator:after {
     right: 25px
 }
 
