@@ -266,6 +266,6 @@ table tr td:last-of-type {
     left: 25px
 }
 
-.dropdown-toggle::after {
-    display: none;
+.dropdown-toggle:after {
+    display: none !important;
 }
