@@ -8,7 +8,7 @@ import { LayoutContext } from '../../contexts/layout-context';
 
 const StyledLogo = styled.img.attrs({src: LogoImage})<{theme: string}>`
     max-width: 100%;
-    min-width: 180px;   
+    min-width: 168px;   
     width: 200px;
     filter: ${props => props.theme === 'DARK' ? "brightness(0) invert(1)" : null}
 `

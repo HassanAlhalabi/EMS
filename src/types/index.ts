@@ -15,4 +15,16 @@ export interface SelectedItem {
 
 export type SelectedOption = string | Record<string, any>;
 
-export type Action = 'ADD' | 'FORM DATA ADD' | 'UPDATE' | 'FORM DATA UPDATE' | 'DELETE' | 'TOGGLE' | 'VIEW';
+export type Action = 'ADD' | 'FORM DATA ADD' | 'UPDATE' | 'BULK UPDATE' | 'FORM DATA UPDATE' | 'DELETE' | 'BULK DELETE' | 'TOGGLE' | 'VIEW';
+
+export interface IRoute {
+    id: string,
+    name: string,
+    path: string,
+    isIndex: boolean,
+    childRoutes: IRoute[] | null,
+    element: JSX.Element,
+    hasPermission: boolean
+}
+
+export type UserType = 'Doctor' | 'Student' | 'Employee' | string & {}

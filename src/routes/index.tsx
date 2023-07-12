@@ -3,41 +3,49 @@ import { lazy } from "react"
 import ProtectedRoute from "../components/protected-route";
 import { hasPermission } from "../util";
 
-const Main                      = lazy(() => import('../pages/main'));
-const SignIn                    = lazy(() => import('../pages/auth/sign-in'));
-const Dashboard                 = lazy(() => import('../pages/dashboard'));
-const Page404                   = lazy(() => import('../pages/404'));
-const TicketsPage               = lazy(() => import('../pages/tickets-management/tickets'));
-const AllTickets                = lazy(() => import('../pages/tickets-management/tickets/views/tickets'));
-const TicketDetails             = lazy(() => import('../pages/tickets-management/tickets/views/ticket-details'));
-const TicketsTypes              = lazy(() => import('../pages/tickets-management/tickets-types'));
+const Main                      = lazy(() => import('../modules/main'));
+const SignIn                    = lazy(() => import('../modules/auth'));
+const ForgetPassword            = lazy(() => import('../modules/auth/forget-password'));
+const ResetPassword             = lazy(() => import('../modules/auth/reset-password'));
+const Dashboard                 = lazy(() => import('../modules/dashboard'));
+const Profile                   = lazy(() => import('../modules/users-management/profile'));
+const Page404                   = lazy(() => import('../modules/404'));
+
+const SubjectsRegistration      = lazy(() => import('../modules/user-domain/subjects-registration'));
+const MyBookings      = lazy(() => import('../modules/user-domain/my-bookings'));
+
+// Tickets Management System
+const TicketsPage               = lazy(() => import('../modules/tickets-management/tickets'));
+const AllTickets                = lazy(() => import('../modules/tickets-management/tickets/views/tickets'));
+const TicketDetails             = lazy(() => import('../modules/tickets-management/tickets/views/ticket-details'));
+const TicketsTypes              = lazy(() => import('../modules/tickets-management/tickets-types'));
 
 // Users Management System
-const Users                     = lazy(() => import('../pages/users-management/users'));
-const Roles                     = lazy(() => import('../pages/users-management/roles'));
+const Users                     = lazy(() => import('../modules/users-management/users'));
+const Roles                     = lazy(() => import('../modules/users-management/roles'));
 
 // University Management System
-const Faculties                 = lazy(() => import('../pages/university-management/faculties'));
-const FacultyForm               = lazy(() => import('../pages/university-management/faculties/faculty-form-stepper'));
-const Subjects                  = lazy(() => import('../pages/university-management/subjects'));
-const SubjectsTypes             = lazy(() => import('../pages/university-management/subjects-types'));
-const Books                     = lazy(() => import('../pages/university-management/library/books'));
-const BooksCategories           = lazy(() => import('../pages/university-management/library/categories'));
-const Departments               = lazy(() => import('../pages/university-management/departments'));
-const Semesters                 = lazy(() => import('../pages/university-management/semesters'));
-const AdminSuggestedSubjects    = lazy(() => import('../pages/university-management/admin-suggested-subjects'));
-const StudentSuggestedSubjects  = lazy(() => import('../pages/university-management/student-subjects-suggestions'));
-const StudyPlans                = lazy(() => import('../pages/university-management/study-plans'));
+const Faculties                 = lazy(() => import('../modules/university-management/faculties'));
+const FacultyForm               = lazy(() => import('../modules/university-management/faculties/faculty-form-stepper'));
+const Subjects                  = lazy(() => import('../modules/university-management/subjects'));
+const SubjectsTypes             = lazy(() => import('../modules/university-management/subjects-types'));
+const Books                     = lazy(() => import('../modules/university-management/library/books'));
+const BooksCategories           = lazy(() => import('../modules/university-management/library/categories'));
+const Departments               = lazy(() => import('../modules/university-management/departments'));
+const Semesters                 = lazy(() => import('../modules/university-management/semesters'));
+const AdminSuggestedSubjects    = lazy(() => import('../modules/university-management/admin-suggested-subjects'));
+const StudentSuggestedSubjects  = lazy(() => import('../modules/university-management/student-subjects-suggestions'));
+const StudyPlans                = lazy(() => import('../modules/university-management/study-plans'));
 
 // Transportation Management System
-const Vehicles                  = lazy(() => import('../pages/transport-management/vehicles'));
-const BusStops                  = lazy(() => import('../pages/transport-management/bus-stops'));
-const Routes                    = lazy(() => import('../pages/transport-management/routes'));
-const Trips                     = lazy(() => import('../pages/transport-management/trips'));
-const TripsBookings             = lazy(() => import('../pages/transport-management/trips-bookings'));
+const Vehicles                  = lazy(() => import('../modules/transport-management/vehicles'));
+const BusStops                  = lazy(() => import('../modules/transport-management/bus-stops'));
+const Routes                    = lazy(() => import('../modules/transport-management/routes'));
+const Trips                     = lazy(() => import('../modules/transport-management/trips'));
+const TripsBookings             = lazy(() => import('../modules/transport-management/trips-bookings'));
 
 // Chat System
-const Chat                     = lazy(() => import('../pages/chat'));
+const Chat                     = lazy(() => import('../modules/chat'));
 
 export const getRoutes = () => ([
     {
@@ -56,6 +64,33 @@ export const getRoutes = () => ([
                 hasPermission: true
             },
             {
+                id: 'profile',
+                name: 'Profile',
+                path: '/profile',
+                isIndex: false,
+                childRoutes: null,
+                element: <Profile />,
+                hasPermission: true
+            },
+            {
+                id: 'subjects-registration',
+                name: 'Subjects Registration',
+                path: '/subjects-registration',
+                isIndex: false,
+                childRoutes: null,
+                element: <SubjectsRegistration />,
+                hasPermission: hasPermission('SubjectRegister.View')
+            },
+            {
+                id: 'my-bookings',
+                name: 'My Bookings',
+                path: '/my-bookings',
+                isIndex: false,
+                childRoutes: null,
+                element: <MyBookings />,
+                hasPermission: true
+            },
+            {
                 id: 'tickets',
                 name: 'Tickets',
                 path: '/tickets',
@@ -68,7 +103,7 @@ export const getRoutes = () => ([
                         isIndex: true,
                         childRoutes: null,
                         element: <AllTickets />,
-                        hasPermission: true
+                        hasPermission: hasPermission('AllTicket.View')
                     },
                     {
                         id: 'ticket-details',
@@ -77,7 +112,7 @@ export const getRoutes = () => ([
                         isIndex: false,
                         childRoutes: null,
                         element: <TicketDetails />,
-                        hasPermission: true
+                        hasPermission: hasPermission('AllTicket.View')
                     },
                 ],
                 element: <TicketsPage />,
@@ -90,7 +125,7 @@ export const getRoutes = () => ([
                 isIndex: false,
                 childRoutes: null,
                 element: <TicketsTypes />,
-                hasPermission: true
+                hasPermission: hasPermission('TicketType.Insert')
             },
             {
                 id: 'users',
@@ -268,21 +303,30 @@ export const getRoutes = () => ([
         hasPermission: true
     },
     {
-        id: 'main',
-        name: 'Main',
-        path: '/',
-        isIndex: true,
-        childRoutes: null,
-        element: <ProtectedRoute><Main /></ProtectedRoute>,
-        hasPermission: true
-    },
-    {
         id: 'sign-in',
         name: 'Sign In',
         path: '/sign-in',
         isIndex: false,
         childRoutes: null,
         element: <SignIn />,
+        hasPermission: true
+    },
+    {
+        id: 'forget-password',
+        name: 'Forget Password',
+        path: '/forget-password',
+        isIndex: false,
+        childRoutes: null,
+        element: <ForgetPassword />,
+        hasPermission: true
+    },
+    {
+        id: 'reset-password',
+        name: 'Reset Password',
+        path: '/reset-password',
+        isIndex: false,
+        childRoutes: null,
+        element: <ResetPassword />,
         hasPermission: true
     },
     {
@@ -296,80 +340,83 @@ export const getRoutes = () => ([
     }
 ])
 
-export const drawerUsersMenu = [
-    [
-        {
-            id: 'users',
-            name: 'Users',
-            path: '/users',
-            childRoutes: null,
-        },
-        {
-            id: 'roles',
-            name: 'Roles',
-            path: '/roles',
-            childRoutes: null,
-        },
-    ]
-]
 
-export const drawerUniversityManagmentMenu = [
-    [
-        {
-            id: 'faculties',
-            name: 'Faculties',
-            path: '/faculties',
-            isIndex: false,
-            childRoutes: null,
-            element: <Faculties />
-        },
-        {
-            id: 'faculty-form',
-            name: 'Add/Update Faculty',
-            path: '/faculty-form/:id?',
-            isIndex: false,
-            childRoutes: null,
-            element: <FacultyForm />
-        },
-        {
-            id: 'subjects',
-            name: 'Subjects',
-            path: '/subjects',
-            isIndex: false,
-            childRoutes: null,
-            element: <Subjects />
-        },
-        {
-            id: 'subjects-types',
-            name: 'Subjects Types',
-            path: '/subjects-types',
-            isIndex: false,
-            childRoutes: null,
-            element: <SubjectsTypes />
-        },
-        {
-            id: 'books',
-            name: 'Books',
-            path: '/books',
-            isIndex: false,
-            childRoutes: null,
-            element: <Books />
-        },
-        {
-            id: 'books-categories',
-            name: 'Categories',
-            path: '/books-categories',
-            isIndex: false,
-            childRoutes: null,
-            element: <BooksCategories />
-        },
-        {
-            id: 'departments',
-            name: 'Departments',
-            path: '/departments',
-            isIndex: false,
-            childRoutes: null,
-            element: <Departments />
-        },
-    ]
-]
+
+
+// export const drawerUsersMenu = [
+//     [
+//         {
+//             id: 'users',
+//             name: 'Users',
+//             path: '/users',
+//             childRoutes: null,
+//         },
+//         {
+//             id: 'roles',
+//             name: 'Roles',
+//             path: '/roles',
+//             childRoutes: null,
+//         },
+//     ]
+// ]
+
+// export const drawerUniversityManagmentMenu = [
+//     [
+//         {
+//             id: 'faculties',
+//             name: 'Faculties',
+//             path: '/faculties',
+//             isIndex: false,
+//             childRoutes: null,
+//             element: <Faculties />
+//         },
+//         {
+//             id: 'faculty-form',
+//             name: 'Add/Update Faculty',
+//             path: '/faculty-form/:id?',
+//             isIndex: false,
+//             childRoutes: null,
+//             element: <FacultyForm />
+//         },
+//         {
+//             id: 'subjects',
+//             name: 'Subjects',
+//             path: '/subjects',
+//             isIndex: false,
+//             childRoutes: null,
+//             element: <Subjects />
+//         },
+//         {
+//             id: 'subjects-types',
+//             name: 'Subjects Types',
+//             path: '/subjects-types',
+//             isIndex: false,
+//             childRoutes: null,
+//             element: <SubjectsTypes />
+//         },
+//         {
+//             id: 'books',
+//             name: 'Books',
+//             path: '/books',
+//             isIndex: false,
+//             childRoutes: null,
+//             element: <Books />
+//         },
+//         {
+//             id: 'books-categories',
+//             name: 'Categories',
+//             path: '/books-categories',
+//             isIndex: false,
+//             childRoutes: null,
+//             element: <BooksCategories />
+//         },
+//         {
+//             id: 'departments',
+//             name: 'Departments',
+//             path: '/departments',
+//             isIndex: false,
+//             childRoutes: null,
+//             element: <Departments />
+//         },
+//     ]
+// ]

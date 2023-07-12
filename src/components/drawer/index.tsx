@@ -12,7 +12,7 @@ const Drawer = () => {
   const {toggleDrawer, drawerIsExpanded} = useContext(LayoutContext);
 
   return (
-    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl">
+    <nav className="navbar navbar-light navbar-vertical navbar-expand-xl ps-3">
 
       <div className="d-flex align-items-center">
         <div className="toggle-icon-wrapper">
@@ -31,12 +31,16 @@ const Drawer = () => {
         </Link>
       </div>
 
-      <div className={`collapse navbar-collapse ${drawerIsExpanded ? 'show' : ''}`}>
+      <div className={`collapse navbar-collapse w-100 ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
 
             <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />
-            <NavLink title="Tickets" faIcon="fas fa-chart-pie" link="tickets" />
-            <NavLink title="Tickets Types" faIcon="fas fa-chart-pie" link="tickets-types" />
+            <NavLink title="Subjects Registration" faIcon="fas fa-book "link="subjects-registration" scope="SubjectRegister.View" />
+            <NavLink title="My Bookings" faIcon="fas fa-bus "link="my-bookings" />
+
+            <NavListLabel title='Tickets Management' scope={['AllTicket.View','TicketType.Insert']}/>
+            <NavLink title="Tickets" faIcon="fas fa-tasks" link="tickets" scope='AllTicket.View'/>
+            <NavLink title="Tickets Types" faIcon="fas fa-ticket" link="tickets-types" scope='TicketType.Insert'/>
 
             <NavListLabel title='Users Management' scope={['User.View','Role.View']}/>
             <NavLink title="Users" faIcon="fas fa-users" link="users" scope='User.Insert' />
@@ -72,8 +76,8 @@ const Drawer = () => {
                                                               'State.View',
                                                               'Trip.View',
                                                               'Vheicle.View']} />
-            <NavLink title="Trips Bookings" faIcon="fas fa-calendar-alt" link="trips-bookings"/>
-            <NavLink title="Trips" faIcon="fas fa-car-alt" link="trips" />
+            <NavLink title="Trips Bookings" faIcon="fas fa-calendar-alt" link="trips-bookings" scope='AllBooking.View'/>
+            <NavLink title="Trips" faIcon="fas fa-car-alt" link="trips" scope='Trip.View'/>
             <NavLink title="Vehicles" faIcon="fas fa-car" link="vehicles" scope='Vehicle.View' />
             <NavLink title="Bus Stops" faIcon="fas fa-bus" link="bus-stops" scope='BusStop.View' />
             <NavLink title="Routes" faIcon="fas fa-route" link="routes" scope='Route.View' />

@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, ReactNode } from 'react';
 import { Column } from "react-table";
 import { PaginationInfo } from "../../types";
-import { Role } from '../../types/roles';
+import { Role } from '../../modules/users-management/roles/types';
 
 export interface ITable<T> {
 	columns: readonly Column<{}>[],
@@ -17,10 +17,11 @@ export interface ITable<T> {
 	pagination?: PaginationInfo,
 	searchKey?: string,
 	setSearchKey?: Dispatch<SetStateAction<string>>,
-	getBulkIds?: () => string[]
+	getBulkData?: (data: T[]) => void
 	renderTableOptions?: () => ReactNode,
 	renderRowActions?: (data: T) => ReactNode,
-	fetchData?: () => void
+	renderBulkOptions?: (data?: T) => ReactNode,
+	fetchData?: () => void,
 }
 
 export interface IndeterminateCheckboxProps {

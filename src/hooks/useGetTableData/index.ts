@@ -21,15 +21,15 @@ export const useGetTableData = (path: string, page: number = 1, pageSize: number
                             );
 
     useEffect(() => {
-        let searchTimeout: string | number | NodeJS.Timeout | undefined; 
+        let searchTimeout: string | number | undefined | NodeJS.Timeout; 
         if(searchKey) {
             searchTimeout = setTimeout(() => {
             refetch();
             },600);
-            return () => clearTimeout(searchTimeout);;
+            return () => clearTimeout(searchTimeout as number);;
         }
         refetch();
-        return () => clearTimeout(searchTimeout);
+        return () => clearTimeout(searchTimeout as number);
     },[page,pageSize,searchKey]);
 
     return {    

@@ -15,7 +15,8 @@ const toggleButtonStyle = {
   border: 'none',
   outline: 'none',
   boxShadow: 'none',
-  padding: 0
+  padding: 0,
+  display: 'flex'
 }
 
 const CDropdown = ({isOpen, 

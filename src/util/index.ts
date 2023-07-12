@@ -2,6 +2,8 @@ import Cookies from "js-cookie";
 import { AxiosError } from 'axios';
 import jwt_decode from "jwt-decode";
 import { IDecodedToken } from "../types/token";
+import dayjs from "dayjs";
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 declare global {
     interface Array<T> {
@@ -109,6 +111,7 @@ export const getAllClaimsByType = (type: string) => getClaimsMap().get(type)
 
 export const hasPermission = (scope: string | string[]) => {
     const claims = getClaims();
+    // console.log(claims)
     return  Array.isArray(scope) ? 
                 claims.hasSomeValues(scope)
             :   claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
@@ -120,9 +123,37 @@ export const capitalize = (word: string) => {
 
 export const splitCamel = (word: string) => word.replace(/([a-z])([A-Z])/g, '$1 $2');
 
-export const mapToTyphead = <TItem extends Record<string, any>>(data: TItem[], nameKey = 'name') => {
+export const mapToTyphead = <TItem extends Record<string, any>>(data: TItem[], nameKey = 'name', renderLabel?: (item: TItem) => string) => {
     return data.map((item) => ({
         ...item,
-        label: item[nameKey]
+        label: renderLabel ? renderLabel(item) : item[nameKey]
     })) 
+}
+
+export function browserNotify(title: string, message?: string) {
+    if (!("Notification" in window)) {
+      // Check if the browser supports notifications
+      alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "granted") {
+      // Check whether notification permissions have already been granted;
+      // if so, create a notification
+      const notification = new Notification(title, {body: message});
+      // …
+    } else if (Notification.permission !== "denied") {
+      // We need to ask the user for permission
+      Notification.requestPermission().then((permission) => {
+        // If the user accepts, let's create a notification
+        if (permission === "granted") {
+          const notification = new Notification(title, {body: message});
+          // …
+        }
+      });
+    }
+    // At last, if the user has denied notifications, and you
+    // want to be respectful there is no need to bother them anymore.
+}
+
+export const dateFromNow = (date: string | Date | number) => {
+    dayjs.extend(relativeTime);
+    return dayjs().from(dayjs(date), true);
 }
