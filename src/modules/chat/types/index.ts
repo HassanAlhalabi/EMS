@@ -17,4 +17,5 @@ export interface Group {
     thumbnail?: string;
     groupNum: number,
     groupMembersCount: number,
+    handleClick?: (groupId: string ) => void 
 }

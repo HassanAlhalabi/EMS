@@ -11,6 +11,7 @@ import { useHTTP } from "../../hooks/useHTTP";
 import { browserNotify, dateFromNow } from "../../util";
 import dayjs from "dayjs";
 import useGetData from "../../hooks/useGetData";
+import useGetAllMessages from "./hooks/useGetAllMessages";
 
 const oldMessages: IMessage[] = [
   {
@@ -81,12 +82,17 @@ const oldMessages: IMessage[] = [
 const ChatPage = () => {
 
   const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [groupId, setGroupId] = useState<string | null>(null)
   const { access } = useAccess();
   const  { post } = useHTTP();     
 
   const {data: groups} = useGetData<Group[]>('/Group/GetAllGroups')
 
   const [messages, setMessages] = useState(oldMessages);
+
+  const {messages: allGroupMessages} = useGetAllMessages(groupId);
+
+  console.log(allGroupMessages)
 
   const createConnection = async (user?: string, room?: string) => {
     try {
@@ -156,13 +162,14 @@ const ChatPage = () => {
     }
   }
 
+    const handleClickGroup = (groupId: string) => setGroupId(groupId)
+
 
     return     <div  id="chat3" style={{borderRadius: "15px"}}>
-              <button onClick={() => createConnection()}>create connection</button>
                   <div className="row">
 
                       <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-                          {groups && <GroupsList groups={(groups as unknown as Group[])} />}
+                          {groups && <GroupsList groups={(groups.data)} handleClickGroup={handleClickGroup}/>}
                       </div>
 
                       <div className="col-md-6 col-lg-7 col-xl-8">
