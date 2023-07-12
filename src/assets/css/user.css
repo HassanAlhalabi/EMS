@@ -265,3 +265,7 @@ table tr td:last-of-type {
     right: auto;
     left: 25px
 }
+
+.dropdown-toggle::after {
+    display: none;
+}
