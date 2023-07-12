@@ -41,7 +41,7 @@ const RolesPage = () => {
             isFetching,
             refetch } = useGetTableData('/Role/GetAllRoles', page, pageSize, searchKey)
 
-    useGetDataById<Role>('/Role/GetRole', roleId,{ 
+    const {refetch: refetchRole} = useGetDataById<Role>('/Role/GetRole', roleId,{ 
                             onRefetch: data => { 
                                 data &&
                                 formik.setValues({
@@ -115,6 +115,7 @@ const RolesPage = () => {
 
     const reset = () => {
         setCurrentAction(null);
+        refetchRole();
         setRoleId(null);
         formik.resetForm();
         refetch();
