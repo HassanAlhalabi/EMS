@@ -54,7 +54,6 @@ const dropZoneStyle: CSSProperties = {
   cursor: 'pointer',
   fontWeight: 'bold',
   textTransform: 'uppercase',
-  backgroundColor: '#152335'
 }
 
 const titleStyle: CSSProperties = {

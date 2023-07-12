@@ -10,7 +10,7 @@ interface IFeedback {
 
 const Feedback = ({type,children}: IFeedback) => {
   return (
-    <Form.Control.Feedback type={type}>
+    <Form.Control.Feedback type={type} className='mb-2'>
         {children}
     </Form.Control.Feedback>
   )

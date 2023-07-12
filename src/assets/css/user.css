@@ -269,3 +269,11 @@ table tr td:last-of-type {
 .dropdown-toggle:after {
     display: none !important;
 }
+
+.dropzone {
+    background-color: #fcfcfc !important
+}
+
+.dark .dropzone {
+    background-color: #152335 !important
+}

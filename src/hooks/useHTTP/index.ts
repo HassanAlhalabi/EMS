@@ -44,8 +44,6 @@ const useHTTP = () => {
 
   const updateHTTPClient = (authToken?: string | null) => { 
 
-    console.log(i18n.resolvedLanguage);
-
     httpClient.defaults.headers['Authorization'] = authToken ? `Bearer ${authToken}` : '';
     httpClient.defaults.headers['Accept-Language'] = i18n.resolvedLanguage as string;
   
