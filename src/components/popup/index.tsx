@@ -1,6 +1,7 @@
 import { Button, Modal, ModalProps } from "react-bootstrap";
 import { ButtonVariant } from "react-bootstrap/esm/types";
 import { capitalize } from "../../util";
+import { useTranslation } from "react-i18next";
 
 interface PopUpExtra {
     title?: string,
@@ -13,6 +14,8 @@ interface PopUpExtra {
 }
 
 const PopUp = (props: ModalProps & PopUpExtra) => {
+
+  const {t} = useTranslation();
 
   return (
         <Modal
@@ -30,13 +33,13 @@ const PopUp = (props: ModalProps & PopUpExtra) => {
           {props.children}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="default" onClick={props.onHide}>Close</Button>
+          <Button variant="default" onClick={props.onHide}>{t('close')}</Button>
           <Button variant={props.confirmButtonVariant} 
                   onClick={props.handleConfirm} 
                   style={{textTransform: 'capitalize'}}
                   className="btn btn-falcon-primary"
                   disabled={props.confirmButtonIsDisabled}>
-            {props.confirmText ? capitalize(props.confirmText) : 'Ok'}
+            {props.confirmText ? capitalize(props.confirmText) : t('ok')}
           </Button>
         </Modal.Footer>
     </Modal>

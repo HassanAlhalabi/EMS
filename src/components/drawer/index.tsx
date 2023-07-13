@@ -6,10 +6,12 @@ import NavList from '../nav-list';
 import NavLink from '../nav-list/nav-link';
 import NavListLabel from '../nav-list/nav-list-label';
 import Logo from '../logo';
+import { useTranslation } from 'react-i18next';
 
 const Drawer = () => {
 
   const {toggleDrawer, drawerIsExpanded} = useContext(LayoutContext);
+  const { t } = useTranslation();
 
   return (
     <nav className="navbar navbar-light navbar-vertical navbar-expand-xl ps-3">
@@ -34,19 +36,19 @@ const Drawer = () => {
       <div className={`collapse navbar-collapse w-100 ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
 
-            <NavLink title="Dashboard" faIcon="fas fa-chart-pie" link="/" />
+            <NavLink title={t('dashboard')} faIcon="fas fa-chart-pie" link="/" />
             <NavLink title="Subjects Registration" faIcon="fas fa-book "link="subjects-registration" scope="SubjectRegister.View" />
-            <NavLink title="My Bookings" faIcon="fas fa-bus "link="my-bookings" />
+            <NavLink title={t('my_bookings')} faIcon="fas fa-bus "link="my-bookings" />
 
-            <NavListLabel title='Tickets Management' scope={['AllTicket.View','TicketType.Insert']}/>
-            <NavLink title="Tickets" faIcon="fas fa-tasks" link="tickets" scope='AllTicket.View'/>
-            <NavLink title="Tickets Types" faIcon="fas fa-ticket" link="tickets-types" scope='TicketType.Insert'/>
+            <NavListLabel title={t('tasks_management')} scope={['AllTicket.View','TicketType.Insert']}/>
+            <NavLink title={t('tasks')} faIcon="fas fa-tasks" link="tickets" scope='AllTicket.View'/>
+            <NavLink title={t('task_types')} faIcon="fas fa-ticket" link="tickets-types" scope='TicketType.Insert'/>
 
-            <NavListLabel title='Users Management' scope={['User.View','Role.View']}/>
-            <NavLink title="Users" faIcon="fas fa-users" link="users" scope='User.Insert' />
-            <NavLink title="Roles" faIcon="fas fa-user" link="roles" scope='Role.Insert'/>
+            <NavListLabel title={t('users_management')} scope={['User.View','Role.View']}/>
+            <NavLink title={t('users')} faIcon="fas fa-users" link="users" scope='User.Insert' />
+            <NavLink title={t('roles')} faIcon="fas fa-user" link="roles" scope='Role.Insert'/>
 
-            <NavListLabel title='University Management' 
+            <NavListLabel title={t('university_management')} 
                           scope={['Faculty.View',
                                   'Subject.View',
                                   'SubjectType.View',
@@ -56,31 +58,31 @@ const Drawer = () => {
                                   'Semester.View',
                                   'StudentSuggestedSubject.View',
                                   'StudyPlan.View']} />
-            <NavLink title="Faculties" faIcon="fas fa-university" link="faculties" scope='Faculty.View' />
-            <NavLink title="Subjects" faIcon="fas fa-chalkboard-teacher" link="subjects" scope='Subject.View' />
-            <NavLink title="Subjects Types" faIcon="fas fa-book-open" link="subjects-types" scope='SubjectType.View' />
-            <NavLink title="Library" faIcon="fas fa-archive" scope={['Book.View','Category.View']}>
-              <NavLink title="Books" faIcon="fa fa-book" link="books" scope='Book.View' />
-              <NavLink title="Categories" faIcon="fas fa-list-alt" link="books-categories" scope='Category.View' />
+            <NavLink title={t('faculties')} faIcon="fas fa-university" link="faculties" scope='Faculty.View' />
+            <NavLink title={t('subjects')} faIcon="fas fa-chalkboard-teacher" link="subjects" scope='Subject.View' />
+            <NavLink title={t('subjects_types')} faIcon="fas fa-book-open" link="subjects-types" scope='SubjectType.View' />
+            <NavLink title={t('library')} faIcon="fas fa-archive" scope={['Book.View','Category.View']}>
+              <NavLink title={t('books')} faIcon="fa fa-book" link="books" scope='Book.View' />
+              <NavLink title={t('categories')} faIcon="fas fa-list-alt" link="books-categories" scope='Category.View' />
             </NavLink>
-            <NavLink title="Departments" faIcon="fas fa-people-roof" link="departments" scope='Department.View' />
-            <NavLink title="Semesters" faIcon="fas fa-calendar" link="semesters" scope='Semester.View' />
-            <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects" scope='StudentSuggestedSubject.View' />
-            <NavLink title="Subjects Suggestions" faIcon="fas fa-calendar" link="suggested-subjects-manage" scope='StudentSuggestedSubjectForAdmin.View' />
-            <NavLink title="Study Plans" faIcon="fas fa-calendar" link="study-plans" scope='StudyPlan.View' />
+            <NavLink title={t('departments')} faIcon="fas fa-people-roof" link="departments" scope='Department.View' />
+            <NavLink title={t('semesters')} faIcon="fas fa-calendar" link="semesters" scope='Semester.View' />
+            <NavLink title={t('subjects_suggestions')} faIcon="fas fa-calendar" link="suggested-subjects" scope='StudentSuggestedSubject.View' />
+            <NavLink title={t('subjects_suggestions')} faIcon="fas fa-calendar" link="suggested-subjects-manage" scope='StudentSuggestedSubjectForAdmin.View' />
+            <NavLink title={t('study_plans')} faIcon="fas fa-calendar" link="study-plans" scope='StudyPlan.View' />
 
-            <NavListLabel title='Transport Management' scope={['Booking.View',
+            <NavListLabel title={t('transport_management')} scope={['Booking.View',
                                                               'BusStop.View',
                                                               'City.View',
                                                               'Route.View',
                                                               'State.View',
                                                               'Trip.View',
                                                               'Vheicle.View']} />
-            <NavLink title="Trips Bookings" faIcon="fas fa-calendar-alt" link="trips-bookings" scope='AllBooking.View'/>
-            <NavLink title="Trips" faIcon="fas fa-car-alt" link="trips" scope='Trip.View'/>
-            <NavLink title="Vehicles" faIcon="fas fa-car" link="vehicles" scope='Vehicle.View' />
-            <NavLink title="Bus Stops" faIcon="fas fa-bus" link="bus-stops" scope='BusStop.View' />
-            <NavLink title="Routes" faIcon="fas fa-route" link="routes" scope='Route.View' />
+            <NavLink title={t('trips_bookings')} faIcon="fas fa-calendar-alt" link="trips-bookings" scope='AllBooking.View'/>
+            <NavLink title={t('trips')} faIcon="fas fa-car-alt" link="trips" />
+            <NavLink title={t('vehicles')} faIcon="fas fa-car" link="vehicles" scope='Vehicle.View' />
+            <NavLink title={t('bus_stops')} faIcon="fas fa-bus" link="bus-stops" scope='BusStop.View' />
+            <NavLink title={t('routes')} faIcon="fas fa-route" link="routes" scope='Route.View' />
 
         </NavList>
       </div>

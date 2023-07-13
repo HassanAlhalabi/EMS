@@ -15,7 +15,7 @@ export interface SelectedItem {
 
 export type SelectedOption = string | Record<string, any>;
 
-export type Action = 'ADD' | 'FORM DATA ADD' | 'UPDATE' | 'BULK UPDATE' | 'FORM DATA UPDATE' | 'DELETE' | 'BULK DELETE' | 'TOGGLE' | 'VIEW';
+export type Action = 'ADD' | 'FORM_DATA_ADD' | 'UPDATE' | 'BULK_UPDATE' | 'FORM_DATA_UPDATE' | 'DELETE' | 'BULK_DELETE' | 'TOGGLE' | 'VIEW';
 
 export interface IRoute {
     id: string,
