@@ -9,11 +9,11 @@ import { useScreenLoader } from './hooks/useScreenLoader';
 import { useRoutes } from './hooks/useRoutes';
 import Loader from './components/loader';
 if(localStorage.getItem('i18nextLng') === 'ar') {
-  await import('./assets/css/theme-rtl.min.css');
-  await import('./assets/css/user-rtl.css');
+  import('./assets/css/theme-rtl.min.css');
+  import('./assets/css/user-rtl.css');
 } else {
-  await import('./assets/css/theme.min.css');
-  await import('./assets/css/user.css');
+  import('./assets/css/theme.min.css');
+  import('./assets/css/user.css');
 }
 import { IRoute } from './types';
 import useLoadingBar from './hooks/useLoadingBar';
