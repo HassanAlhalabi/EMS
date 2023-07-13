@@ -10,7 +10,7 @@ export interface Message {
 }
 
 export interface Group {
-    groupId?: string;
+    groupId: string;
     groupName: string;
     description?: string;
     newMessagesCount?: number;
