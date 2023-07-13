@@ -66,7 +66,7 @@ const SignIn = () => {
       <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
 
         <div className="d-flex flex-center mb-4">
-          <span className="font-sans-serif fw-bolder fs-5 d-inline-block">EMS</span>
+          <span className="font-sans-serif fw-bolder fs-5 d-inline-block"></span>
         </div>
         
         <div className="card">
