@@ -1,12 +1,12 @@
 
 
 export interface Message {
-    messageId?: string;
-    thumbnail?: string;
-    userId: string;
-    fullName: string;
-    date: string;
-    message: string;
+    messageId: string,
+    senderId: string,
+    senderFullName: string,
+    content: string,
+    sentAt: string,
+    sending?: boolean,
 }
 
 export interface Group {

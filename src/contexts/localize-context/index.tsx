@@ -1,7 +1,6 @@
 import { createContext, useState, ReactNode, useEffect, useCallback, useLayoutEffect } from 'react';
 import { setCookie } from '../../util';
 import i18n from '../../i18n';
-import { queryClient } from '../../main';
 
 const LOCALIZE_INITIAL_VALUE = {
     currentLang: i18n.resolvedLanguage,

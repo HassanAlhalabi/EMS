@@ -1,6 +1,5 @@
-import { MutableRefObject, useRef } from "react";
+import { useEffect, useRef } from "react";
 
-import { Button, Form } from "react-bootstrap";
 
 import { Message } from "../../types";
 import ChatMessage from "../message";
@@ -13,13 +12,20 @@ const ChatRoom = ({title, messages, handleSendMessage}:
                     messages: Message[], 
                     handleSendMessage: (message:  string) => void}) => {
 
-    const roomRef = useRef<HTMLDivElement>(null)                  
+    const roomRef = useRef<HTMLDivElement>(null)  ;
+    
+    useEffect(() => {
+      roomRef.current?.scrollTo({
+        behavior: 'smooth',
+        top: roomRef.current.scrollHeight
+      })
+    },[messages.length])
 
     return <>
               <h4 className="border-bottom pb-3">{title}</h4>
 
               <div  ref={roomRef}
-                    className="pt-3 pe-3 vh-75"
+                    className="pt-3 pe-3 vh-75 to-scroll"
                     style={{position: "relative", overflowY: 'auto', maxHeight: '500px'}}>
                         {
                           messages.map((message, index) => {
@@ -31,10 +37,6 @@ const ChatRoom = ({title, messages, handleSendMessage}:
               
               <hr />
               <MessageForm handleSendMessage={(msg) => {
-                                                roomRef.current?.scrollTo({
-                                                  behavior: 'smooth',
-                                                  top: roomRef.current.scrollHeight
-                                                })
                                                 handleSendMessage(msg);
                                               }} /> 
             </>
