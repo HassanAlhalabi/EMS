@@ -6,6 +6,7 @@ import Feedback from "../../../../components/feedback";
 import { NewTripBooking } from "../types";
 import { useGet } from "../../../../hooks";
 import { Trip } from "../../../transport-management/trips/types";
+import useTranslate from "../../../../hooks/useTranslate";
 
 const TripForm = ({formik}:{formik: FormikProps<NewTripBooking>}) => {
 
@@ -15,19 +16,21 @@ const TripForm = ({formik}:{formik: FormikProps<NewTripBooking>}) => {
         ['/Trip/GetTrips'], 
     () => get(`/Trip/GetTrips?page=1&pageSize=2000`));
 
+    const t = useTranslate();
+
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
             <Row>
                 <Col md={12} lg={4}>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="chairNumber">
-                            Chairs Number: 
+                            {t('chairs_number')}: 
                         </Form.Label>
                         <Form.Control
                             size="lg"
                             type="number"
                             required
-                            placeholder="Chairs Number"
+                            placeholder={t('chairs_number')}
                             name="chairNumber"
                             value={formik.values.chairNumber} 
                             onChange={formik.handleChange} />
@@ -39,7 +42,7 @@ const TripForm = ({formik}:{formik: FormikProps<NewTripBooking>}) => {
                 <Col md={12} lg={8}>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="tripId">
-                            Trip: 
+                            {t('trip')}: 
                         </Form.Label>
                         <Form.Select
                             size="lg"
@@ -52,7 +55,7 @@ const TripForm = ({formik}:{formik: FormikProps<NewTripBooking>}) => {
                             {
                                 trips?.data.trips.map((trip: Trip) => 
                                     <option key={trip.tripId} value={trip.tripId}>
-                                        {trip.route.from ? trip.route.from.cityName : 'University'} to {trip.route.to ? trip.route.to.cityName : 'University'}
+                                        {trip.route.from ? trip.route.from.cityName : t('university')} {t('to')} {trip.route.to ? trip.route.to.cityName : t('university')}
                                     </option>
                                 )
                             }

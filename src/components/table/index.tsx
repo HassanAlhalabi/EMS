@@ -163,6 +163,7 @@ const Table = <T extends Record<any,any>>({
 					<div className={`d-flex align-items-center justify-content-between flex-wrap`}>
 						{
 							pagination &&
+							rows.length > 0 &&
 							<TablePagination
 								loading={loading as boolean}
 								pagination={pagination}

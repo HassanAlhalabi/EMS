@@ -1,5 +1,6 @@
 import { Form } from "react-bootstrap";
 import { ITablePagination } from "../types";
+import useTranslate from "../../../hooks/useTranslate";
 
 const TablePagination = ({
 	loading,
@@ -12,6 +13,7 @@ const TablePagination = ({
     handlePageSize
 }: ITablePagination) => {
 	
+	const t = useTranslate();
 
   return (
     <div className="d-flex justify-content-between flex-wrap" data-list>
@@ -35,13 +37,13 @@ const TablePagination = ({
 
 		<div className="d-flex align-items-center m-1">
 			<strong>
-				Page {pagination?.pageNo} of {pagination?.totalPages}
+				{t('page')} {pagination?.pageNo} {t('of')} {pagination?.totalPages}
 			</strong>
 		</div>
 
 		<div className="d-flex align-items-center justify-content-between">
 			<span>
-				<span className="m-1">| Go to page:</span>
+				<span className="m-1">| {t('go_to_page')}:</span>
 				<Form.Control
 					type="number"
 					min={1}
@@ -59,7 +61,7 @@ const TablePagination = ({
 			>
 				{[5,10,15,20,30,40,50].map(pageSize => (
 					<option key={pageSize} value={pageSize}>
-						Show {pageSize}
+						{t('show')} {pageSize}
 					</option>
 				))}
 			</Form.Select>
