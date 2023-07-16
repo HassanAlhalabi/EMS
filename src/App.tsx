@@ -15,6 +15,7 @@ if(localStorage.getItem('i18nextLng') === 'ar') {
   import('./assets/css/theme.min.css');
   import('./assets/css/user.css');
 }
+import './assets/css/global.css';
 import { IRoute } from './types';
 import useLoadingBar from './hooks/useLoadingBar';
 

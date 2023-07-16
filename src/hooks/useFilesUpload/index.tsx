@@ -2,6 +2,7 @@ import {CSSProperties, useEffect, useState} from 'react';
 import { Stack } from 'react-bootstrap';
 
 import {DropEvent, FileRejection, useDropzone} from 'react-dropzone';
+import useTranslate from '../useTranslate';
 
 interface AcceptedFile extends File {
   preview: string
@@ -70,7 +71,8 @@ interface PreviewProps {
 
 function Previews({files, handleDrop, handleRemoveFile}: PreviewProps) {
 
-  const {getRootProps, getInputProps} = useDropzone({
+  const t = useTranslate();
+  const { getRootProps, getInputProps } = useDropzone({
     accept: {
       '*/*': []
     },
@@ -122,7 +124,7 @@ function Previews({files, handleDrop, handleRemoveFile}: PreviewProps) {
         <input {...getInputProps()} />
         <i className='d-block fa fa-plus fa-2x mb-2'></i>
         <span>
-          Drag 'n' drop some files here, or click to select files
+          {t('click_or_drop_files_here')}
         </span>
       </div>
       <aside style={thumbsContainer}>

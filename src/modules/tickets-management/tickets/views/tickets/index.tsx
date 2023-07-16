@@ -13,6 +13,7 @@ import TicketForm from "../../ticket-form";
 import { useGetTableData } from "../../../../../hooks/useGetTableData";
 import { Action } from '../../../../../types';
 import { useActions } from '../../../../../hooks/useActions';
+import useTranslate from '../../../../../hooks/useTranslate';
 
 const INITIAL_VALUES = {
     note: '',
@@ -26,8 +27,8 @@ const TicketsPage = () => {
     const [pageSize, setPageSize] = useState(15);
     const [searchKey, setSearchKey] = useState('');
     const [currentAction, setCurrentAction] = useState<Action | null>(null);
-    const [ticketId, setTicketId] = useState<string | null>(null);
-    const { setAction } = useActions()
+    const { setAction } = useActions();
+    const t = useTranslate();
 
     const formik = useFormik<NewTicket>({
 		initialValues: INITIAL_VALUES,
@@ -43,27 +44,27 @@ const TicketsPage = () => {
     const columns = useMemo(
         () => [
             {
-                Header: 'Ticket Serial Number',
+                Header: t('task_serial_number'),
                 accessor: 'serial',
             },
             {
-                Header: 'Ticket Note',
+                Header: t('task_note'),
                 accessor: 'note',
             },
             {
-                Header: 'Created By',
+                Header: t('created_by'),
                 accessor: 'createdByFullName',
             },
             {
-                Header: 'Ticket Type',
+                Header: t('task_type'),
                 accessor: 'ticketTypeTitle',
             },
             {
-                Header: 'Status',
+                Header: t('status'),
                 accessor: 'ticketStatus',
             },
             {
-                Header: 'Options',
+                Header: t('options'),
                 accessor: 'options',
             }
         ],
@@ -86,7 +87,7 @@ const TicketsPage = () => {
           type: currentAction,
           path: '/Ticket',
           payload: formik.values,
-          onSuccess: () => handleSuccess('Ticket Added Successfully')
+          onSuccess: () => handleSuccess(t('add_success'))
         }
       }
 
@@ -96,7 +97,7 @@ const TicketsPage = () => {
     }}
 
     const reset = () => {
-        setCurrentAction(null); formik.resetForm(); setTicketId(null);
+        setCurrentAction(null); formik.resetForm();
     }
 
     return  <>
@@ -120,7 +121,7 @@ const TicketsPage = () => {
                                             type="button" 
                                             onClick={() => setCurrentAction(ACTION_TYPES.formDataAdd as Action)}>        
                                         <span className="fas fa-plus"></span>
-                                        <span className="ms-1">New</span>
+                                        <span className="ms-1">{`${t('create')} ${t('task')}`}</span>
                                     </button>
                                 </>
                     }} 
@@ -133,22 +134,21 @@ const TicketsPage = () => {
                     }}
                 />
 
-                <PopUp  title={`Add Ticket`}
+                <PopUp  title={`${t('create')} ${t('task')}`}
                         show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
                         onHide={() => reset()}
-                        confirmText={`Add Ticket`}
+                        confirmText={`${t('create')} ${t('task')}`}
                         confirmButtonVariant={
                             currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
                         }
                         handleConfirm={handleTicketAction}
-                        // loadingData={loadingTicket}
                         confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && currentAction !== ACTION_TYPES.delete}
                     >
                         {(  currentAction === ACTION_TYPES.formDataAdd || 
                             currentAction === ACTION_TYPES.formDataUpdate)
                                 && <TicketForm formik={formik} />}
                         {currentAction === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This Ticket</>
+                                    <>{t('delete_confirmation')}</>
                         }
                 </PopUp>
 

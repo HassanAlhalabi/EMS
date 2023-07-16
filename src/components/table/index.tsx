@@ -249,7 +249,7 @@ const Table = <T extends Record<any,any>>({
 															</td>
 												}
 												if(cell.column.id === 'options') {
-													return 	<td className="align-middle d-flex text-align-center justify-content-center" {...cell.getCellProps()}>
+													return 	<td className="align-middle d-flex justify-content-start" {...cell.getCellProps()}>
 																{	renderRowActions?.(cell.row.original as T) }
 															</td>
 												} 

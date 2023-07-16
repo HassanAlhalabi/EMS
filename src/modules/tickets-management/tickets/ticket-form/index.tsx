@@ -6,11 +6,13 @@ import { NewTicket } from "../types";
 import useGetTickets from "../../../../hooks/useGetTickets";
 import { TicketType } from "../../tickets-types/types";
 import useFilesUpload from "../../../../hooks/useFilesUpload";
+import useTranslate from "../../../../hooks/useTranslate";
 
 const TicketForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
 
+    const t = useTranslate();
     const ticktTypes = useGetTickets();
-    const {renderPreview} = useFilesUpload({
+    const { renderPreview } = useFilesUpload({
         onUpload: (files) => formik.setFieldValue('attachments', files)
     });
 
@@ -22,11 +24,10 @@ const TicketForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
                         <Form.Select
                             size="lg"
                             required
-                            placeholder="Ticket Type"
                             name="ticketTypeId"
                             value={formik.values.ticketTypeId} 
                             onChange={formik.handleChange}>
-                                <option disabled value=''>Choose Ticket Type</option>
+                                <option disabled value=''>{t('choos_task_type')}</option>
                                 {
                                     ticktTypes?.ticketTypes.map((ticketType: TicketType) => {
                                         return  <option  key={ticketType.ticketTypeId} 
@@ -48,7 +49,7 @@ const TicketForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
                             size="lg"
                             required
                             type="text" 
-                            placeholder="Ticket Note"
+                            placeholder={t('task_note')}
                             name="note"
                             value={formik.values.note} 
                             onChange={formik.handleChange} />
@@ -60,7 +61,7 @@ const TicketForm = ({formik}:{formik: FormikProps<NewTicket>}) => {
                 <Col>
                     <Form.Group>
                         <Form.Label>
-                            Attachments:
+                            {t('attachments')}:
                         </Form.Label>
                         {renderPreview()} 
                     </Form.Group>         

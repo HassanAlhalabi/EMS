@@ -6,9 +6,12 @@ import Button from "../../../../../../../components/button";
 import { NewTicketResult } from "../../../../types";
 import useFilesUpload from "../../../../../../../hooks/useFilesUpload";
 import Feedback from "../../../../../../../components/feedback";
+import useTranslate from "../../../../../../../hooks/useTranslate";
 
 
 const CommnetForm = ({ formik }: {formik: FormikProps<NewTicketResult>}) => {
+
+    const t = useTranslate();
 
     const {renderPreview} = useFilesUpload({
         onUpload: (files) => formik.setFieldValue('attachments', files)
@@ -21,7 +24,7 @@ const CommnetForm = ({ formik }: {formik: FormikProps<NewTicketResult>}) => {
                             <Form.Group className="h-100 mb-3">
                                 <Form.Control   as='textarea' 
                                                 className="h-75"
-                                                placeholder="Add Your Comment..."
+                                                placeholder={`${t('ADD')} ${t('comment')}...`}
                                                 required
                                                 name="description"
                                                 value={formik.values.description} 
@@ -39,7 +42,7 @@ const CommnetForm = ({ formik }: {formik: FormikProps<NewTicketResult>}) => {
                     </Row>
                     <Button scope={""} 
                             className="btn btn-falcon-primary" 
-                            onClick={() => formik.handleSubmit()}>Add Comment</Button>
+                            onClick={() => formik.handleSubmit()}>{`${t('ADD')} ${t('comment')}`}</Button>
                 </Form>
             </PermissionsGate>;
 }
