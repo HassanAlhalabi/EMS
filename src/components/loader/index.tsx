@@ -1,9 +1,18 @@
-import { Spinner } from "react-bootstrap"
+
+import HashLoader from "react-spinners/HashLoader";
 
 const Loader = () => {
   return (
-    <div className="screen-loader position-fixed d-flex w-100 h-100 top-0 start-0" style={{zIndex: 99999}}>
-        <Spinner animation="border" role="status" className="m-auto" />
+    <div style={{
+          zIndex: 99999,
+          position: "fixed",
+          display: 'flex',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0
+        }}>
+        <HashLoader style={{margin: 'auto'}} color="#27bcfd" />
     </div>
   )
 }
