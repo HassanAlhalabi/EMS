@@ -6,9 +6,11 @@ import { useGet } from "..";
 const useGetDropdownFaculties = (key: string = '') => {
     const get = useGet();
 
-    return useQuery(
+    const {data: faculties} = useQuery(
         ['/Faculty/GetDropDownFaculties', key], 
     () => get(`/Faculty/GetDropDownFaculties?key=${key}`));
+
+    return { faculties };
 
 }
  

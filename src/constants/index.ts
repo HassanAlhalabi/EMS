@@ -16,12 +16,12 @@ export const PAGINATION_INFO = {
 
 export const ACTION_TYPES = {
     add:            'ADD',
-    formDataAdd:    'FORM DATA ADD',
+    formDataAdd:    'FORM_DATA_ADD',
     update:         'UPDATE',
-    bulkUpdate:     'BULK UPDATE',
-    formDataUpdate: 'FORM DATA UPDATE',
+    bulkUpdate:     'BULK_UPDATE',
+    formDataUpdate: 'FORM_DATA_UPDATE',
     delete:         'DELETE',
-    bulkDelete:     'BULK DELETE',
+    bulkDelete:     'BULK_DELETE',
     toggle:         'TOGGLE',
     view:           'VIEW'
 }

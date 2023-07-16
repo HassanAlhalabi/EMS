@@ -33,6 +33,7 @@ export interface Subject {
 
 export interface FullSubject {
     id: string,
+    name?:  string,
     nameAr: string,
     nameEn: string,
     descriptionAr: string,

@@ -1,26 +1,25 @@
-import { useEffect, useMemo, useState, ChangeEvent } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useFormik } from "formik";
-import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { useDelete, usePost, usePut } from "../../../hooks";
-import { useScreenLoader } from "../../../hooks/useScreenLoader";
 import { addStudyPlanValidation } from "./schema";
 import { FullStudyPlan, NewStudyPlan, StudyPlan } from "./types";
-import { capitalize, getAxiosError } from "../../../util";
 import StudyPlanForm from "./study-plan-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
+import useTranslate, { TranslateKey } from '../../../hooks/useTranslate';
+import { Action } from '../../../types';
+import { useActions } from '../../../hooks/useActions';
 
 const INITIAL_VALUES: NewStudyPlan = {
   nameAr:	'',
   nameEn:	'',
   specialtyId: '',
-  studyPlanSubjects: []
+  studyPlanSubjects: [],
 }
 
 const StudyPlansPage = () => {
@@ -28,9 +27,10 @@ const StudyPlansPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [searchKey, setSearchKey] = useState<string>('');
-  const [action, setAction] = useState<string | null>(null);
   const [studyPlanId, setStudyPlanId] = useState<string | null>(null);
-  const { toggleScreenLoader } = useScreenLoader();
+  const [currentAction, setCurrentAction] = useState<Action | null>(null);
+  const { setAction } = useActions()
+  const t = useTranslate();
 
   const { data, 
           status,
@@ -38,37 +38,27 @@ const StudyPlansPage = () => {
           isFetching, 
           refetch } = useGetTableData('/StudyPlan/GetAllStudyPlans', page, pageSize, searchKey)
 
-  useGetDataById<FullStudyPlan>('/StudyPlan/GetFullStudyPlan',studyPlanId,{
+  const { refetch: refetchPlan } = useGetDataById<FullStudyPlan>('/StudyPlan/GetFullStudyPlan',studyPlanId,{
     onRefetch: data => {
-      data &&
-      formik.setValues({
+      data && formik.setValues({
         ...data.data,
-        studyPlanSubjects: [],
-        specialtyId: '',
-        facultyId: ''
+        studyPlanSubjects: data.data.subjects.map(subject => subject.id),
       })
     }
   })
 
-  useEffect(() => {
-    if(studyPlanId && action === ACTION_TYPES.toggle) {
-      handleStudyPlanAction();
-    }
-    () => setStudyPlanId(null);
-  },[studyPlanId]);
-
   const columns = useMemo(
 		() => [
       {
-        Header: 'StudyPlan Name',
+        Header: t('studyPlan_name'),
         accessor: 'name',
       },
       {
-        Header: 'Description',
+        Header: t('description'),
         accessor: 'description',
       },
       {
-        Header: 'Options',
+        Header: t('options'),
         accessor: 'options',
       }
 		],
@@ -86,52 +76,47 @@ const StudyPlansPage = () => {
       validationSchema: addStudyPlanValidation
   })
 
-  const reset = () => {
-    setAction(null); 
-    formik.resetForm();
-    setStudyPlanId(null)
-  }
+  const handleSuccess = (message: string) => {
+    toast.success(message);
+    reset();
+}
 
-  const { mutateAsync , 
-          isLoading: postLoading
-        } = action === ACTION_TYPES.add ? usePost('/StudyPlan', 
-              formik.values) :
-              action === ACTION_TYPES.update ? 
-              usePut('/StudyPlan', 
-{
-        id: studyPlanId,
-       ...formik.values
-      }) : action === ACTION_TYPES.delete ? 
-                useDelete('/StudyPlan',studyPlanId as string)
-             :  usePut(`/StudyPlan/ToggleActivation/${studyPlanId}`);
+const actionsMap = {
+    [ACTION_TYPES.add]: {
+        type: currentAction,
+        path: '/StudyPlan',
+        payload: formik.values,
+        onSuccess: () => handleSuccess(t('add_success'))
+    },
+    [ACTION_TYPES.update]: {
+        type:  currentAction,
+        path: '/StudyPlan',
+        payload: {
+          id: studyPlanId,
+          ...formik.values
+        },
+        onSuccess: () => handleSuccess(t('update_success'))
+    },
+}
 
   const handleStudyPlanAction = async () => {
-
-      // Not Valid ... Do Nothing
-    if(!formik.isValid && action !== ACTION_TYPES.delete) {
-        formik.validateForm();
-        return;
-    };
-
-    // If All Is Ok ... Do It
-    if(formik.isValid) {
-      try {
-        toggleScreenLoader();
-        await mutateAsync();
-        refetch();
-        toast.success(`${capitalize(action as string)} StudyPlan Done Successfully`)
-        reset();
-      } catch(error) {
-        toast.error(getAxiosError(error))
+      if(formik.isValid && currentAction) {
+          setAction(actionsMap[currentAction])
       }
-      toggleScreenLoader();
-    }
   }
 
-  const handleToggleStudyPlan = async (e: ChangeEvent<HTMLInputElement>) => {
-    setAction(ACTION_TYPES.toggle);
-    setStudyPlanId(e.target.value);
+  const reset = () => {
+      setCurrentAction(null);
+      refetchPlan();
+      setStudyPlanId(null);
+      formik.resetForm();
+      refetch();
   }
+
+  // const handleToggleStudyPlan = async (e: ChangeEvent<HTMLInputElement>) => {
+  //   setAction(ACTION_TYPES.toggle);
+  //   setStudyPlanId(e.target.value);
+  // }
 
   return  <>
             <Table<StudyPlan>  
@@ -152,9 +137,9 @@ const StudyPlansPage = () => {
               renderTableOptions={() => {
                                     return  <button 	className="btn btn-falcon-success btn-sm" 
                                               type="button" 
-                                              onClick={() => setAction(ACTION_TYPES.add)}>        
+                                              onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
                                                 <span className="fas fa-plus"></span>
-                                                <span className="ms-1">New</span>
+                                                <span className="ms-1">{t('new')}</span>
                                             </button>
                                            
                                     }} 
@@ -163,7 +148,7 @@ const StudyPlansPage = () => {
                             <button className="btn btn-falcon-info btn-sm m-1" 
                                     type="button" 
                                     onClick={() => {
-                                            setAction(ACTION_TYPES.update)
+                                            setCurrentAction(ACTION_TYPES.update as Action)
                                             setStudyPlanId(studyPlan.id);
                                     }}>        
                                 <span className="fas fa-edit" data-fa-transform="shrink-3 down-2"></span>
@@ -184,21 +169,20 @@ const StudyPlansPage = () => {
               }}/>
 
               <PopUp  
-                title={`${action && capitalize(action as string)} Study Plan`}
-                show={action !== null && action !== ACTION_TYPES.toggle}
+                title={`${t(currentAction as TranslateKey)} ${t('study_plan')}`}
+                show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
                 onHide={() => { reset() } }
-                confirmText={`${action} Study Plan`}
+                confirmText={`${t(currentAction as TranslateKey)} ${t('study_plan')}`}
                 confirmButtonVariant={
-                  action === ACTION_TYPES.delete ? 'danger' : "primary"
+                  currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
                 }
                 handleConfirm={handleStudyPlanAction}
-                actionLoading={postLoading}
                     >
-                        {(  action === ACTION_TYPES.add || 
-                            action === ACTION_TYPES.update)
+                        {(  currentAction === ACTION_TYPES.add || 
+                            currentAction === ACTION_TYPES.update)
                                 && <StudyPlanForm formik={formik} />}
-                        {action === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This StudyPlan</>
+                        {currentAction === ACTION_TYPES.delete && 
+                                    <>{t('delete_confirmation')} {t('study_plan')}</>
                         }
                 </PopUp>
               </>

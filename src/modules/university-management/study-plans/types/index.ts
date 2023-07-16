@@ -1,3 +1,4 @@
+import { FullSubject } from "../../subjects/types";
 
 export interface StudyPlan {
     id: string,
@@ -10,7 +11,10 @@ export interface FullStudyPlan {
   descriptionEn: string | null;
   id: string;
   nameAr: string; 
-  nameEn: string 
+  nameEn: string;
+  facultyId: string;
+  specialtyId: string;
+  subjects: FullSubject[];
 }
 
 export interface NewStudyPlan {
