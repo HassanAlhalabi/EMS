@@ -41,7 +41,7 @@ const DepartmentsPage = () => {
           isFetching, 
           refetch } = useGetTableData('/Department/GetAllDepartments', page, pageSize, searchKey)
 
-  useGetDataById<FullDepartment>('/Department/GetFullDepartment', departmentId, {
+  const {refetch: refetchDepartment } = useGetDataById<FullDepartment>('/Department/GetFullDepartment', departmentId, {
         onRefetch: data => {
             data && formik.setValues({
                     ...data.data,
@@ -120,10 +120,11 @@ const actionsMap: Record<string, ActionItem> = {
   }}
 
   const reset = () => {
-      setCurrentAction(null); formik.resetForm(); setDepartmentId(null);
+      setCurrentAction(null); 
+      formik.resetForm(); 
+      setDepartmentId(null);
+      refetchDepartment()
   }
-
-  console.log(currentAction)
 
   return  <>
             <Table<Department>  

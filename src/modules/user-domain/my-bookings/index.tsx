@@ -15,6 +15,7 @@ import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 const INITIAL_VALUES = {
     tripId: '',
@@ -28,7 +29,8 @@ const TripsBookingsPage = () => {
     const [searchKey, setSearchKey] = useState('');
     const [currentAction, setCurrentAction] = useState<Action | null>(null);
     const [bookingId, setTripBookingId] = useState<string | null>(null);
-    const { setAction } = useActions()
+    const { setAction } = useActions();
+    const {t} = useTranslation();
 
     const formik = useFormik<NewTripBooking>({
 		initialValues: INITIAL_VALUES,
@@ -148,7 +150,7 @@ const TripsBookingsPage = () => {
                                                         type="button" 
                                                         onClick={() => setCurrentAction(ACTION_TYPES.add as Action)}>        
                                     <span className="fas fa-plus"></span>
-                                    <span className="ms-1">New</span>
+                                    <span className="ms-1">{t('ADD')}</span>
                                 </button>
                             </>
                     }} 
@@ -174,10 +176,10 @@ const TripsBookingsPage = () => {
                     }}
                 />
 
-                <PopUp  title={`${currentAction && capitalize(currentAction as string)} Booking`}
+                <PopUp  title={`${t(currentAction as string)} ${t('booking')}`}
 								show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
 								onHide={() => reset()}
-								confirmText={`${currentAction} Booking`}
+								confirmText={`${t(currentAction as string)} ${t('booking')}`}
 								confirmButtonVariant={
 									currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
 								}

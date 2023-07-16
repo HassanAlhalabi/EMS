@@ -257,7 +257,7 @@ table tr td:last-of-type {
     margin-top: -.75rem;
 }
 
-.dropdown-indicator:after {
+[dir="ltr"] .dropdown-indicator:after {
     right: 25px
 }
 
@@ -266,6 +266,14 @@ table tr td:last-of-type {
     left: 25px
 }
 
-.dropdown-toggle::after {
-    display: none;
+.dropdown-toggle:after {
+    display: none !important;
+}
+
+.dropzone {
+    background-color: #fcfcfc !important
+}
+
+.dark .dropzone {
+    background-color: #152335 !important
 }

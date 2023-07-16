@@ -1,20 +1,21 @@
 
 
 export interface Message {
-    messageId?: string;
-    thumbnail?: string;
-    userId: string;
-    fullName: string;
-    date: string;
-    message: string;
+    messageId: string,
+    senderId: string,
+    senderFullName: string,
+    content: string,
+    sentAt: string,
+    sending?: boolean,
 }
 
 export interface Group {
-    groupId?: string;
+    groupId: string;
     groupName: string;
     description?: string;
     newMessagesCount?: number;
     thumbnail?: string;
     groupNum: number,
     groupMembersCount: number,
+    handleClick?: (groupId: string ) => void 
 }

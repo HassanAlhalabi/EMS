@@ -4,19 +4,22 @@ import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback"
 import { NewPassword } from "../../users/types";
+import { useTranslation } from "react-i18next";
 
 const ChangePsswordForm = ({formik}:{formik: FormikProps<NewPassword>}) => {
+
+    const { t } = useTranslation();
 
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
             <h4 className="mb-3">
-                Update Your Password:
+                {t('update_password')}:
             </h4>
             <Stack className="d-block d-sm-flex gap-2">
                 <div  className="mb-3 flex-1">
                     <Form.Group>
                         <Form.Control   name="newPassword" 
-                                        placeholder="New Password..."
+                                        placeholder={`${t('new_password')}...`}
                                         onChange={formik.handleChange}
                                         value={formik.values.newPassword} 
                                         required
@@ -31,7 +34,7 @@ const ChangePsswordForm = ({formik}:{formik: FormikProps<NewPassword>}) => {
                         <Form.Control   required
                                         type="password"
                                         name="confirmPassword" 
-                                        placeholder="Confirm New Password..."
+                                        placeholder={`${t('confirm_password')}...`}
                                         onChange={formik.handleChange}
                                         value={formik.values.confirmPassword} />
                         <Feedback type="invalid">
@@ -43,7 +46,7 @@ const ChangePsswordForm = ({formik}:{formik: FormikProps<NewPassword>}) => {
                     <Button className="btn-falcon-primary" 
                             disabled={!formik.dirty || !formik.isValid }
                             onClick={() => formik.handleSubmit()}
-                            >Change Password</Button>
+                            >{t('change_password')}</Button>
                 </div>
             </Stack>
         </Form>

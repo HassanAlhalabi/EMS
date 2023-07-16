@@ -18,11 +18,25 @@ export interface FullTicket {
     createdById: string,
     createdByFullName: string,
     ticketStatus: string,
+    attachments: string[],
+    ticketResults: TicketResult[]
+}
+
+export interface TicketResult {
+    ticketResultId: string,
+    description: string,
+    createdByFullName: string,
+    createdAt: string,
     attachments: string[]
-} 
+}
 
 export interface NewTicket {
     note: string;
     ticketTypeId: string;
+    attachments: File[] | string[]
+}
+
+export interface NewTicketResult {
+    description: string;
     attachments: File[] | string[]
 }

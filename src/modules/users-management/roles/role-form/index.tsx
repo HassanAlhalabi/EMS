@@ -108,8 +108,8 @@ const RoleForm = ({formik}:{formik: FormikProps<NewRole>}) => {
                                                     name={`roleClaims`}
                                                     value={`Permissions.${claim[0]}.${claimType}`}
                                                     checked={formik.values.roleClaims && 
-                                                                                (formik.values.roleClaims.includes(`Permissions.${claim[0]}.${claimType}`) ||
-                                                                                formik.values.roleClaims.includes(`Permissions.${claim[0]}.All`) )}
+                                                            (formik.values.roleClaims.includes(`Permissions.${claim[0]}.${claimType}`) ||
+                                                            formik.values.roleClaims.includes(`Permissions.${claim[0]}.All`) )}
                                                     onChange={handleRoleChange} />
                                             </Form.Group>
                                         )}

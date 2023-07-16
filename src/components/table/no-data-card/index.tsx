@@ -1,12 +1,16 @@
 import { Button, Card } from "react-bootstrap"
+import { useTranslation } from "react-i18next"
 
 const NoDataCard = () => {
+
+  const {t} = useTranslation();
+
   return (
     <Card className="text-center p-5">
       <Card.Body>
-        <Card.Title>There Is No Data To Display</Card.Title>
+        <Card.Title>{t('no_data')}</Card.Title>
         <Card.Text>
-          With supporting text below as a natural lead-in to additional content.
+          
         </Card.Text>
       </Card.Body>
     </Card>

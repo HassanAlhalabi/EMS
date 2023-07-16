@@ -50,7 +50,7 @@ const UsersPage = () => {
 
   const { data, status, isLoading, isFetching, refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
     
-  useGetDataById<User>('/User/GetUser', userId, {
+  const {refetch: refetchUser} = useGetDataById<User>('/User/GetUser', userId, {
           onRefetch: data => {
             data && 
             formik.setValues({
@@ -96,7 +96,7 @@ const UsersPage = () => {
                 contract:formik.values.type === 'Student' ? null :
                   {
                     ...formik.values.contract,
-                    workDays: formik.values.contract?.workDays.map(workDay => workDay.value)
+                    workDays: formik.values.contract?.workDays?.map(workDay => workDay.value)
                   }
                 },
       onSuccess: () => handleSuccess('User Updated Successfully')
@@ -161,6 +161,7 @@ const UsersPage = () => {
     setCurrentAction(null); 
     formik.resetForm();
     setUserId(null);
+    refetchUser();
     await refetch();
   }
 

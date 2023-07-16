@@ -1,9 +1,12 @@
+import { useTranslation } from "react-i18next"
 
 const DashboardPage = () => {
 
+  const {t} = useTranslation();
+
   return (
     <>
-      Dashhboard
+      {t('dashboard')}
     </>
   )
 }

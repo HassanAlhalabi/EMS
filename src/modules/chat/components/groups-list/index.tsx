@@ -3,7 +3,8 @@ import GroupLinkItem from "./group";
 
 
 
-const GroupsList = ({groups}: {groups: Group[]}) => {
+const GroupsList = ({groups, handleClickGroup}: {groups: Group[], 
+                                                handleClickGroup: (groupId: string) => void }) => {
 
     return <div className="p-3 bg-dark-blue rounded h-100">
                 <div className="input-group rounded mb-3">
@@ -16,7 +17,7 @@ const GroupsList = ({groups}: {groups: Group[]}) => {
 
                 <div className="vh-75" style={{position: "relative",  overflowY: 'auto', maxHeight: '500px'}}>
                     <ul className="list-unstyled mb-0">
-                        {groups.map(group => <GroupLinkItem key={group.groupId} {...group} />)}
+                        { groups?.map(group => <GroupLinkItem key={group.groupId} {...group} handleClick={handleClickGroup}/>)}
                     </ul>
                 </div>
             </div>
