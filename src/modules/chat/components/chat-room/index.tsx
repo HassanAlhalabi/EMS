@@ -1,25 +1,22 @@
 import { useEffect, useRef } from "react";
 
-
 import { Message } from "../../types";
 import ChatMessage from "../message";
 import MessageForm from "../message-form";
 
-
-
-const ChatRoom = ({title, messages, handleSendMessage}:
+const ChatRoom = ({ title, messages, handleSendMessage }:
                   { title: string; 
-                    messages: Message[], 
+                    messages: Message[];
                     handleSendMessage: (message:  string) => void}) => {
 
-    const roomRef = useRef<HTMLDivElement>(null)  ;
+    const roomRef = useRef<HTMLDivElement>(null);
     
     useEffect(() => {
       roomRef.current?.scrollTo({
-        behavior: 'smooth',
-        top: roomRef.current.scrollHeight
-      })
-    },[messages.length])
+      behavior: 'smooth',
+      top: roomRef.current.scrollHeight
+    })
+    },[messages.length]);
 
     return <>
               <h4 className="border-bottom pb-3">{title}</h4>
@@ -36,9 +33,7 @@ const ChatRoom = ({title, messages, handleSendMessage}:
               </div>
               
               <hr />
-              <MessageForm handleSendMessage={(msg) => {
-                                                handleSendMessage(msg);
-                                              }} /> 
+              <MessageForm handleSendMessage={(msg) => { handleSendMessage(msg) }} /> 
             </>
         
 }

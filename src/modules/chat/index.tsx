@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import dayjs from "dayjs";
 
 import useAccess from "../../hooks/useAccess";
 import GroupsList from "./components/groups-list";
@@ -15,6 +14,8 @@ import useGetAllMessages from "./hooks/useGetAllMessages";
 
 const senderId = getCookie('EMSUser').id;
 
+console.log(senderId)
+
 const ChatPage = () => {
 
   const [connection, setConnection] = useState<HubConnection | null>(null);
@@ -24,23 +25,9 @@ const ChatPage = () => {
 
   const {data: groups} = useGetData<Group[]>('/Group/GetAllGroups')
 
-  const [messages, setMessages] = useState<Message[]>([ {
-    messageId: 'asdasd',
-    sentAt: dateFromNow('2023-07-16T03:13:11.678Z')+' ago',
-    senderId,
-    senderFullName: 'Ahmad Hassan',
-    content:'sdfsdfsdf',
-    sending: false
-  },{
-    messageId: 'asdasd',
-    sentAt: dateFromNow('2023-07-16T04:14:11.678Z')+' ago',
-    senderId,
-    senderFullName: 'Ahmad Hassan',
-    content:'sdfsdfsdf',
-    sending: true
-  }]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
-  const {messages: allGroupMessages} = useGetAllMessages<{messages: Message[]}>(groupId,undefined,undefined,{
+  const { messages: allGroupMessages } = useGetAllMessages<{messages: Message[]}>(groupId,undefined,undefined,{
     onSuccess: data => setMessages(data.data.messages)
   });
 
@@ -54,6 +41,8 @@ const ChatPage = () => {
       connection.on("ReceiveMessage", (message) => {
 
         // browserNotify('New Group Message', message);
+
+        console.log('Message Received',message)
 
         setMessages(prev => ([
           ...prev,
@@ -74,6 +63,8 @@ const ChatPage = () => {
       })
 
       await connection?.start();
+      // await connection.invoke('JoinGroup', {user: senderId, room: groupId})
+
       setConnection(connection);
 
       return connection;
@@ -107,15 +98,14 @@ const ChatPage = () => {
     try {
       await post('/Message',{
         content: msg,
-        toGroupId: groupId
+        // toGroupId: groupId
       })
     } catch(error) {
       console.log(error)
     }
   }
 
-    const handleClickGroup = (groupId: string) => setGroupId(groupId)
-
+    const handleClickGroup = (groupId: string) => setGroupId(groupId);
 
     return     <div  id="chat3" style={{borderRadius: "15px"}}>
                   <div className="row">

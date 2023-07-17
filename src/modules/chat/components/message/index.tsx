@@ -1,5 +1,3 @@
-import { Card } from "react-bootstrap";
-
 import { Message } from "../../types";
 import sendingIcon from '../../../../assets/img/message-sent-loading3.gif';
 
