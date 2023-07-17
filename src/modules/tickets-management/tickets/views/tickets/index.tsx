@@ -7,13 +7,13 @@ import { Link } from 'react-router-dom';
 import PopUp from "../../../../../components/popup";
 import Table from "../../../../../components/table"
 import { ACTION_TYPES } from "../../../../../constants";
-import { Ticket, NewTicket } from "../../types";
+import { Ticket, NewTicket, TicketResult } from "../../types";
 import { ticketsValidation } from "../../schema";
 import TicketForm from "../../ticket-form";
 import { useGetTableData } from "../../../../../hooks/useGetTableData";
-import { Action } from '../../../../../types';
+import { Action, PaginationInfo } from '../../../../../types';
 import { useActions } from '../../../../../hooks/useActions';
-import useTranslate from '../../../../../hooks/useTranslate';
+import useTranslate, { TranslateKey } from '../../../../../hooks/useTranslate';
 
 const INITIAL_VALUES = {
     note: '',
@@ -39,7 +39,7 @@ const TicketsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Ticket/GetAllTickets', page, pageSize, searchKey)
+            refetch } = useGetTableData<{tickets: Ticket[], paginationInfo: PaginationInfo}>('/Ticket/GetAllTickets', page, pageSize, searchKey)
             
     const columns = useMemo(
         () => [
@@ -72,7 +72,8 @@ const TicketsPage = () => {
     )
 
     const tickets = useMemo(
-        () => (data?.data.tickets) ? data.data.tickets : [],
+        () => (data?.data.tickets) ? data.data.tickets.map(ticket => 
+                                        ({...ticket, ticketStatus: t(ticket.ticketStatus as TranslateKey)})) : [],
         [data, isFetching, isLoading, page]
     );
 

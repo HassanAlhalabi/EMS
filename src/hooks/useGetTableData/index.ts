@@ -2,8 +2,9 @@ import { useQuery } from "react-query";
 import { useEffect } from "react";
 
 import { useHTTP } from "../useHTTP";
+import { AxiosResponse } from "axios";
 
-export const useGetTableData = (path: string, page: number = 1, pageSize: number = 15, searchKey: string = '') => {
+export const useGetTableData = <TData>(path: string, page: number = 1, pageSize: number = 15, searchKey: string = '') => {
 
     const { get } = useHTTP();
     
@@ -11,7 +12,7 @@ export const useGetTableData = (path: string, page: number = 1, pageSize: number
             status,
             isLoading, 
             isFetching, 
-            refetch } = useQuery(
+            refetch } = useQuery<AxiosResponse<TData>>(
                                 [path, page, pageSize, searchKey], 
                                 () => get(`${path}?page=${page}&pageSize=${pageSize}&key=${searchKey}`),
                                 {

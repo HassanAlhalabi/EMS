@@ -41,6 +41,7 @@ const CommnetForm = ({ formik }: {formik: FormikProps<NewTicketResult>}) => {
                         </Col>
                     </Row>
                     <Button scope={""} 
+                            disabled={!formik.dirty || !formik.isValid}
                             className="btn btn-falcon-primary" 
                             onClick={() => formik.handleSubmit()}>{`${t('ADD')} ${t('comment')}`}</Button>
                 </Form>

@@ -64,6 +64,7 @@ const useHTTP = () => {
         const refreshToken = await getRefreshToken();
         // Refresh Token Not Expired
         if(refreshToken) {
+          console.log(error.config.headers)
           error.config.headers['Authorization'] = `Bearer ${refreshToken}`;
           setAccess(refreshToken)
           return await httpClient.request(error.config);

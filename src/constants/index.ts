@@ -36,4 +36,10 @@ export const WORK_DAYS: Record<string,number> = {
     'Saturday': 7
 }; 
 
-export const WORK_DAYS_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+export const WORK_DAYS_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+export const TASK_STATUS = {
+    pending: 'PENDING',
+    replied: 'REPLIED',
+    closed: 'CLOSED' 
+} 

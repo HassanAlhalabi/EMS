@@ -13,7 +13,8 @@ import { ActionItem, useActions } from "../../../../../hooks/useActions";
 import { toast } from "react-toastify";
 import { ACTION_TYPES } from "../../../../../constants";
 import { ticketResultValidation } from "../../schema";
-import useTranslate from "../../../../../hooks/useTranslate";
+import useTranslate, { TranslateKey } from "../../../../../hooks/useTranslate";
+import FileAttachmentPreview from "../../../../../components/file-attachement-preview";
 
 const INITIAL_VALUES = {
     attachments: [],
@@ -63,7 +64,10 @@ const TicketDetils = () => {
     )
 
     const ticket = useMemo(
-        () => (data?.data) ? [data.data] : [],
+        () => (data?.data) ? [{ ...data.data, 
+                                ticketStatus: t(data.data.ticketStatus as TranslateKey),
+                                attachments: data.data.attachments.map(att => <FileAttachmentPreview key={att} url={att} />)
+                                 }] : [],
         [data]
     );
 

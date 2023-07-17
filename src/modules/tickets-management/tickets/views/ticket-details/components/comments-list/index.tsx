@@ -12,15 +12,15 @@ const CommentList = ({ ticketResults }:{ticketResults: TicketResult[] | undefine
     return  ticketResults.length === 0 ?
                 <p className="alert alert-info">{t('no_comments_yet')}</p>
             : <ListGroup className="mb-3">
-                <ListGroupItem>
+                <ListGroupItem className="pb-0">
                     {
                         ticketResults.map(result => 
-                            <Row key={result.ticketResultId}>
+                            <Row key={result.ticketResultId} className="border-bottom p-3">
                                 <Col md={8}>
-                                    <h6>{result.createdByFullName}</h6>
+                                    <h5>{result.createdByFullName}</h5>
                                     <p>{result.description}</p>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={4} className="border-start">
                                     <h5>{t('attachments')}</h5>
                                     {
                                         result.attachments.length === 0 ?
