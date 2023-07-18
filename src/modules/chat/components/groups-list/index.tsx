@@ -4,7 +4,7 @@ import GroupLinkItem from "./group";
 
 
 const GroupsList = ({groups, handleClickGroup}: {groups: Group[], 
-                                                handleClickGroup: (groupId: string) => void }) => {
+                                                handleClickGroup: (group: Group) => void }) => {
 
     return <div className="p-3 bg-dark-blue rounded h-100">
                 <div className="input-group rounded mb-3">

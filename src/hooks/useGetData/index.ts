@@ -42,7 +42,7 @@ const useGetData = <TData>(path: string, config?: UseQueryOptions<AxiosResponse<
         }
     },[isFetched])
 
-    return { refetch, data, isFetching, isLoading }
+    return { refetch, data, isFetching, isLoading, isFetched }
 
 }
  

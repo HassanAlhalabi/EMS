@@ -2,7 +2,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useTheme } from '../../hooks/useTheme';
 
-const TableLoader = () => {
+const TableLoader = ({columns}: {columns?: number}) => {
 
     const {theme} = useTheme();
 
@@ -16,7 +16,7 @@ const TableLoader = () => {
 
     return (
         <SkeletonTheme baseColor={style.baseColor} highlightColor={style.highlightColor} >
-            <Skeleton count={15} height='55px' width='100%'  />
+            <Skeleton count={columns || 15} height='55px' width='100%'  />
         </SkeletonTheme>
     )
 }

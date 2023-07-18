@@ -1,28 +1,32 @@
 import { useEffect } from "react";
 
-import { QueryOptions, UseQueryOptions, useQuery } from "react-query";
+import { UseQueryOptions, useQuery } from "react-query";
 
 import { useGet } from "../../../../hooks";
 import { AxiosResponse } from "axios";
 
-const useGetAllMessages = <TData>(groupId: string | null, page: number = 1, pageSize: number = 20, 
+const useGetAllMessages = <TData>(groupId: string | null, page: number = 1, pageSize: number = 200000, 
                                 config: UseQueryOptions<AxiosResponse<TData>>) => {
     const get = useGet();
 
     const { data: messages, 
-            refetch } = useQuery<AxiosResponse<TData>>(['/Message/GetAllMessages', groupId], 
+            refetch,
+            isLoading } = useQuery<AxiosResponse<TData>>(['/Message/GetAllMessages', groupId], 
                 () => get(`/Message/GetAllMessages?page=${page}&pageSize=${pageSize}&groupId=${groupId}`), {
                     enabled: false,
+                    refetchInterval: 10000,
                     ...config,
                 });
              
     useEffect(() => {
-        if(groupId) {
-            refetch();
-        }
+        const interval = setInterval(() => {
+            if(groupId) refetch();
+        }, 30000);
+        if(groupId) refetch();
+        return () => clearInterval(interval)
     }, [groupId])           
 
-    return { messages };          
+    return { messages , refetch, isLoading };          
     
 }
  
