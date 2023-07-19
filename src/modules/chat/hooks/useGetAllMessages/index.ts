@@ -5,7 +5,7 @@ import { UseQueryOptions, useQuery } from "react-query";
 import { useGet } from "../../../../hooks";
 import { AxiosResponse } from "axios";
 
-const useGetAllMessages = <TData>(groupId: string | null, page: number = 1, pageSize: number = 200000, 
+const useGetAllMessages = <TData>(groupId: string | null, page: number = 1, pageSize: number = 30, 
                                 config: UseQueryOptions<AxiosResponse<TData>>) => {
     const get = useGet();
 

@@ -1,6 +1,8 @@
 import { createContext, useState, ReactNode, useEffect, useCallback, useLayoutEffect } from 'react';
 import { setCookie } from '../../util';
 import i18n from '../../i18n';
+import 'dayjs/locale/ar';
+import dayjs from 'dayjs';
 
 const LOCALIZE_INITIAL_VALUE = {
     currentLang: i18n.resolvedLanguage,
@@ -16,6 +18,7 @@ export const LocalizeProvider = ({children}:{children: ReactNode}) => {
     const handleCurrentLang = useCallback((newLang: string) => { 
         i18n.changeLanguage(newLang)
         setCurrentLang(newLang);
+        dayjs.locale(i18n.language);
         setCookie('EMSSystemLang',newLang);
     },[]);
 

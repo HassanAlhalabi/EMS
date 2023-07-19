@@ -11,6 +11,8 @@ import { dateFromNow, getCookie } from "../../util";
 import useGetData from "../../hooks/useGetData";
 import useGetAllMessages from "./hooks/useGetAllMessages";
 import TableLoader from "../../components/table-loader";
+import useTranslate from "../../hooks/useTranslate";
+import dayjs from "dayjs";
 
 const senderId = getCookie('EMSUser').id;
 
@@ -20,6 +22,9 @@ const ChatPage = () => {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null)
   const { access } = useAccess();
   const  { post } = useHTTP();     
+  const t = useTranslate();
+
+  console.log(dayjs.locale('ar'))
 
   const {data: groups, isLoading, isFetching} = useGetData<Group[]>('/Group/GetAllGroups')
 
@@ -44,7 +49,7 @@ const ChatPage = () => {
           ...prev,
           {
             ...message,
-            sentAt: dateFromNow(message.sentAt)+' ago'
+            sentAt: dateFromNow(message.sentAt)
           }
         ]));
 
@@ -80,7 +85,7 @@ const ChatPage = () => {
       ...prev,
       {
         messageId,
-        sentAt: dateFromNow(Date.now())+' ago',
+        sentAt: dateFromNow(Date.now()),
         senderId,
         senderFullName: 'Ahmad Hassan',
         content: msg,
@@ -102,7 +107,16 @@ const ChatPage = () => {
         return message;
       }))
     } catch(error) {
-      console.log(error)
+      setMessages(prev => prev.map(message => {
+        if(message.messageId === messageId) {
+          return {
+            ...message,
+            sending: false,
+            failed: true,
+          }
+        }
+        return message;
+      }))
     }
   }
 
@@ -118,8 +132,13 @@ const ChatPage = () => {
                       </div>
 
                       <div className="col-md-6 col-lg-7 col-xl-8">
-                        {selectedGroup ? <ChatRoom loadingMessages={loadingMessages} title={selectedGroup.groupName} messages={messages} handleSendMessage={sendMessage} /> : 
-                        <p className="alert alert-info">Select A Group To Start Messaging</p> }
+                        <div className="border rounded p-3 h-100">
+                          {selectedGroup ? <ChatRoom loadingMessages={loadingMessages} title={selectedGroup.groupName} messages={messages} handleSendMessage={sendMessage} /> : 
+                          <div className="d-flex h-100 flex-column justify-content-center  text-center">
+                            <p className="fw-bold">{t('select_group')}</p>
+                            <i className="fa fa-message fa-4x"></i>
+                          </div>}
+                        </div>
                       </div>
 
                   </div>

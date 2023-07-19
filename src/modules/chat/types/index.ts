@@ -7,6 +7,7 @@ export interface Message {
     content: string,
     sentAt: string,
     sending?: boolean,
+    failed?: boolean
 }
 
 export interface Group {

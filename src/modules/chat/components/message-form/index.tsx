@@ -1,18 +1,20 @@
 import { FormEventHandler, useRef } from "react";
 
 import { Button, Form } from "react-bootstrap";
+import useTranslate from "../../../../hooks/useTranslate";
 
 
 const MessageForm = ({handleSendMessage}:{handleSendMessage: (msg: string) => void}) => {
 
     const messageInput = useRef<HTMLInputElement | null>(null);  
+    const t = useTranslate();
     
     const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-            event.preventDefault();
-            handleSendMessage(messageInput.current?.value   as string);
-            if(messageInput.current) {
-                messageInput.current.value = '';
-            }
+        event.preventDefault();
+        handleSendMessage(messageInput.current?.value   as string);
+        if(messageInput.current) {
+            messageInput.current.value = '';
+        }
     }
 
     
@@ -22,7 +24,7 @@ const MessageForm = ({handleSendMessage}:{handleSendMessage: (msg: string) => vo
                     alt="avatar 3" style={{width: "40px",height: "100%"}} className=" me-2"/>
                     <Form.Control ref={messageInput} 
                                 className="form-control-md"
-                                placeholder="Type your message..." />
+                                placeholder={`${t('type_message')}...`} />
 
                     <a className="ms-1 text-muted" href="#!"><i className="fas fa-paperclip"></i></a>
                     <a className="ms-3 text-muted" href="#!"><i className="fas fa-smile"></i></a>
