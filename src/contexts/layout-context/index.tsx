@@ -14,6 +14,8 @@ const INITIAL_STATE = {
     isProgressLoading: false,
     toggleProgressLoader: (loaderState: boolean) => {},
 
+    setIsExpanded: (newState: boolean) => {}
+
 }
 
 export type ThemeMode = 'LIGHT' | 'DARK';
@@ -52,6 +54,7 @@ export const LayoutContextProvider = ({children}:{children: ReactNode}) => {
     }, [theme]);
 
     return  <LayoutContext.Provider value={{ 
+                                            setIsExpanded,
                                             drawerIsExpanded, 
                                             toggleDrawer, 
                                             theme, 
