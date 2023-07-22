@@ -46,10 +46,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan & {subjects?: 
                                                 
     useEffect(() => {
         if(formik.values.subjects) {
-            setAllSelectedItems(formik.values.subjects.map(subject => ({
-                id: subject.id,
-                name: subject.nameEn
-            })))
+            setAllSelectedItems(formik.values.subjects)
         }
     }, [formik.values?.subjects?.length])
 
