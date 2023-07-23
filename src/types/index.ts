@@ -1,10 +1,10 @@
 export interface PaginationInfo {
-    hasNext: boolean,
-    hasPrevious: boolean, 
+    hasNext?: boolean,
+    hasPrevious?: boolean, 
     pageNo: number,
     pageSize: number,
-    totalItems: number
-    totalPages: number
+    totalItems?: number
+    totalPages?: number
 }
 
 export interface SelectedItem {

@@ -12,7 +12,7 @@ import useGetData from "../../hooks/useGetData";
 import useGetAllMessages from "./hooks/useGetAllMessages";
 import TableLoader from "../../components/table-loader";
 import useTranslate from "../../hooks/useTranslate";
-import dayjs from "dayjs";
+import { PaginationInfo } from "../../types";
 
 const senderId = getCookie('EMSUser').id;
 
@@ -23,15 +23,29 @@ const ChatPage = () => {
   const { access } = useAccess();
   const  { post } = useHTTP();     
   const t = useTranslate();
-
-  console.log(dayjs.locale('ar'))
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
+    hasNext: true,
+    pageNo: 1,
+    pageSize: 50,
+  })
 
   const {data: groups, isLoading, isFetching} = useGetData<Group[]>('/Group/GetAllGroups')
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const { messages: allGroupMessages, refetch, isLoading: loadingMessages } = useGetAllMessages<{messages: Message[]}>(selectedGroup?.groupId  as string,undefined,undefined,{
-    onSuccess: data => setMessages(data.data.messages.map(message => ({...message, sentAt: dateFromNow(message.sentAt)})))
+  const { messages: allGroupMessages, 
+          refetch, 
+          isFetching: isFetchingMessages,
+          isLoading: loadingMessages,
+          fetchNextPage, 
+          hasNextPage } = useGetAllMessages<{messages: Message[];
+                                                            paginationInfo: PaginationInfo
+                                                          }>(selectedGroup?.groupId  as string, 
+                                                                                  undefined, 
+                                                                                  paginationInfo.pageSize,{
+    onSuccess: res => { 
+      setMessages(...res.pages.map(page => page.data.messages.map(message => ({...message, sentAt: dateFromNow(message.sentAt)}))))
+    }
   });
 
   const createConnection = async (group?: string) => {
@@ -70,7 +84,6 @@ const ChatPage = () => {
       return connection;
   
     } catch(error) {
-      console.log(error);
       return error
     } 
   }
@@ -78,7 +91,7 @@ const ChatPage = () => {
   const  sendMessage = async (msg: string) => {
     if(!msg) return;
 
-    const messageId = senderId+dateFromNow(Date.now());
+    const messageId = senderId+Date.now();
 
     // Preview Message In Room
     setMessages(prev => ([
@@ -133,7 +146,12 @@ const ChatPage = () => {
 
                       <div className="col-md-6 col-lg-7 col-xl-8">
                         <div className="border rounded p-3 h-100">
-                          {selectedGroup ? <ChatRoom loadingMessages={loadingMessages} title={selectedGroup.groupName} messages={messages} handleSendMessage={sendMessage} /> : 
+                          {selectedGroup ? <ChatRoom  loadingMessages={loadingMessages} 
+                                                      title={selectedGroup.groupName} 
+                                                      messages={messages} 
+                                                      handleSendMessage={sendMessage}
+                                                      fetchNextPage={fetchNextPage}
+                                                      hasNextPage={hasNextPage}/> : 
                           <div className="d-flex h-100 flex-column justify-content-center  text-center">
                             <p className="fw-bold">{t('select_group')}</p>
                             <i className="fa fa-message fa-4x"></i>
