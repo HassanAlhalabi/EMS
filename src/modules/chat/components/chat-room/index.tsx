@@ -1,4 +1,6 @@
 
+import { LegacyRef, useState } from 'react';
+
 import SyncLoader from "react-spinners/SyncLoader";
 import { FetchNextPageOptions, UseInfiniteQueryResult } from "react-query";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -7,6 +9,8 @@ import { Message } from "../../types";
 import ChatMessage from "../message";
 import MessageForm from "../message-form";
 import MessagesLoader from "../../../../components/messages-loader";
+import { useRef } from "react";
+import { Button } from 'react-bootstrap';
 
 const ChatRoom = ({ title, 
                     messages, 
@@ -23,9 +27,32 @@ const ChatRoom = ({ title,
                     isFetchingNextPage: boolean
                   }) => {
 
-    return <>
+    const chatRoomRef = useRef<InfiniteScroll>();
+
+    const [showDownArrow, setShowDownArrow] = useState(false)
+
+    const handleScroll = (e: MouseEvent) => {
+      const scrollTop = Math.abs((e?.target as HTMLElement).scrollTop);
+      if(scrollTop >= 1000) {
+        setShowDownArrow(true)
+      } else {
+        setShowDownArrow(false)
+      }
+    }
+    const scrollDown = () => {
+      // @ts-ignore
+      const scrollElement = chatRoomRef?.current?.el
+      scrollElement.scrollTo({
+        top: scrollElement.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
+
+    return <div className='position-relative'>
               <h4 className="border-bottom pb-3">{title}</h4>
               <InfiniteScroll
+                onScroll={handleScroll}
+                ref={chatRoomRef as LegacyRef<InfiniteScroll>}
                 dataLength={messages.length}
                 next={fetchNextPage}
                 style={{ display: 'flex', flexDirection: 'column-reverse' }}
@@ -42,9 +69,22 @@ const ChatRoom = ({ title,
                           </div>
                 })}
               </InfiniteScroll>
+              { showDownArrow && 
+                <Button
+                  className='rounded-circle text-center d-flex p-0 btn-falcon-primary'
+                  style={{
+                    position: 'absolute',
+                    bottom: '87px',
+                    right: '20px',
+                    width: '35px',
+                    height: '35px'
+                  }}
+                  onClick={() => scrollDown()}>
+                      <i className='fa fa-arrow-down m-auto'></i>
+                </Button>}
               <hr />
               <MessageForm handleSendMessage={(msg) => { handleSendMessage(msg) }} /> 
-            </>
+            </div>
         
 }
  

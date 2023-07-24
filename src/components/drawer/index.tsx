@@ -36,7 +36,7 @@ const Drawer = () => {
         </Link>
       </div>
 
-      <div ref={drawerRef}  className={`collapse navbar-collapse w-sm-75 w-100 w-md-50 
+      <div ref={drawerRef}  className={`collapse navbar-collapse w-sm-75 w-100 w-md-50 w-lg-100
             ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
 
