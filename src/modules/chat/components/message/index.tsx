@@ -12,11 +12,11 @@ const ChatMessage = ({  messageId,
                         sending, 
                         failed}: Message) => {
 
-    const getMessageBG = () => {
+    const getMessageClass = () => {
         if(failed) {
             return '#900'
         }
-        return senderId === userId ? "#6899d5" : "#123057";
+        return senderId === userId ? "my-message-body" : "";
     }
 
     const renderSendStatus = () => {
@@ -45,10 +45,11 @@ const ChatMessage = ({  messageId,
     return <div className="d-flex gap-2 flex-row justify-content-start">
             <img src={`https://placehold.co/55x55?text=${senderFullName}`} className="rounded-circle" alt="avatar 1" style={{width: "45px", height: "100%"}} />
             <div>
-                <div className="p-2 mb-1 rounded-3" 
-                    style={{backgroundColor: getMessageBG(), 
-                                color: '#FFF',
-                                width: 'fit-content'}}>
+                <div className={`message-body ${getMessageClass()} p-3 mb-1`} 
+                    style={{color: '#FFF',
+                            width: 'fit-content',
+                            borderRadius: '20px 20px 20px 10px',
+                            position: "relative"}}>
                     <h6>{senderFullName}</h6>
                     <p className="small m-0" style={{fontSize: '14px'}}>
                         {content}

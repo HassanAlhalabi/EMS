@@ -262,3 +262,40 @@
 .dark .dropzone {
     background-color: #152335 !important
 }
+
+/* Chat System */
+.message-body {
+    background-color: #123057;
+}
+
+.my-message-body {
+    background-color: #6899d5;
+}
+
+.message-body p,
+.message-body h6 {
+    z-index: 3;
+    position: relative;
+}
+
+.message-body::before {
+    content: '';
+    width: 30px;
+    height: 30px;
+    background-color: #6899d500;
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    translate: -100%;
+    border: 15px solid;
+    border-color: transparent;
+    z-index: 0;
+    clip-path: circle(0,0);
+    border-bottom-color: #123057;
+    border-right-color: #123057;
+}
+
+.my-message-body::before {
+    border-bottom-color: #6899d5;
+    border-right-color: #6899d5;
+}
