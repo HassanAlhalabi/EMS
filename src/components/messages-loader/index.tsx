@@ -22,6 +22,7 @@ const MessagesLoader = ({columns}: {columns?: number}) => {
                                                 count={1} 
                                                 height='45px'
                                                 className="mb-3"
+                                                style={{maxWidth: '90%'}}
                                                 width={`${randomWidths[Math.ceil(Math.random()*6)]}%`}  />)   
 
     return (

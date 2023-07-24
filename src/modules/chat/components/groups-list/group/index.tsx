@@ -8,14 +8,14 @@ const GroupLinkItem = (groupProps: Group) =>
                                 <div className="d-flex justify-content-between">
                                     <div className="d-flex flex-row">
                                         <div>
-                                            {/* <img
-                                            src={thumbnail}
-                                            alt="avatar" className="d-flex align-self-center me-3" width="60" /> */}
+                                            <img
+                                                src={'https://placehold.co/55x55?text=group-thumbnail'}
+                                                alt="avatar" className="d-flex align-self-center me-3 rounded-circle" width="60" />
                                             <span className="badge bg-success badge-dot"></span>
                                         </div>
-                                        <div className="pt-1">
+                                        <div className="pt-1 d-flex flex-column justify-content-around">
                                             <p className="fw-bold mb-0">{groupProps.groupName}</p>
-                                            {/* <p className="small text-muted">Hello, Are you there?</p> */}
+                                            <p className="small text-muted m-0">Some Description About The Group</p>
                                         </div>
                                     </div>
                                     <div className="pt-1">

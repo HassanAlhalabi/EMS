@@ -1,111 +1,47 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+
+import SyncLoader from "react-spinners/SyncLoader";
+import { FetchNextPageOptions, UseInfiniteQueryResult } from "react-query";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Message } from "../../types";
 import ChatMessage from "../message";
 import MessageForm from "../message-form";
 import MessagesLoader from "../../../../components/messages-loader";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { FetchNextPageOptions, UseInfiniteQueryResult } from "react-query";
 
 const ChatRoom = ({ title, 
                     messages, 
                     handleSendMessage, 
                     fetchNextPage,
+                    loadingMessages,
                     hasNextPage }:
                   { title: string; 
                     messages: Message[];
                     handleSendMessage: (message:  string) => void;
                     loadingMessages: boolean;
                     fetchNextPage: (options?: FetchNextPageOptions) => Promise<UseInfiniteQueryResult>;
-                    hasNextPage: boolean | undefined
+                    hasNextPage: boolean | undefined,
+                    isFetchingNextPage: boolean
                   }) => {
-
-    const roomRef = useRef<HTMLDivElement>(null);
-
-    // useEffect(() => {
-    //   if(loadingMessages) {
-    //     roomRef.current?.scrollTo({
-    //       behavior: 'instant',
-    //       top: roomRef.current.scrollHeight
-    //     });
-    //     return;
-    //   }
-    //   roomRef.current?.scrollTo({
-    //   behavior: 'instant',
-    //   top: roomRef.current.scrollHeight
-    // })
-    // },[]);
-
-    useLayoutEffect(() => {
-      if(roomRef.current) {
-        roomRef.current.onscroll = function() {
-          if(roomRef.current?.scrollTop) {
-            if(roomRef?.current?.scrollTop <= 100) {
-              fetchNextPage()
-            }
-          }
-        }
-      }
-    }, [])
 
     return <>
               <h4 className="border-bottom pb-3">{title}</h4>
-
-                <div  ref={roomRef}
-                      id="scrollableDiv"
-                      className="pt-3 pe-3 vh-75 to-scroll"
-                      style={{position: "relative", overflowY: 'auto', maxHeight: '500px'}}
-                    >
-                     <InfiniteScroll
-                        scrollableTarget="scrollableDiv"
-                        dataLength={messages.length}
-                        next={fetchNextPage}
-                        style={{ display: 'flex', flexDirection: 'column-reverse', overflow: 'hidden' }} //To put endMessage and loader to the top.
-                        inverse={true}
-                        hasMore={hasNextPage || false}
-                        loader={<h4>Loading...</h4>}
-                      >
-                        {/* {loadingMessages && <MessagesLoader />} */}
-                        {
-                          messages.map((message, index) => {
-                            return <div key={`${message.messageId}${index}`} className="mb-2">
-                                      <ChatMessage {...message} />
-                                  </div>
-                        })}
-                      </InfiniteScroll>
-              </div> 
-
-              {/* <div
-                    id="scrollableDiv"
-                    style={{
-                      height: 500,
-                      overflow: 'auto',
-                      display: 'flex',
-                      flexDirection: 'column-reverse',
-                    }}
-                  >
-                    {loadingMessages && <MessagesLoader />}
-                    {!loadingMessages && <InfiniteScroll
-                      dataLength={messages.length} //This is important field to render the next data
-                      next={refetchOldMessages}
-                      hasMore={paginationInfo?.hasNext as boolean}
-                      loader={<h4>Loading...</h4>}
-                      style={{ display: 'flex', flexDirection: 'column-reverse' }}
-                      scrollableTarget="scrollableDiv"
-                      endMessage={
-                        <p style={{ textAlign: 'center' }}>
-                          <b>Yay! You have seen it all</b>
-                        </p>
-                  }
-                >
-                  {
-                          messages.map((message, index) => {
-                            return <div key={`${message.messageId}${index}`} className="mb-2">
-                                      <ChatMessage {...message} />
-                                  </div>
-                        })}
-                </InfiniteScroll>  }
-                 </div> */}
+              <InfiniteScroll
+                dataLength={messages.length}
+                next={fetchNextPage}
+                style={{ display: 'flex', flexDirection: 'column-reverse' }}
+                hasMore={hasNextPage as boolean}
+                loader={<h4 className="mt-3" style={{ textAlign: "center" }}><SyncLoader color="#8cb3e2" /></h4>}
+                height={500}
+                inverse={true}
+              >
+                {loadingMessages && <MessagesLoader />}
+                {
+                  messages.map((message, index) => {
+                    return <div key={`${message.messageId}${index}`} className="mb-2">
+                              <ChatMessage {...message} />
+                          </div>
+                })}
+              </InfiniteScroll>
               <hr />
               <MessageForm handleSendMessage={(msg) => { handleSendMessage(msg) }} /> 
             </>

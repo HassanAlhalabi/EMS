@@ -1,26 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { UseInfiniteQueryOptions, UseQueryOptions, useInfiniteQuery } from "react-query";
+import { UseInfiniteQueryOptions, useInfiniteQuery } from "react-query";
 
 import { useGet } from "../../../../hooks";
 import { AxiosResponse } from "axios";
-import { Message } from "../../types";
+import { PaginationInfo } from "../../../../types";
 
-const useGetAllMessages = <TData>(groupId: string | null, page: number = 1, pageSize: number = 30, 
+const useGetAllMessages = <TData extends {paginationInfo: PaginationInfo}>(groupId: string | null, page: number = 1, pageSize: number = 30, 
                                 config: UseInfiniteQueryOptions<AxiosResponse<TData>>) => {
     const get = useGet();
-
-    const [pageS, setPageSize] = useState(pageSize);
 
     const { data: messages, 
             refetch,
             isLoading, 
             isFetching,
-            fetchNextPage, 
+            fetchNextPage,
+            isFetchingNextPage, 
             hasNextPage } = useInfiniteQuery<AxiosResponse<TData>>(
                 ['/Message/GetAllMessages', groupId], 
                 ({pageParam = 50}) => {
-                    console.log(pageParam)
                     return get(`/Message/GetAllMessages?page=1&pageSize=${pageParam}&groupId=${groupId}`)
                 } , {
                     getNextPageParam: (lastPage) => {
@@ -30,25 +28,19 @@ const useGetAllMessages = <TData>(groupId: string | null, page: number = 1, page
                         return undefined
                         
                     },
+                    enabled: false,
                     ...config
                 });
              
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         if(groupId) refetch();
-    //     }, 30000);
-    //     if(groupId) refetch();
-    //     return () => clearInterval(interval)
-    // }, [groupId]);
-    
-    // useEffect(() => {
-    //     if(pageSize) {
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if(groupId) refetch();
+        }, 30000);
+        if(groupId) refetch();
+        return () => clearInterval(interval)
+    }, [groupId]);
 
-    //         refetch()
-    //     }
-    // },[pageSize, page])
-
-    return { messages , refetch, isLoading, isFetching, fetchNextPage, hasNextPage };          
+    return { messages , refetch, isLoading, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage };          
     
 }
  

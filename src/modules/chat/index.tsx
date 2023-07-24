@@ -10,15 +10,15 @@ import { useHTTP } from "../../hooks/useHTTP";
 import { dateFromNow, getCookie } from "../../util";
 import useGetData from "../../hooks/useGetData";
 import useGetAllMessages from "./hooks/useGetAllMessages";
-import TableLoader from "../../components/table-loader";
 import useTranslate from "../../hooks/useTranslate";
 import { PaginationInfo } from "../../types";
+import GroupsLoader from "./components/groups-loader";
 
 const senderId = getCookie('EMSUser').id;
 
 const ChatPage = () => {
 
-  const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [signlRconnection, setSignlRconnectionConnection] = useState<HubConnection | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null)
   const { access } = useAccess();
   const  { post } = useHTTP();     
@@ -33,23 +33,25 @@ const ChatPage = () => {
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const { messages: allGroupMessages, 
-          refetch, 
-          isFetching: isFetchingMessages,
+  const { refetch,
           isLoading: loadingMessages,
           fetchNextPage, 
-          hasNextPage } = useGetAllMessages<{messages: Message[];
+          hasNextPage, isFetchingNextPage } = useGetAllMessages<{messages: Message[];
                                                             paginationInfo: PaginationInfo
                                                           }>(selectedGroup?.groupId  as string, 
                                                                                   undefined, 
                                                                                   paginationInfo.pageSize,{
     onSuccess: res => { 
-      setMessages(...res.pages.map(page => page.data.messages.map(message => ({...message, sentAt: dateFromNow(message.sentAt)}))))
-    }
+      setMessages(res.pages[res.pages.length - 1].data.messages.map(message => ({...message, sentAt: dateFromNow(message.sentAt)})))
+      }
   });
 
   const createConnection = async (group?: string) => {
+
     try {
+
+      if(signlRconnection) return signlRconnection;
+      
       const connection = new HubConnectionBuilder()
       .withUrl('http://alimakhlouf-002-site2.btempurl.com/chatHub', { accessTokenFactory: () => access as string })
       .configureLogging(LogLevel.Information)
@@ -73,13 +75,13 @@ const ChatPage = () => {
   
 
       connection.onclose(e => {
-        setConnection(null)
+        setSignlRconnectionConnection(null)
       })
 
       await connection.start();
       await connection.invoke('AddToGroup', group)
 
-      setConnection(connection);
+      setSignlRconnectionConnection(connection);
 
       return connection;
   
@@ -95,7 +97,6 @@ const ChatPage = () => {
 
     // Preview Message In Room
     setMessages(prev => ([
-      ...prev,
       {
         messageId,
         sentAt: dateFromNow(Date.now()),
@@ -103,7 +104,8 @@ const ChatPage = () => {
         senderFullName: 'Ahmad Hassan',
         content: msg,
         sending: true
-      }
+      },
+      ...prev
     ]))
     try {
       await post('/Message',{
@@ -133,35 +135,35 @@ const ChatPage = () => {
     }
   }
 
-    const handleClickGroup = (group: Group) => { createConnection(group.groupId); setSelectedGroup(group)};
+  const handleClickGroup = (group: Group) => { createConnection(group.groupId); setSelectedGroup(group)};
 
-    return     <div  id="chat3" style={{borderRadius: "15px"}}>
-                  <div className="row">
+  return     <div  id="chat3" style={{borderRadius: "15px"}}>
+                <div className="row">
 
-                      <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-                          {(groups && !isLoading) ? 
-                            <GroupsList groups={(groups.data)} handleClickGroup={handleClickGroup}/> :
-                            <TableLoader columns={10} />}
+                    <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+                        {(groups && !isLoading) ? 
+                          <GroupsList groups={(groups.data)} handleClickGroup={handleClickGroup}/> :
+                          <GroupsLoader />}
+                    </div>
+
+                    <div className="col-md-6 col-lg-7 col-xl-8">
+                      <div className="border rounded p-3 h-100">
+                        {selectedGroup ? <ChatRoom  loadingMessages={loadingMessages} 
+                                                    title={selectedGroup.groupName} 
+                                                    messages={messages} 
+                                                    handleSendMessage={sendMessage}
+                                                    fetchNextPage={fetchNextPage}
+                                                    hasNextPage={hasNextPage}
+                                                    isFetchingNextPage={isFetchingNextPage} /> : 
+                        <div className="d-flex h-100 flex-column justify-content-center  text-center">
+                          <p className="fw-bold">{t('select_group')}</p>
+                          <i className="fa fa-message fa-4x"></i>
+                        </div>}
                       </div>
+                    </div>
 
-                      <div className="col-md-6 col-lg-7 col-xl-8">
-                        <div className="border rounded p-3 h-100">
-                          {selectedGroup ? <ChatRoom  loadingMessages={loadingMessages} 
-                                                      title={selectedGroup.groupName} 
-                                                      messages={messages} 
-                                                      handleSendMessage={sendMessage}
-                                                      fetchNextPage={fetchNextPage}
-                                                      hasNextPage={hasNextPage}/> : 
-                          <div className="d-flex h-100 flex-column justify-content-center  text-center">
-                            <p className="fw-bold">{t('select_group')}</p>
-                            <i className="fa fa-message fa-4x"></i>
-                          </div>}
-                        </div>
-                      </div>
-
-                  </div>
-
-              </div>;
+                </div>
+            </div>;
 }
  
 export default ChatPage;
