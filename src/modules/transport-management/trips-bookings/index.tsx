@@ -39,7 +39,7 @@ const TripsBookingsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Booking/GetAllBookings', page, pageSize, searchKey)
+            refetch } = useGetTableData<{bookings: UserBooking[]}>('/Booking/GetAllBookings', page, pageSize, searchKey)
 
     useGetDataById<TripBooking>(    '/Booking/GetAllBookings',
                                     bookingId,

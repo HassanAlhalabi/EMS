@@ -15,6 +15,7 @@ import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
 import useGetTicketTypesTableColumns from './hooks/useGetTicketTypesTableColumns';
+import { Ticket } from '../tickets/types';
 
 const INITIAL_VALUES = {
     title: '',
@@ -43,7 +44,7 @@ const TicketsTypesPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/TicketType/GetAllTicketTypes', page, pageSize, searchKey)
+            refetch } = useGetTableData<{ticketTypes: TicketType[]}>('/TicketType/GetAllTicketTypes', page, pageSize, searchKey)
 
     useGetDataById<FullTicketType>('/TicketType/GetTicketType',ticketTypeId, {
                 onRefetch: data => {

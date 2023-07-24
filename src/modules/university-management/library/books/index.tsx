@@ -47,7 +47,7 @@ const BooksPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Book/GetAllBooks', page, pageSize, searchKey)
+            refetch } = useGetTableData<{books: Book[]}>('/Book/GetAllBooks', page, pageSize, searchKey)
 
     useGetDataById<FullBook>('/Book/GetFullBook', bookId, {
         onRefetch: data => {

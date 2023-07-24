@@ -36,7 +36,7 @@ const StudyPlansPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useGetTableData('/StudyPlan/GetAllStudyPlans', page, pageSize, searchKey)
+          refetch } = useGetTableData<{studyPlans: StudyPlan[]}>('/StudyPlan/GetAllStudyPlans', page, pageSize, searchKey)
 
   const { refetch: refetchPlan } = useGetDataById<FullStudyPlan>('/StudyPlan/GetFullStudyPlan',studyPlanId,{
     onRefetch: data => {

@@ -47,7 +47,7 @@ const SubjectsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Subject/GetAllSubjects', page, pageSize, searchKey)
+            refetch } = useGetTableData<{subjects: Subject[]}>('/Subject/GetAllSubjects', page, pageSize, searchKey)
 
     useGetDataById<FullSubject>('/Subject/GetFullSubject', subjectId, {
         onRefetch: data => {

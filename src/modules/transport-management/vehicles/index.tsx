@@ -41,7 +41,7 @@ const VehiclesPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Vehicle/GetVehicles', page, pageSize, searchKey)
+            refetch } = useGetTableData<{vehicles: Vehicle[]}>('/Vehicle/GetVehicles', page, pageSize, searchKey)
 
     useGetDataById<Vehicle>('/Vehicle/GetVehicle',
                                 vehicleId,

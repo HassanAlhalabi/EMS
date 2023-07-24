@@ -10,7 +10,7 @@ import { useDelete, useGet, usePost, usePut } from "../../../hooks";
 import { subjectTypeValidation } from "../subjects/schema";
 import { capitalize, getAxiosError } from "../../../util";
 import { useScreenLoader } from "../../../hooks/useScreenLoader";
-import {  FullSubjectType, NewSubjectType, Subject } from "../subjects/types";
+import {  FullSubjectType, NewSubjectType, Subject, SubjectType } from "../subjects/types";
 import SubjectTypeForm from "./subject-type-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
@@ -42,7 +42,7 @@ const SubjectsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/SubjectType/GetAllSubjectTypes', page, pageSize, searchKey);
+            refetch } = useGetTableData<{subjectTypes: SubjectType[]}>('/SubjectType/GetAllSubjectTypes', page, pageSize, searchKey);
 
     useGetDataById<FullSubjectType>('/SubjectType/GetFullSubjectType',subjectId, {
         onRefetch: data => {

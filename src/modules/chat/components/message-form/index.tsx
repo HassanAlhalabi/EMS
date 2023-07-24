@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEventHandler, useRef, useState, useContext } from "react";
 
-import EmojiPicker, { EmojiClickData, SuggestionMode } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, SuggestionMode, Theme } from "emoji-picker-react";
 import { Button, Form } from "react-bootstrap";
 
 import useTranslate from "../../../../hooks/useTranslate";
@@ -55,8 +55,9 @@ const MessageForm = ({handleSendMessage}:{handleSendMessage: (msg: string) => vo
                                                         lazyLoadEmojis
                                                         suggestedEmojisMode={SuggestionMode.FREQUENT}
                                                         theme={
-                                                        theme.theme === 'DARK' ? 'dark' : 'light' 
-                                                    } onEmojiClick={handleEmojiClick} />
+                                                            theme.theme === 'DARK' ? Theme.DARK : Theme.LIGHT
+                                                        } 
+                                                        onEmojiClick={handleEmojiClick} />
                                                 </div>
                         }
                     </a>

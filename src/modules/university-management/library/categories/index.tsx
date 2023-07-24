@@ -41,7 +41,7 @@ const CategoriesPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Category/GetAllCategories', page, pageSize, searchKey)
+            refetch } = useGetTableData<{categories: BookCategory[]}>('/Category/GetAllCategories', page, pageSize, searchKey)
 
     useGetDataById<BookFullCategory>('/Category/GetFullCategory', categoryId, {
         onRefetch: data => {

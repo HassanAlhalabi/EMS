@@ -27,16 +27,10 @@ const SemesterSubjectPage = () => {
     const [semesterSubjectId, setSemesterSubjectId] = useState<string | null>(null);
     const { setAction } = useActions()
 
-    // const formik = useFormik<NewSemesterSubject>({
-	// 	initialValues: INITIAL_VALUES,
-	// 	onSubmit: () => handleSemesterSubjectAction(),
-	// 	validationSchema: semesterSubjectsValidation
-	// })
-
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Subject/GetAllSubjectsForRegister', page, pageSize, searchKey)
+            refetch } = useGetTableData<{semesterSubjects: SemesterSubject[]}>('/Subject/GetAllSubjectsForRegister', page, pageSize, searchKey)
             
     const columns = useMemo(
         () => [

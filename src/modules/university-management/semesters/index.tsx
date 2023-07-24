@@ -42,7 +42,7 @@ const SemestersPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useGetTableData('/Semester/GetAllSemesters', page, pageSize, searchKey)
+          refetch } = useGetTableData<{semesters: Semester[]}>('/Semester/GetAllSemesters', page, pageSize, searchKey)
 
   useGetDataById<FullSemester>('/Semester/GetFullSemester', semesterId, {
     onRefetch: data => {

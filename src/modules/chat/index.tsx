@@ -23,13 +23,8 @@ const ChatPage = () => {
   const { access } = useAccess();
   const  { post } = useHTTP();     
   const t = useTranslate();
-  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    hasNext: true,
-    pageNo: 1,
-    pageSize: 50,
-  })
 
-  const {data: groups, isLoading, isFetching} = useGetData<Group[]>('/Group/GetAllGroups')
+  const {data: groups, isLoading } = useGetData<Group[]>('/Group/GetAllGroups')
 
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -40,7 +35,7 @@ const ChatPage = () => {
                                                             paginationInfo: PaginationInfo
                                                           }>(selectedGroup?.groupId  as string, 
                                                                                   undefined, 
-                                                                                  paginationInfo.pageSize,{
+                                                                                  undefined,{
     onSuccess: res => { 
       setMessages(res.pages[res.pages.length - 1].data.messages.map(message => ({...message, sentAt: dateFromNow(message.sentAt)})))
       }

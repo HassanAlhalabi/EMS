@@ -1,7 +1,6 @@
 import { useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/layout-context';
-// import { drawerMenu } from '../../routes';
 import NavList from '../nav-list';
 import NavLink from '../nav-list/nav-link';
 import NavListLabel from '../nav-list/nav-list-label';
@@ -13,7 +12,7 @@ const Drawer = () => {
 
   const {toggleDrawer, drawerIsExpanded, setIsExpanded} = useContext(LayoutContext);
   const { t } = useTranslation();
-  const drawerRef = useRef();
+  const drawerRef = useRef(null);
   const handleOnBlur = () => setIsExpanded(false);
   useBlur(drawerRef, handleOnBlur);
 
