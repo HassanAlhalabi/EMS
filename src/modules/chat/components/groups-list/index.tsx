@@ -17,6 +17,9 @@ const GroupsList = ({ groups, handleClickGroup }:
     const getGroups = () => filterGroups(groups, searchGroupInput);
 
     return <div className="p-3 bg-dark-blue rounded h-100">
+                <h4 className="border-bottom pb-3 d-flex justify-content-between flex-wrap">
+                    Groups
+                </h4>
                 <div className="input-group rounded mb-3">
                     <input  type="search" 
                             className="form-control rounded" 

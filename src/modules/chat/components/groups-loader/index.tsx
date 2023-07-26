@@ -18,9 +18,10 @@ const GroupsLoader = ({count}: {count?: number}) => {
 
     const rowsArray = Array(rowsCount).fill(undefined)
 
-    return <>
-                <SkeletonTheme baseColor={style.baseColor} highlightColor={style.highlightColor}>
-            <Skeleton height='36px' className="w-100 mb-2" />
+    return <div className="p-3">
+            <SkeletonTheme baseColor={style.baseColor} highlightColor={style.highlightColor}>
+                <Skeleton height='36px' width={100} className="mb-2" />
+                <Skeleton height='36px' className="w-100 mb-2" />
                 {rowsArray.map((row) =>         
                     <div key={row} className="row gap-2 p-2 mb-3">
                         <div style={{height:'55px',
@@ -36,7 +37,7 @@ const GroupsLoader = ({count}: {count?: number}) => {
                             <Skeleton height='15px' style={{maxWidth: '300px'}}/>
                         </div>
                     </div>)}
-                </SkeletonTheme></>
+                </SkeletonTheme></div>
 }
 
 export default GroupsLoader

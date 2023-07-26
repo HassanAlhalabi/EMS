@@ -144,14 +144,13 @@ const ChatPage = () => {
   }
 
   return     <div  id="chat3" style={{borderRadius: "15px"}}>
-                <div className="row">
 
-                    <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+                <div className="row">
+                    <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0 position-relative">
                         {(groups && !isLoading) ? 
                           <GroupsList groups={(groups.data)} handleClickGroup={handleClickGroup}/> :
                           <GroupsLoader />}
                     </div>
-
                     <div className="col-md-6 col-lg-7 col-xl-8">
                       <div className="border rounded p-3 h-100">
                         {selectedGroup ? <ChatRoom  loadingMessages={loadingMessages} 

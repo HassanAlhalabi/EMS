@@ -157,3 +157,14 @@ export const dateFromNow = (date: string | Date | number) => {
     dayjs.extend(relativeTime);
     return dayjs().from(dayjs(date), true);
 }
+
+export const isInViewport = (el: HTMLElement) => {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+    );
+}

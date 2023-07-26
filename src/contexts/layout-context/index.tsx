@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState, useEffect, useCallback } from "react"
+import { createContext, ReactNode, useState, useEffect, useCallback, useMemo } from "react"
 
 const INITIAL_STATE = {
     
@@ -53,17 +53,19 @@ export const LayoutContextProvider = ({children}:{children: ReactNode}) => {
         handleToggleTheme(theme);
     }, [theme]);
 
-    return  <LayoutContext.Provider value={{ 
-                                            setIsExpanded,
-                                            drawerIsExpanded, 
-                                            toggleDrawer, 
-                                            theme, 
-                                            toggleTheme,
-                                            isScreenLoading,
-                                            toggleScreenLoader,
-                                            isProgressLoading,
-                                            toggleProgressLoader 
-                                        }}>
+    const LayoutValue = useMemo(() => ({ 
+            setIsExpanded,
+            drawerIsExpanded, 
+            toggleDrawer, 
+            theme, 
+            toggleTheme,
+            isScreenLoading,
+            toggleScreenLoader,
+            isProgressLoading,
+            toggleProgressLoader 
+        }),[theme, isProgressLoading,isScreenLoading, theme, drawerIsExpanded ])
+
+    return  <LayoutContext.Provider value={LayoutValue}>
                 {children}
             </LayoutContext.Provider>
 

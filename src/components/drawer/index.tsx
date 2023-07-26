@@ -13,7 +13,10 @@ const Drawer = () => {
   const {toggleDrawer, drawerIsExpanded, setIsExpanded} = useContext(LayoutContext);
   const { t } = useTranslation();
   const drawerRef = useRef(null);
-  const handleOnBlur = () => setIsExpanded(false);
+  const handleOnBlur = () => { 
+    if(window.innerWidth >= 1200) return;
+    setIsExpanded(false) 
+  };
   useBlur(drawerRef, handleOnBlur);
 
   return (
@@ -36,7 +39,8 @@ const Drawer = () => {
         </Link>
       </div>
 
-      <div ref={drawerRef}  className={`collapse navbar-collapse w-sm-75 w-100 w-md-50 w-lg-100
+      <div  ref={drawerRef}  
+            className={`collapse navbar-collapse w-sm-75 w-100 w-md-50 w-xl-100
             ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
 
