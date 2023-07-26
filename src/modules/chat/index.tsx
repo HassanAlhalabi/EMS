@@ -60,7 +60,8 @@ const ChatPage = () => {
           ...prev,
           {
             ...message,
-            sentAt: dateFromNow(message.sentAt)
+            sentAt: dateFromNow(message.sentAt),
+            selected: false
           }
         ]));
 
@@ -98,7 +99,8 @@ const ChatPage = () => {
         senderId,
         senderFullName: 'Ahmad Hassan',
         content: msg,
-        sending: true
+        sending: true,
+        selected: false
       },
       ...prev
     ]))
@@ -111,7 +113,7 @@ const ChatPage = () => {
         if(message.messageId === messageId) {
           return {
             ...message,
-            sending: false
+            sending: false,
           }
         }
         return message;
@@ -132,6 +134,15 @@ const ChatPage = () => {
 
   const handleClickGroup = (group: Group) => { createConnection(group.groupId); setSelectedGroup(group)};
 
+  const handleSelectMessage = (messageId: string, action: 'SELECT' | 'DISELECT') => {
+    if(action === 'SELECT') {
+      return setMessages(prev => prev.map(message => message.messageId === messageId ? ({...message, selected: true}) : message))
+    }
+    if(action === 'DISELECT') {
+      return setMessages(prev => prev.map(message => message.messageId === messageId ? ({...message, selected: false}) : message))
+    }
+  }
+
   return     <div  id="chat3" style={{borderRadius: "15px"}}>
                 <div className="row">
 
@@ -149,7 +160,8 @@ const ChatPage = () => {
                                                     handleSendMessage={sendMessage}
                                                     fetchNextPage={fetchNextPage}
                                                     hasNextPage={hasNextPage}
-                                                    isFetchingNextPage={isFetchingNextPage} /> : 
+                                                    isFetchingNextPage={isFetchingNextPage}
+                                                    handleSelectMessage={handleSelectMessage} /> : 
                         <div className="d-flex h-100 flex-column justify-content-center  text-center">
                           <p className="fw-bold">{t('select_group')}</p>
                           <i className="fa fa-message fa-4x"></i>

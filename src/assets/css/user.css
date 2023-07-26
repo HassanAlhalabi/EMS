@@ -1,3 +1,8 @@
 .dropdown-indicator:after {
     right: 25px
 }
+
+.emoji-picker-holder {
+    bottom: 0;
+    right: 0
+}

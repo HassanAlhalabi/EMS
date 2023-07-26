@@ -33,11 +33,11 @@ const useGetAllMessages = <TData extends {paginationInfo: PaginationInfo}>(group
                 });
              
     useEffect(() => {
-        const interval = setInterval(() => {
-            if(groupId) refetch();
-        }, 30000);
+        // const interval = setInterval(() => {
+        //     if(groupId) refetch();
+        // }, 30000);
         if(groupId) refetch();
-        return () => clearInterval(interval)
+        // return () => clearInterval(interval)
     }, [groupId]);
 
     return { messages , refetch, isLoading, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage };          

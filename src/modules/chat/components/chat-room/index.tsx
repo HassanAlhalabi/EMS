@@ -1,34 +1,36 @@
 
-import { LegacyRef, useState } from 'react';
+import { LegacyRef, useState, useRef } from 'react';
 
 import SyncLoader from "react-spinners/SyncLoader";
 import { FetchNextPageOptions, UseInfiniteQueryResult } from "react-query";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Button } from 'react-bootstrap';
 
 import { Message } from "../../types";
 import ChatMessage from "../message";
 import MessageForm from "../message-form";
 import MessagesLoader from "../../../../components/messages-loader";
-import { useRef } from "react";
-import { Button } from 'react-bootstrap';
+import useTranslate from '../../../../hooks/useTranslate';
 
 const ChatRoom = ({ title, 
                     messages, 
                     handleSendMessage, 
                     fetchNextPage,
                     loadingMessages,
-                    hasNextPage }:
+                    hasNextPage,
+                    handleSelectMessage }:
                   { title: string; 
                     messages: Message[];
                     handleSendMessage: (message:  string) => void;
                     loadingMessages: boolean;
                     fetchNextPage: (options?: FetchNextPageOptions) => Promise<UseInfiniteQueryResult>;
                     hasNextPage: boolean | undefined,
-                    isFetchingNextPage: boolean
+                    isFetchingNextPage: boolean,
+                    handleSelectMessage: (messageId: string, action: 'SELECT' | 'DISELECT') => void
                   }) => {
 
     const chatRoomRef = useRef<InfiniteScroll>();
-
+    const t = useTranslate();
     const [showDownArrow, setShowDownArrow] = useState(false)
 
     const handleScroll = (e: MouseEvent) => {
@@ -48,14 +50,18 @@ const ChatRoom = ({ title,
       })
     }
 
+    const selectedMessages = messages.filter(message => message.selected === true)
+
     return <div className='position-relative'>
-              <h4 className="border-bottom pb-3">{title}</h4>
+              <h4 className="border-bottom pb-3 d-flex justify-content-between flex-wrap">
+                {title} {selectedMessages.length > 0 ? <Button className='btn-sm btn-falcon-danger'>{t('delete')} {selectedMessages.length} {t('messages')}</Button> : null}
+              </h4>
               <InfiniteScroll
                 onScroll={handleScroll}
                 ref={chatRoomRef as LegacyRef<InfiniteScroll>}
                 dataLength={messages.length}
                 next={fetchNextPage}
-                style={{ display: 'flex', flexDirection: 'column-reverse' }}
+                style={{ display: 'flex', flexDirection: 'column-reverse', minHeight: '60vh' }}
                 hasMore={hasNextPage as boolean}
                 loader={<h4 className="mt-3" style={{ textAlign: "center" }}><SyncLoader color="#8cb3e2" /></h4>}
                 height={500}
@@ -64,8 +70,8 @@ const ChatRoom = ({ title,
                 {loadingMessages && <MessagesLoader />}
                 {
                   messages.map((message, index) => {
-                    return <div key={`${message.messageId}${index}`} className="mb-2">
-                              <ChatMessage {...message} />
+                    return <div key={`${message.messageId}${index}`}>
+                              <ChatMessage handleSelect={handleSelectMessage} {...message} />
                           </div>
                 })}
               </InfiniteScroll>

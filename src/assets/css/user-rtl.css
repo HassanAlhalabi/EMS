@@ -16,3 +16,9 @@ h1,h2,h3,h4,h5,h6,p,a,div,button,label, option, ::placeholder, select, option:di
     right: auto;
     left: 25px
 }
+
+
+.emoji-picker-holder {
+    bottom: 0;
+    left: 0
+}

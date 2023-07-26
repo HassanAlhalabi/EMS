@@ -7,7 +7,11 @@ export interface Message {
     content: string,
     sentAt: string,
     sending?: boolean,
-    failed?: boolean
+    failed?: boolean,
+    handleEditMessage?: (messageId: string) => void,
+    handleDeleteMessage?: (messageId: string) => void,
+    handleSelect?: (messageId: string, action: 'SELECT' | 'DISELECT') => void,
+    selected?: boolean
 }
 
 export interface Group {

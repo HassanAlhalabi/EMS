@@ -43,6 +43,7 @@ const Drawer = () => {
             <NavLink title={t('dashboard')} faIcon="fas fa-chart-pie" link="/" />
             <NavLink title="Subjects Registration" faIcon="fas fa-book "link="subjects-registration" scope="SubjectRegister.View" />
             <NavLink title={t('my_bookings')} faIcon="fas fa-bus "link="my-bookings" />
+            <NavLink title={t('chat')} faIcon="fas fa-message"link="chat" />
 
             <NavListLabel title={t('tasks_management')} scope={['AllTicket.View','TicketType.Insert']}/>
             <NavLink title={t('tasks')} faIcon="fas fa-tasks" link="tickets" scope='AllTicket.View'/>
