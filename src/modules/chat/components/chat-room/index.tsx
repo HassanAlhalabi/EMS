@@ -18,7 +18,10 @@ const ChatRoom = ({ title,
                     fetchNextPage,
                     loadingMessages,
                     hasNextPage,
-                    handleSelectMessage }:
+                    handleSelectMessage,
+                    handleDeleteMessages,
+                    handleEditMessage   
+                  }:
                   { title: string; 
                     messages: Message[];
                     handleSendMessage: (message:  string) => void;
@@ -26,7 +29,9 @@ const ChatRoom = ({ title,
                     fetchNextPage: (options?: FetchNextPageOptions) => Promise<UseInfiniteQueryResult>;
                     hasNextPage: boolean | undefined,
                     isFetchingNextPage: boolean,
-                    handleSelectMessage: (messageId: string, action: 'SELECT' | 'DISELECT') => void
+                    handleSelectMessage: (messageId: string, action: 'SELECT' | 'DISELECT') => void,
+                    handleDeleteMessages: (messagesIds?: string) => void,
+                    handleEditMessage: (messageId: string) => void,
                   }) => {
 
     const chatRoomRef = useRef<InfiniteScroll>();
@@ -54,7 +59,7 @@ const ChatRoom = ({ title,
 
     return <div className='position-relative'>
               <h4 className="border-bottom pb-3 d-flex justify-content-between flex-wrap">
-                {title} {selectedMessages.length > 0 ? <Button className='btn-sm btn-falcon-danger'>{t('delete')} {selectedMessages.length} {t('messages')}</Button> : null}
+                {title} {selectedMessages.length > 0 ? <Button onClick={() => handleDeleteMessages()} className='btn-sm btn-falcon-danger'>{t('delete')} {selectedMessages.length} {t('messages')}</Button> : null}
               </h4>
               <InfiniteScroll
                 onScroll={handleScroll}
@@ -71,7 +76,10 @@ const ChatRoom = ({ title,
                 {
                   messages.map((message, index) => {
                     return <div key={`${message.messageId}${index}`}>
-                              <ChatMessage handleSelect={handleSelectMessage} {...message} />
+                              <ChatMessage handleSelect={handleSelectMessage} 
+                                           handleDeleteMessage={handleDeleteMessages}
+                                           handleEditMessage={handleEditMessage}
+                                          {...message} />
                           </div>
                 })}
               </InfiniteScroll>
@@ -89,7 +97,7 @@ const ChatRoom = ({ title,
                       <i className='fa fa-arrow-down m-auto'></i>
                 </Button>}
               <hr />
-              <MessageForm handleSendMessage={(msg) => { handleSendMessage(msg) }} /> 
+              <MessageForm  handleSendMessage={(msg) => { handleSendMessage(msg) }} /> 
             </div>
         
 }

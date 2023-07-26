@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
@@ -10,9 +10,15 @@ import { useHTTP } from "../../hooks/useHTTP";
 import { dateFromNow, getCookie } from "../../util";
 import useGetData from "../../hooks/useGetData";
 import useGetAllMessages from "./hooks/useGetAllMessages";
-import useTranslate from "../../hooks/useTranslate";
-import { PaginationInfo } from "../../types";
+import useTranslate, { TranslateKey } from "../../hooks/useTranslate";
+import { Action, PaginationInfo } from "../../types";
 import GroupsLoader from "./components/groups-loader";
+import { ACTION_TYPES } from "../../constants";
+import PopUp from "../../components/popup";
+import { toast } from "react-toastify";
+import { ActionItem, useActions } from "../../hooks/useActions";
+import MessageForm from "./components/message-form";
+import { Form, FormCheck, Stack } from "react-bootstrap";
 
 const senderId = getCookie('EMSUser').id;
 
@@ -21,8 +27,12 @@ const ChatPage = () => {
   const [signlRconnection, setSignlRconnectionConnection] = useState<HubConnection | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null)
   const { access } = useAccess();
+  const [messageId, setMessageId] = useState<string | null>(null);
+  const [currentAction, setCurrentAction] = useState<Action | null>(null);
+  const { setAction } = useActions()
   const  { post } = useHTTP();     
   const t = useTranslate();
+  const deleteForAll = useRef<boolean>(true)
 
   const {data: groups, isLoading } = useGetData<Group[]>('/Group/GetAllGroups')
 
@@ -38,7 +48,7 @@ const ChatPage = () => {
                                                                                   undefined,{
     onSuccess: res => { 
       setMessages(res.pages[res.pages.length - 1].data.messages.map(message => ({...message, sentAt: dateFromNow(message.sentAt)})))
-      }
+    }
   });
 
   const createConnection = async (group?: string) => {
@@ -86,7 +96,7 @@ const ChatPage = () => {
     } 
   }
 
-  const  sendMessage = async (msg: string) => {
+  const sendMessage = async (msg: string) => {
     if(!msg) return;
 
     const messageId = senderId+Date.now();
@@ -143,6 +153,58 @@ const ChatPage = () => {
     }
   }
 
+  const handleSuccess = (message: string) => {
+    toast.success(message);
+    reset();
+  }
+
+  const actionsMap = {
+    [ACTION_TYPES.update]: {
+        type:  ACTION_TYPES.update,
+        path: '/Message/PutMessage',
+        payload: {
+          "content": "string",
+          messageId
+        },
+        onSuccess: () => handleSuccess('Message Updated Successfully')
+    },
+    [ACTION_TYPES.delete]: {
+        type: ACTION_TYPES.update,
+        path: `/Message/DeleteMessage`,
+        payload: {
+          ids:  messageId ? [messageId] : 
+                messages.filter(message => message.selected === true)
+                        .map(message => message.messageId),
+          deleteFromAll: deleteForAll.current
+        },
+        onSuccess: () => handleSuccess('Messages Deleted Successfully')
+    } 
+  }
+
+  const handleRoleAction = async () => {
+    if(currentAction) {
+        setAction(actionsMap[currentAction] as ActionItem)
+    }
+  }
+  const reset = () => {
+    setCurrentAction(null);
+    setMessageId(null);
+  }
+
+  const handleDeleteMessages = (messageId?: string) => {
+    if(messageId) {
+      setMessageId(messageId)
+    }
+    setCurrentAction(ACTION_TYPES.delete as Action)
+  }
+
+  const handleEditMessages = (messageId: string) => {
+    if(messageId) {
+      setMessageId(messageId)
+    }
+    setCurrentAction(ACTION_TYPES.update as Action)
+  }
+
   return     <div  id="chat3" style={{borderRadius: "15px"}}>
 
                 <div className="row">
@@ -160,7 +222,10 @@ const ChatPage = () => {
                                                     fetchNextPage={fetchNextPage}
                                                     hasNextPage={hasNextPage}
                                                     isFetchingNextPage={isFetchingNextPage}
-                                                    handleSelectMessage={handleSelectMessage} /> : 
+                                                    handleSelectMessage={handleSelectMessage}
+                                                    handleDeleteMessages={handleDeleteMessages}
+                                                    handleEditMessage={handleEditMessages}
+                                                     /> : 
                         <div className="d-flex h-100 flex-column justify-content-center  text-center">
                           <p className="fw-bold">{t('select_group')}</p>
                           <i className="fa fa-message fa-4x"></i>
@@ -169,6 +234,34 @@ const ChatPage = () => {
                     </div>
 
                 </div>
+
+                <PopUp  title={`${t(currentAction as TranslateKey)} ${t('messages')}`}
+                        show={currentAction !== null}
+                        onHide={() => { reset() }}
+                        confirmText={`${currentAction} Message`}
+                        confirmButtonVariant={
+                            currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
+                        }
+                        handleConfirm={handleRoleAction}
+                        // confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete}
+                    >
+                        {(  currentAction === ACTION_TYPES.add || 
+                            currentAction === ACTION_TYPES.update)
+                                && <MessageForm isEdit handleSendMessage={sendMessage} />
+                        }
+                        {currentAction === ACTION_TYPES.delete && 
+                                    <div className="d-flex justify-content-between">
+                                      <div>Are you Sure You Want to Delete This Messages</div>
+                                      <Stack className="d-flex gap-2">
+                                          <Form.Label htmlFor="delete-for-all">
+                                            Delete For All Users:
+                                          </Form.Label>
+                                          <FormCheck onChange={e => deleteForAll.current = e.target.checked} id="delete-for-all" />
+                                      </Stack>
+                                    </div>
+                        }
+                </PopUp>
+                
             </div>;
 }
  

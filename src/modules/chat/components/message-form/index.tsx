@@ -6,7 +6,10 @@ import { EmojiClickData } from "emoji-picker-react";
 import useTranslate from "../../../../hooks/useTranslate";
 import useEmojisPicker from "../../hooks/useEmojisPicker";
 
-const MessageForm = ({handleSendMessage}:{handleSendMessage: (msg: string) => void}) => {
+const MessageForm = (   {   handleSendMessage,
+                            isEdit}:
+                        {   handleSendMessage: (msg: string) => void,
+                            isEdit?: boolean}) => {
 
     const [messageInput, setMessgeInput] = useState('');
     const t = useTranslate();
@@ -40,10 +43,13 @@ const MessageForm = ({handleSendMessage}:{handleSendMessage: (msg: string) => vo
                         onClick={openEmojiPicker}><i className="fas fa-smile"></i>
                             { renderEmojisPicker() }
                     </a>
-                    <Button type="submit"
-                            className="ms-3 btn-falcon-primary">
-                            <i className="fas fa-paper-plane"></i>
-                    </Button>    
+                    {
+                        !isEdit && 
+                        <Button type="submit"
+                                className="ms-3 btn-falcon-primary">
+                                <i className="fas fa-paper-plane"></i>
+                        </Button> 
+                    }   
                 </Form>;
 }
  

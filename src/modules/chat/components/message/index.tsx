@@ -73,7 +73,7 @@ const ChatMessage = ({  messageId,
 
     return   <StyledMessage>
                 <div className={`d-flex gap-2 flex-row justify-content-start p-2 rounded mx-3 ${selected ? 'selected' : ''}`}
-                     onClick={() => handleSelect?.(messageId, 'SELECT')} 
+                     onDoubleClick={() => handleSelect?.(messageId, 'SELECT')} 
                      onContextMenu={(e) => {e.preventDefault(); handleSelect?.(messageId, 'DISELECT')}}      
                     >
                     <img src={`https://placehold.co/55x55?text=${senderFullName}`} className="rounded-circle" alt="avatar 1" style={{width: "45px", height: "100%"}} />
