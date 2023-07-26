@@ -162,8 +162,7 @@ const Table = <T extends Record<any,any>>({
 			
 					<div className={`d-flex align-items-center justify-content-between flex-wrap`}>
 						{
-							pagination &&
-							rows.length > 0 &&
+							(pagination) &&
 							<TablePagination
 								loading={loading as boolean}
 								pagination={pagination}
@@ -176,7 +175,7 @@ const Table = <T extends Record<any,any>>({
 							/>
 						}
 						{
-							hasSearch && rows.length > 0 &&
+							(hasSearch) &&
 								<TableSearch
 									searchKey={searchKey as string}
 									handleSearchChange={handleSearchChange}
