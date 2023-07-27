@@ -7,23 +7,27 @@ import useTranslate from "../../../../hooks/useTranslate";
 import useEmojisPicker from "../../hooks/useEmojisPicker";
 
 const MessageForm = (   {   handleSendMessage,
-                            isEdit}:
-                        {   handleSendMessage: (msg: string) => void,
-                            isEdit?: boolean}) => {
-
-    const [messageInput, setMessgeInput] = useState('');
+                            isEdit,
+                            content,
+                            handleContentChange}:
+                        {   handleSendMessage: () => void,
+                            isEdit?: boolean,
+                            content?: string,
+                            handleContentChange?: (content: string) => void
+                        }) => {
     const t = useTranslate();
     
     const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
         event.preventDefault();
-        handleSendMessage(messageInput);
-        setMessgeInput('');
+        handleSendMessage();
     }
 
-    const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => setMessgeInput(e.target.value)
+    const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => { 
+        handleContentChange?.(e.target.value)
+    }
 
     const handleEmojiClick = (emoji: EmojiClickData) => {
-        setMessgeInput(prev => prev + emoji.emoji) 
+        handleContentChange?.(content + emoji.emoji) 
     }
 
     const { renderEmojisPicker, openEmojiPicker } = useEmojisPicker({handleEmojiClick});
@@ -32,7 +36,7 @@ const MessageForm = (   {   handleSendMessage,
                                 className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
                     alt="avatar 3" style={{width: "40px",height: "100%"}} className=" me-2"/>
-                    <Form.Control   value={messageInput}
+                    <Form.Control   value={content}
                                     onChange={handleChangeInput}
                                     className="form-control-md"
                                     placeholder={`${t('type_message')}...`} />

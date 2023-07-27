@@ -32,15 +32,14 @@ const ChatPage = () => {
   const { setAction } = useActions()
   const  { post } = useHTTP();     
   const t = useTranslate();
-  const deleteForAll = useRef<boolean>(true)
-
+  const [deleteForAll, setDeleteForAll] = useState<boolean>(true);
+  const [messageContent, setMessageContent] = useState('');
   const {data: groups, isLoading } = useGetData<Group[]>('/Group/GetAllGroups')
-
   const [messages, setMessages] = useState<Message[]>([]);
-
   const { refetch,
           isLoading: loadingMessages,
-          fetchNextPage, 
+          fetchNextPage,
+          isFetching, 
           hasNextPage, isFetchingNextPage } = useGetAllMessages<{messages: Message[];
                                                             paginationInfo: PaginationInfo
                                                           }>(selectedGroup?.groupId  as string, 
@@ -51,11 +50,13 @@ const ChatPage = () => {
     }
   });
 
+  const handleContentChange = (newContent: string) => setMessageContent(newContent) 
+
   const createConnection = async (group?: string) => {
 
     try {
 
-      if(signlRconnection) return signlRconnection;
+      if(signlRconnection) return;
       
       const connection = new HubConnectionBuilder()
       .withUrl('http://alimakhlouf-002-site2.btempurl.com/chatHub', { accessTokenFactory: () => access as string })
@@ -80,9 +81,7 @@ const ChatPage = () => {
       });
   
 
-      connection.onclose(e => {
-        setSignlRconnectionConnection(null)
-      })
+      connection.onclose(e => setSignlRconnectionConnection(null))
 
       await connection.start();
       await connection.invoke('AddToGroup', group)
@@ -96,8 +95,13 @@ const ChatPage = () => {
     } 
   }
 
-  const sendMessage = async (msg: string) => {
-    if(!msg) return;
+  const sendMessage = async () => {
+    
+    if(!messageContent) return;
+
+    if(!navigator.onLine) {
+      return toast.warning('You Are Offline');
+    }
 
     const messageId = senderId+Date.now();
 
@@ -108,7 +112,7 @@ const ChatPage = () => {
         sentAt: dateFromNow(Date.now()),
         senderId,
         senderFullName: 'Ahmad Hassan',
-        content: msg,
+        content: messageContent,
         sending: true,
         selected: false
       },
@@ -116,7 +120,7 @@ const ChatPage = () => {
     ]))
     try {
       await post('/Message',{
-        content: msg,
+        content: messageContent,
         toGroupId: selectedGroup?.groupId
       });
       setMessages(prev => prev.map(message => {
@@ -140,9 +144,16 @@ const ChatPage = () => {
         return message;
       }))
     }
+    refetch();
+    setMessageContent('');
   }
 
-  const handleClickGroup = (group: Group) => { createConnection(group.groupId); setSelectedGroup(group)};
+  const handleClickGroup = (group: Group) => { 
+    if(group.groupId === selectedGroup?.groupId) return;
+    setMessages([]);
+    createConnection(group.groupId); 
+    setSelectedGroup(group)
+  };
 
   const handleSelectMessage = (messageId: string, action: 'SELECT' | 'DISELECT') => {
     if(action === 'SELECT') {
@@ -153,8 +164,11 @@ const ChatPage = () => {
     }
   }
 
+  const  handleDeselectAllMessages = () => setMessages(prev => prev.map(message => ({...message, selected: false})))
+
   const handleSuccess = (message: string) => {
     toast.success(message);
+    refetch();
     reset();
   }
 
@@ -163,7 +177,7 @@ const ChatPage = () => {
         type:  ACTION_TYPES.update,
         path: '/Message/PutMessage',
         payload: {
-          "content": "string",
+          content: messageContent,
           messageId
         },
         onSuccess: () => handleSuccess('Message Updated Successfully')
@@ -175,34 +189,45 @@ const ChatPage = () => {
           ids:  messageId ? [messageId] : 
                 messages.filter(message => message.selected === true)
                         .map(message => message.messageId),
-          deleteFromAll: deleteForAll.current
+          deleteFromAll: deleteForAll
         },
         onSuccess: () => handleSuccess('Messages Deleted Successfully')
     } 
   }
 
-  const handleRoleAction = async () => {
+  const handleMessageAction = async () => {
     if(currentAction) {
         setAction(actionsMap[currentAction] as ActionItem)
     }
   }
-  const reset = () => {
-    setCurrentAction(null);
-    setMessageId(null);
-  }
 
   const handleDeleteMessages = (messageId?: string) => {
+    if(!navigator.onLine) {
+      return toast.warning('Offline');
+    }
     if(messageId) {
       setMessageId(messageId)
     }
     setCurrentAction(ACTION_TYPES.delete as Action)
   }
 
-  const handleEditMessages = (messageId: string) => {
+  const handleEditMessagePopup = (messageId: string, content: string) => {
+    if(!navigator.onLine) {
+      return toast.warning('Offline');
+    }
     if(messageId) {
       setMessageId(messageId)
     }
-    setCurrentAction(ACTION_TYPES.update as Action)
+    if(content) {
+      setMessageContent(content)
+    }
+    setCurrentAction(ACTION_TYPES.update as Action);
+  }
+
+  const reset = () => {
+    setCurrentAction(null);
+    setMessageId(null);
+    setMessageContent('');
   }
 
   return     <div  id="chat3" style={{borderRadius: "15px"}}>
@@ -214,18 +239,22 @@ const ChatPage = () => {
                           <GroupsLoader />}
                     </div>
                     <div className="col-md-6 col-lg-7 col-xl-8">
-                      <div className="border rounded p-3 h-100">
+                      <div className="border border-2 rounded p-2 h-100">
                         {selectedGroup ? <ChatRoom  loadingMessages={loadingMessages} 
+                                                    fetchingMessasges={isFetching}
                                                     title={selectedGroup.groupName} 
                                                     messages={messages} 
                                                     handleSendMessage={sendMessage}
+                                                    messageContent={messageContent}
+                                                    handleContentChange={handleContentChange}
                                                     fetchNextPage={fetchNextPage}
                                                     hasNextPage={hasNextPage}
                                                     isFetchingNextPage={isFetchingNextPage}
                                                     handleSelectMessage={handleSelectMessage}
                                                     handleDeleteMessages={handleDeleteMessages}
-                                                    handleEditMessage={handleEditMessages}
-                                                     /> : 
+                                                    handleEditMessage={handleEditMessagePopup}
+                                                    handleDeselectAllMessages={handleDeselectAllMessages}
+                                          /> : 
                         <div className="d-flex h-100 flex-column justify-content-center  text-center">
                           <p className="fw-bold">{t('select_group')}</p>
                           <i className="fa fa-message fa-4x"></i>
@@ -242,12 +271,15 @@ const ChatPage = () => {
                         confirmButtonVariant={
                             currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
                         }
-                        handleConfirm={handleRoleAction}
+                        handleConfirm={handleMessageAction}
                         // confirmButtonIsDisabled={currentAction !== ACTION_TYPES.delete}
                     >
                         {(  currentAction === ACTION_TYPES.add || 
                             currentAction === ACTION_TYPES.update)
-                                && <MessageForm isEdit handleSendMessage={sendMessage} />
+                                && <MessageForm isEdit
+                                                handleContentChange={handleContentChange}
+                                                content={messageContent}
+                                                handleSendMessage={handleMessageAction} />
                         }
                         {currentAction === ACTION_TYPES.delete && 
                                     <div className="d-flex justify-content-between">
@@ -256,7 +288,9 @@ const ChatPage = () => {
                                           <Form.Label htmlFor="delete-for-all">
                                             Delete For All Users:
                                           </Form.Label>
-                                          <FormCheck onChange={e => deleteForAll.current = e.target.checked} id="delete-for-all" />
+                                          <FormCheck  onChange={e => e.target.checked ? setDeleteForAll(true) : setDeleteForAll(false)} 
+                                                      checked={deleteForAll} 
+                                                      id="delete-for-all" />
                                       </Stack>
                                     </div>
                         }

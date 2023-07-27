@@ -34,17 +34,23 @@ const ChatMessage = ({  messageId,
         }: Message) => {
 
     const getMessageClass = () => {
+        let messageClass = '';
         if(failed) {
-            return '#900'
+            messageClass += ' send-failed';
         }
-        return senderId === userId ? "my-message-body" : "";
+        return senderId === userId ? (messageClass += " my-message-body") : messageClass;
+    }
+
+    const handleEditClick = () => {
+        handleEditMessage?.(messageId, content);
     }
 
     const renderMessageOptions = () => {
         return (senderId === userId && !sending) ? 
             <MessageOptions messageId={messageId}
-                            handleEditMessage={handleEditMessage}
-                            handleDeleteMessage={handleDeleteMessage} />
+                            handleEditMessage={handleEditClick}
+                            handleDeleteMessage={handleDeleteMessage}
+                            selected={selected} />
         : <></> ;
     }
 
@@ -72,8 +78,11 @@ const ChatMessage = ({  messageId,
     }
 
     return   <StyledMessage>
-                <div className={`d-flex gap-2 flex-row justify-content-start p-2 rounded mx-3 ${selected ? 'selected' : ''}`}
-                     onDoubleClick={() => handleSelect?.(messageId, 'SELECT')} 
+                <div className={`d-flex gap-2 flex-row justify-content-start align-items-center p-2 rounded mx-2 ${selected ? 'selected' : ''}`}
+                     onDoubleClick={() => {
+                        if(senderId !== userId) return;
+                        handleSelect?.(messageId, 'SELECT')}
+                    }
                      onContextMenu={(e) => {e.preventDefault(); handleSelect?.(messageId, 'DISELECT')}}      
                     >
                     <img src={`https://placehold.co/55x55?text=${senderFullName}`} className="rounded-circle" alt="avatar 1" style={{width: "45px", height: "100%"}} />
@@ -84,13 +93,13 @@ const ChatMessage = ({  messageId,
                                     borderRadius: '20px 20px 20px 10px',
                                     position: "relative"}}>
                             <h6>{senderFullName}</h6>
-                            <p className="small m-0" style={{fontSize: '14px'}}>
+                            <p className="small m-0" style={{fontSize: '14px', wordBreak: 'break-all'}}>
                                 {content}
                             </p>
-                            {renderMessageOptions()}
                         </div>
-                        <p className="small mb-1 rounded-3 text-muted float-start d-flex gap-2 align-items-center">
+                        <p className="small mb-1 rounded-3 flex-wrap text-muted float-start d-flex gap-2 align-items-center">
                             { renderSendStatus() }
+                            { renderMessageOptions() }
                         </p>
                     </div>
                 </div>

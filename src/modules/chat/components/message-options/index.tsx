@@ -1,24 +1,33 @@
 
-const MessageOptions = ({ messageId, handleDeleteMessage, handleEditMessage }:
+const optoinsInfoStyles = {
+    color: "#657c9a",
+    fontSize: 12
+}
+
+const MessageOptions = ({ messageId, handleDeleteMessage, handleEditMessage, selected }:
                         {   messageId: string, 
-                            handleDeleteMessage?: (messagesIds: string) => void,
-                            handleEditMessage?: (messageId?: string) => void}) => {
-    return  <div className="message-options flex-column gap-4 position-absolute" 
-                style={{
-                bottom: '50%',
-                left: 'calc(100% + 5px)',
-                translate: '0 50%'
-                }}>
-                    <i  onClick={(e) => { 
+                            handleDeleteMessage?: (messageId?: string) => void,
+                            handleEditMessage?: () => void,
+                            selected?: boolean    
+                        }) => {
+    return  <div className="message-options justify-content-around gap-2">
+                    <span>
+                        <i  onClick={(e) => { 
                             e.stopPropagation();
                             handleDeleteMessage?.(messageId);
                         }} 
-                        className="fa fa-trash fa-sm cursor-pointer"></i>
-                    <i  onClick={(e) => { 
+                            className="fa fa-trash fa-md cursor-pointer">    
+                        </i>
+                    </span>
+                    <span>
+                        <i  onClick={(e) => { 
                             e.stopPropagation();
-                            handleEditMessage?.(messageId);
+                            handleEditMessage?.();
                         }} 
-                        className="fa fa-edit fa-sm cursor-pointer"></i>
+                        className="fa fa-edit fa-md cursor-pointer"></i>
+                    </span>
+                    {!selected && <span  style={optoinsInfoStyles}>Double Click to Select <i className="fa fa-hand-pointer"></i></span>}
+                    {selected && <span  style={optoinsInfoStyles}>Right Click to Deselect <i className="fa fa-hand-pointer"></i></span>}
             </div>;
             
             

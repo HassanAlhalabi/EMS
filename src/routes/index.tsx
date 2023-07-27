@@ -46,6 +46,7 @@ const TripsBookings             = lazy(() => import('../modules/transport-manage
 
 // Chat System
 const Chat                     = lazy(() => import('../modules/chat'));
+const ChatGroup                     = lazy(() => import('../modules/chat/components/chat-room'));
 
 export const getRoutes = () => ([
     {
@@ -292,7 +293,7 @@ export const getRoutes = () => ([
             {
                 id: 'chat',
                 name: 'Chat',
-                path: '/chat',
+                path: '/chat/:groupId?',
                 isIndex: false,
                 childRoutes: null,
                 element: <Chat />,

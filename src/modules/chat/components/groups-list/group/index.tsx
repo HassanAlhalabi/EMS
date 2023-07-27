@@ -2,7 +2,7 @@ import { Group } from "../../../types";
 
 
 const GroupLinkItem = (groupProps: Group) => 
-                            <li className="card mb-2 p-2 border-bottom cursor-pointer" 
+                            <li className="mb-2 p-2 border-bottom cursor-pointer" 
                                 onClick={() => groupProps.handleClick?.(groupProps)}
                                 style={{height: 80}}>
                                 <div className="d-flex justify-content-between">

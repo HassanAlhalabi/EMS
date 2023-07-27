@@ -8,7 +8,7 @@ export interface Message {
     sentAt: string,
     sending?: boolean,
     failed?: boolean,
-    handleEditMessage?: (messageId: string) => void,
+    handleEditMessage?: (messageId: string, content: string) => void,
     handleDeleteMessage?: (messageId?: string) => void,
     handleSelect?: (messageId: string, action: 'SELECT' | 'DISELECT') => void,
     selected?: boolean

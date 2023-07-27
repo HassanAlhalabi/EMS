@@ -168,3 +168,16 @@ export const isInViewport = (el: HTMLElement) => {
 
     );
 }
+
+// export const isOnline = () => {
+//     window.addEventListener('load', function(event) {
+//         return detectInternet();
+//     });
+//     window.addEventListener('online', function(event) {
+//         return detectInternet();
+//     });
+//     window.addEventListener('offline', function(event) {
+//         return detectInternet();
+//     });
+//     const detectInternet = () => navigator.onLine ? true : false
+// }

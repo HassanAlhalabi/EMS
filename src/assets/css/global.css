@@ -299,3 +299,12 @@
     border-bottom-color: #6899d5;
     border-right-color: #6899d5;
 }
+
+.my-message-body.send-failed {
+    background-color: rgb(255, 75, 75);
+}
+
+.my-message-body.send-failed::before {
+    border-bottom-color: rgb(255, 75, 75);
+    border-right-color: rgb(255, 75, 75);
+}

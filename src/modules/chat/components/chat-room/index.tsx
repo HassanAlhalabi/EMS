@@ -1,5 +1,5 @@
 
-import { LegacyRef, useState, useRef } from 'react';
+import { LegacyRef, useState, useRef, ChangeEvent } from 'react';
 
 import SyncLoader from "react-spinners/SyncLoader";
 import { FetchNextPageOptions, UseInfiniteQueryResult } from "react-query";
@@ -14,24 +14,32 @@ import useTranslate from '../../../../hooks/useTranslate';
 
 const ChatRoom = ({ title, 
                     messages, 
-                    handleSendMessage, 
+                    handleSendMessage,
+                    messageContent, 
+                    handleContentChange,
                     fetchNextPage,
                     loadingMessages,
+                    fetchingMessasges,
                     hasNextPage,
                     handleSelectMessage,
                     handleDeleteMessages,
-                    handleEditMessage   
+                    handleEditMessage,
+                    handleDeselectAllMessages 
                   }:
                   { title: string; 
                     messages: Message[];
-                    handleSendMessage: (message:  string) => void;
+                    handleSendMessage: () => void;
+                    messageContent: string;
+                    handleContentChange: (content: string) => void;
                     loadingMessages: boolean;
+                    fetchingMessasges?: boolean,
                     fetchNextPage: (options?: FetchNextPageOptions) => Promise<UseInfiniteQueryResult>;
                     hasNextPage: boolean | undefined,
                     isFetchingNextPage: boolean,
                     handleSelectMessage: (messageId: string, action: 'SELECT' | 'DISELECT') => void,
                     handleDeleteMessages: (messagesIds?: string) => void,
-                    handleEditMessage: (messageId: string) => void,
+                    handleEditMessage: (messageId: string, content: string) => void,
+                    handleDeselectAllMessages: () => void
                   }) => {
 
     const chatRoomRef = useRef<InfiniteScroll>();
@@ -58,8 +66,19 @@ const ChatRoom = ({ title,
     const selectedMessages = messages.filter(message => message.selected === true)
 
     return <div className='position-relative'>
-              <h4 className="border-bottom pb-3 d-flex justify-content-between flex-wrap">
-                {title} {selectedMessages.length > 0 ? <Button onClick={() => handleDeleteMessages()} className='btn-sm btn-falcon-danger'>{t('delete')} {selectedMessages.length} {t('messages')}</Button> : null}
+              <h4 className="border-bottom pb-3 d-flex justify-content-between flex-wrap gap-2">
+                {title} {selectedMessages.length > 0 ? 
+                            <div className='d-flex gap-2'>
+                              <Button onClick={() => handleDeselectAllMessages()} 
+                                    className='btn-sm btn-falcon-info'>
+                                      Deselect All
+                              </Button>
+                              <Button onClick={() => handleDeleteMessages()} 
+                                      className='btn-sm btn-falcon-danger'>
+                                        {t('delete')} {selectedMessages.length} {t('messages')}
+                              </Button>
+                            </div> 
+                            : null }
               </h4>
               <InfiniteScroll
                 onScroll={handleScroll}
@@ -73,6 +92,8 @@ const ChatRoom = ({ title,
                 inverse={true}
               >
                 {loadingMessages && <MessagesLoader />}
+                {(!loadingMessages && !fetchingMessasges && messages.length === 0) && <div className='m-auto'>No Messages Yet</div>}
+                {(!loadingMessages && fetchingMessasges  && messages.length === 0) && <div className='m-auto'>{<SyncLoader color="#8cb3e2" />}</div>}
                 {
                   messages.map((message, index) => {
                     return <div key={`${message.messageId}${index}`}>
@@ -97,7 +118,9 @@ const ChatRoom = ({ title,
                       <i className='fa fa-arrow-down m-auto'></i>
                 </Button>}
               <hr />
-              <MessageForm  handleSendMessage={(msg) => { handleSendMessage(msg) }} /> 
+              <MessageForm  content={messageContent} 
+                            handleContentChange={handleContentChange} 
+                            handleSendMessage={() => { scrollDown(); handleSendMessage() }} /> 
             </div>
         
 }
