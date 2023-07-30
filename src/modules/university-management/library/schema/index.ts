@@ -8,6 +8,6 @@ export const bookValidation = object({
     descriptionEn: string().nullable(),
     descriptionAr: string().nullable(),
     cover: mixed().nullable(),
-    categoryId: array().of(string()).nullable(),
+    categoryId: array().nullable(),
     attachment: mixed().required('File Attachment Is Required')
 })

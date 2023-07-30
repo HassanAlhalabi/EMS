@@ -51,6 +51,7 @@ const useHTTP = () => {
     httpClient.interceptors.request.use(function (config) {
       return config;
     }, function (error) {
+      console.log(error)
       return Promise.reject(error);
     });
   
@@ -64,7 +65,9 @@ const useHTTP = () => {
         const refreshToken = await getRefreshToken();
         // Refresh Token Not Expired
         if(refreshToken) {
-          console.log(error.config.headers)
+          if(error.config.data instanceof FormData) {
+            error.config.headers['Content-Type'] = 'multipart/form-data';
+          }
           error.config.headers['Authorization'] = `Bearer ${refreshToken}`;
           setAccess(refreshToken)
           return await httpClient.request(error.config);

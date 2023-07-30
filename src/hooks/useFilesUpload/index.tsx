@@ -1,7 +1,7 @@
-import {CSSProperties, useEffect, useState} from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 
-import {DropEvent, FileRejection, useDropzone} from 'react-dropzone';
+import { DropEvent, FileRejection, useDropzone } from 'react-dropzone';
 import useTranslate from '../useTranslate';
 
 interface AcceptedFile extends File {
@@ -65,17 +65,19 @@ const titleStyle: CSSProperties = {
 
 interface PreviewProps {
     files: AcceptedFile[];
+    multiple?: boolean;
     handleDrop?: (<T extends File>(acceptedFiles: T[], fileRejections: FileRejection[], event: DropEvent) => void),
     handleRemoveFile?: (fileName: string) => void   
 }
 
-function Previews({files, handleDrop, handleRemoveFile}: PreviewProps) {
+function Previews({files, handleDrop, handleRemoveFile, multiple}: PreviewProps) {
 
   const t = useTranslate();
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       '*/*': []
     },
+    multiple: multiple ? multiple : false,
     onDrop: handleDrop
   });
 
@@ -134,19 +136,42 @@ function Previews({files, handleDrop, handleRemoveFile}: PreviewProps) {
   );
 }
 
-const useFilesUpload = (config ?: {onUpload?: (files: AcceptedFile[]) => void}) => {
+const useFilesUpload = (config ?: {
+                                    multiple?: boolean,
+                                    onUpload?: (files: AcceptedFile[]) => void
+                                    onFileRemove?: (fileName?: string) => void
+                                  }) => {
 
     const [files, setFiles] = useState<AcceptedFile[]>([]);
     const handleDrop = (acceptedFiles: File[]) => {
-        setFiles(prev => [...prev, ...acceptedFiles.map((file) => Object.assign(file, {
+      const filteredAcceptedFiles: File[] = [];
+      acceptedFiles.map(acceptedFile => {
+        if(files.findIndex(file => file.name === acceptedFile.name) === -1) {
+          filteredAcceptedFiles.push(acceptedFile);
+        } 
+      })
+      if(!config?.multiple) {
+          setFiles([...filteredAcceptedFiles.map((file) => Object.assign(file, {
+            preview: URL.createObjectURL(file)
+          }))]);
+      }
+      if(config?.multiple) {
+        setFiles(prev => [...prev, ...filteredAcceptedFiles.map((file) => Object.assign(file, {
           preview: URL.createObjectURL(file)
         }))] );
-        config?.onUpload?.(acceptedFiles as AcceptedFile[]);
+      }
+      config?.onUpload?.(filteredAcceptedFiles as AcceptedFile[]);
     }
 
-    const handleRemoveFile = (fileName: string) => setFiles(prev => prev.filter(file => file.name !== fileName))
+    const handleRemoveFile = (fileName: string) => { 
+      setFiles(prev => prev.filter(file => file.name !== fileName));
+      config?.onFileRemove?.(fileName);
+    }
     
-    const renderPreview = () => <Previews files={files} handleDrop={handleDrop} handleRemoveFile={handleRemoveFile} />
+    const renderPreview = () => <Previews multiple={config?.multiple} 
+                                          files={files} 
+                                          handleDrop={handleDrop} 
+                                          handleRemoveFile={handleRemoveFile} />
 
     return { files, renderPreview }
 

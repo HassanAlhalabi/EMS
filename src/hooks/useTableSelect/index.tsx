@@ -18,10 +18,6 @@ const useTableSelect = (label: string, options: any, error?: string, config?: {
 
     const valid = !Boolean(error);
 
-    console.log(error)
-
-    console.log(valid)
-
     const handleSelectItem = (selectedItems: Record<string, any>[]) => {
  
          if(selectedItems.length === 0) return;
