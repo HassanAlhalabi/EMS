@@ -22,29 +22,7 @@ import SpecsForm from "./specs-form";
 import WorkDaysForm from "./work-days-form";
 import { WORK_DAYS, WORK_DAYS_NAMES } from "../../../../constants";
 import { useGetDataById } from "../../../../hooks/useGetDataById";
-
-const formWizardHeaders: PaneHeadProps[] = [
-    {   
-        title: 'Faculty',
-        icon: 'fa-university',
-        status: 'active'
-    },
-    {   
-        title: 'Working Days',
-        icon: 'fa-calendar',
-        status: 'unactive'
-    },
-    {   
-        title: 'Specializations',
-        icon: 'fa-toolbox',
-        status: 'unactive'
-    },
-    {   
-        title: 'Halls',
-        icon: 'fa-chalkboard',
-        status: 'unactive'
-    }
-]
+import useTranslate from "../../../../hooks/useTranslate";
 
 const FACULTY_INITIAL_STATE = {
     nameAr: "",
@@ -95,7 +73,31 @@ const FacultyFormPage = () => {
     const handleChangeToNextTab = () => setCurrentTab(prev => prev + 1);
     const handleChangeToPrevTab = () => setCurrentTab(prev => prev - 1);
     const {toggleScreenLoader} = useScreenLoader();
-    const get = useGet();
+    const t = useTranslate();
+
+
+    const formWizardHeaders: PaneHeadProps[] = [
+        {   
+            title: t('faculty'),
+            icon: 'fa-university',
+            status: 'active'
+        },
+        {   
+            title: t('working_days'),
+            icon: 'fa-calendar',
+            status: 'unactive'
+        },
+        {   
+            title: t('specializations'),
+            icon: 'fa-toolbox',
+            status: 'unactive'
+        },
+        {   
+            title: t('halls'),
+            icon: 'fa-chalkboard',
+            status: 'unactive'
+        }
+    ]
 
     useGetDataById<FullFaculty>('/Faculty/GetFullFaculty/',facultyId, {
         onRefetch: data => {
@@ -125,8 +127,6 @@ const FacultyFormPage = () => {
     const [specs, setSpecs] = useState<NewSpec[]>([]);
     const [halls, setHalls] = useState<NewHall[]>([]);
 
-    console.log(workDays)   
-
     const facultyDetailsFormik = useFormik<NewFaculty>({
         initialValues: FACULTY_INITIAL_STATE,
         onSubmit: () => setCurrentTab(1),
@@ -138,8 +138,6 @@ const FacultyFormPage = () => {
         onSubmit: () => handleAddWorkDay(),
         validationSchema: dayValidation
     })
-
-    console.log(daysFormik.errors)
 
     const handleAddWorkDay = () => {
         console.log('Here')
@@ -236,56 +234,63 @@ const FacultyFormPage = () => {
 
     const daysColumn = useMemo(() => [
         {
-            Header: 'Day',
+            Header: t('day'),
             accessor: 'name',
         },
         {
-            Header: 'Start Time',
+            Header: t('start_time'),
             accessor: 'workStartAt',
         },
         {
-            Header: 'End Time',
+            Header: t('end_time'),
             accessor: 'workEndAt',
         },
         {
-            Header: 'Options',
+            Header: t('options'),
             accessor: 'options',
         },
     ],[]);
 
     const specsColumn = useMemo(() => [
         {
-            Header: 'Speciality Name',
+            Header: t('english_name'),
             accessor: 'nameEn',
         },
         {
-            Header: 'Arabic Name',
+            Header: t('arabic_name'),
             accessor: 'nameAr',
         },
         {
-            Header: 'Options',
+            Header: t('options'),
             accessor: 'options',
         },
     ],[])
 
     const hallsColumn = useMemo(() => [
         {
-            Header: 'Hall Name',
+            id: 'nameEn',
+            Header: t('english_name'),
             accessor: 'nameEn',
         },
         {
-            Header: 'Arabic Name',
+            id: 'nameAr',
+            Header: t('arabic_name'),
             accessor: 'nameAr',
         },
         {
-            Header: 'Is Labratory',
-            accessor: 'isLabratory',
+            id: 'isLabratory',
+            Header: t('is_labratory'),
+            accessor: ((data: NewHall) => data.isLabratory ? '✔' : '') as unknown as string,
         },
         {
-            Header: 'Options',
+            id: 'options',
+            Header: t('options'),
             accessor: 'options',
         },
     ],[]);
+
+
+    console.log(halls)
 
     const { mutateAsync , 
         isLoading: postLoading
@@ -350,7 +355,7 @@ const FacultyFormPage = () => {
                             onClick={(e) => { e.preventDefault(); facultyDetailsFormik.handleSubmit()} } 
                             className={`btn btn-primary px-5 px-sm-6`} 
                             type="submit">
-                            Next <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
+                            {t('next')} <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
                         </button>
                     </Col>
                 </Row>
@@ -363,16 +368,16 @@ const FacultyFormPage = () => {
                     <Col>
                         <button onClick={handleChangeToPrevTab} 
                                 className={`btn btn-fal con-link ps-0 `} type="button"> 
-                            <span className="fas fa-chevron-left me-2" data-fa-transform="shrink-3"></span> Prev
+                            <span className="fas fa-chevron-left me-2" data-fa-transform="shrink-3"></span>  {t('prev')}
                         </button>
                     </Col>
                     <Col className="d-flex justify-content-end">
                         <button
                             disabled={workDays.length <= 0}
                             onClick={handleChangeToNextTab} 
-                            className={`btn btn-falcon-primary px-5 px-sm-6`} 
+                            className={`btn btn-falcon-primary px-4 px-sm-6`} 
                             >
-                            Next <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
+                             {t('next')} <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
                         </button>
                     </Col>
                 </Row>
@@ -397,16 +402,16 @@ const FacultyFormPage = () => {
                     <Col>
                         <button onClick={handleChangeToPrevTab} 
                                 className={`btn btn-falcon-link ps-0 `} type="button"> 
-                            <span className="fas fa-chevron-left me-2" data-fa-transform="shrink-3"></span> Prev
+                            <span className="fas fa-chevron-left me-2" data-fa-transform="shrink-3"></span>  {t('prev')}
                         </button>
                     </Col>
                     <Col className="d-flex justify-content-end">
                         <button
                             disabled={specs.length <= 0}
                             onClick={handleChangeToNextTab} 
-                            className={`btn btn-falcon-primary px-5 px-sm-6`} 
+                            className={`btn btn-falcon-primary px-4 px-sm-6`} 
                             >
-                            Next <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
+                             {t('next')} <span className="fas fa-chevron-right ms-2" data-fa-transform="shrink-3"> </span>
                         </button>
                     </Col>
                 </Row>
@@ -430,7 +435,7 @@ const FacultyFormPage = () => {
                     <Col>
                         <button onClick={handleChangeToPrevTab} 
                                 className={`btn btn-falcon-link ps-0 `} type="button"> 
-                            <span className="fas fa-chevron-left me-2" data-fa-transform="shrink-3"></span> Prev
+                            <span className="fas fa-chevron-left me-2" data-fa-transform="shrink-3"></span>  {t('prev')}
                         </button>
                     </Col>
                     <Col className="d-flex justify-content-end">
@@ -439,7 +444,7 @@ const FacultyFormPage = () => {
                             onClick={handleFacultyAction} 
                             className={`btn btn-success px-5 px-sm-6`} 
                             >
-                            {facultyId ? 'Update' : 'Add'} Faculty {facultyId ? <span className="fas fa-pen ms-2" data-fa-transform="shrink-3"> </span> : 
+                            {facultyId ?  t('UPDATE') : t('ADD')}  {t('faculty')} {facultyId ? <span className="fas fa-pen ms-2" data-fa-transform="shrink-3"> </span> : 
                                                                                 <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>}
                         </button>
                     </Col>
@@ -455,7 +460,7 @@ const FacultyFormPage = () => {
                                     </button>
                                 </div>
                     }} />
-                </div>
+            </div>
         </FormWizard>
     )
 }

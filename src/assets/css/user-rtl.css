@@ -12,7 +12,7 @@ h1,h2,h3,h4,h5,h6,p,a,div,button,label, option, ::placeholder, select, option:di
     transform: rotate(180deg);
 }
 
-.dropdown-indicator:after {
+.nav-link.dropdown-indicator:after {
     right: auto;
     left: 25px
 }

@@ -4,16 +4,19 @@ import { FormikProps } from 'formik';
 import Feedback from "../../../../../components/feedback";
 import { NewFaculty } from "../../types";
 import SwitchInput from "../../../../../components/switch-input/index.";
+import useTranslate from "../../../../../hooks/useTranslate";
 
 const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
+
+    const t = useTranslate();
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="nameAr">
-                        Arabic Title
+                        {t('arabic_title')}:
                     </Form.Label>
                     <Form.Control
                         id="nameAr"
@@ -28,10 +31,10 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                     </Feedback>
                 </Form.Group>
             </Col>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="nameEn">
-                        English Title
+                    {t('english_title')}:
                     </Form.Label>
                     <Form.Control
                         id="nameEn"
@@ -49,7 +52,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
         </Row>  
         <Form.Group className="mb-3">
             <Form.Label htmlFor="descriptionAr">
-                Arabic Description
+            {t('arabic_description')}:
             </Form.Label>
             <Form.Control
                 id="descriptionAr"
@@ -57,7 +60,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                 size="lg"
                 type="text" 
                 name="descriptionAr"
-                value={formik.values.descriptionAr as string} 
+                value={formik.values.descriptionAr} 
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
                 {formik.errors.descriptionAr as string}
@@ -65,7 +68,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
         </Form.Group> 
         <Form.Group className="mb-3">
             <Form.Label htmlFor="descriptionEn">
-                English Description
+                {t('english_description')}:
             </Form.Label>
             <Form.Control
                 id="descriptionEn"
@@ -73,7 +76,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                 size="lg"
                 type="text" 
                 name="descriptionEn"
-                value={formik.values.descriptionEn as string} 
+                value={formik.values.descriptionEn} 
                 onChange={formik.handleChange} />
             <Feedback type="invalid">
                 {formik.errors.descriptionEn as string}
@@ -83,7 +86,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             <Col sm={5}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="studingYearsCount">
-                        Number Of Study Years: 
+                        {t('number_of_study_years')}
                     </Form.Label>
                     <Form.Control
                         id="studingYearsCount"
@@ -102,7 +105,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             <Col sm={2}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="isManySpecialty">
-                        Has Specialiaztions: 
+                        {t('has_specialiaztions')}: 
                     </Form.Label>
                     <SwitchInput
                         id="isManySpecialty"                    
@@ -119,7 +122,7 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                     formik.values.isManySpecialty && 
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="specialtyYearNum">
-                            Specialiaztion Starting Year: 
+                            {t('specialiaztion_starting_year')}: 
                         </Form.Label>
                         <Form.Control
                             id="specialtyYearNum"
@@ -137,10 +140,10 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Col>
         </Row>
         <Row>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="minCountToSubject">
-                        Minimum Students Number in a Class: 
+                        {t('minimum_students')}: 
                     </Form.Label>
                     <Form.Control
                         id="minCountToSubject"
@@ -156,10 +159,10 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                     </Feedback>
                 </Form.Group> 
             </Col>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="maxStudCountInGroup">
-                        Maximum Students Number in a Class: 
+                        {t('max_student')}: 
                     </Form.Label>
                     <Form.Control
                         id="maxStudCountInGroup"
@@ -176,10 +179,10 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
             </Col>
         </Row>
         <Row>
-            <Col>
+            <Col md={4}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="semesterRegistrationRequirement.minHours">
-                        Semester Min Hours: 
+                        {t('semester_min-hours')}: 
                     </Form.Label>
                     <Form.Control
                         id="semesterRegistrationRequirement.minHours"
@@ -195,10 +198,10 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                     </Feedback>
                 </Form.Group> 
             </Col>
-            <Col>
+            <Col md={4}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="semesterRegistrationRequirement.maxHours">
-                        Semester Max Hours: 
+                        {t('semester_max_hours')}:
                     </Form.Label>
                     <Form.Control
                         id="semesterRegistrationRequirement.maxHours"
@@ -214,10 +217,10 @@ const FacultyForm = ({formik}:{formik: FormikProps<NewFaculty>}) => {
                     </Feedback>
                 </Form.Group> 
             </Col>
-            <Col>
+            <Col md={4}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="semesterRegistrationRequirement.minGradePointAverage">
-                        Semester Min Average Grade: 
+                        {t('semester_min_avg_grade')}: 
                     </Form.Label>
                     <Form.Control
                         id="semesterRegistrationRequirement.minGradePointAverage"

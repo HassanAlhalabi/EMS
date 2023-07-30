@@ -20,7 +20,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
     return (
         <Form noValidate validated={formik.dirty} autoComplete="off">
             <Row>
-                <Col>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Control
                             size="lg"
@@ -35,7 +35,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                         </Feedback>
                     </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Control
                             size="lg"
@@ -52,7 +52,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                 </Col>
             </Row>  
             <Row>
-                <Col>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Control
                             size="lg"
@@ -67,7 +67,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                         </Feedback>
                     </Form.Group> 
                 </Col>
-                <Col>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Control
                             size="lg"
@@ -84,7 +84,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                 </Col>
             </Row>
             <Row>
-                <Col>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="type">
                             User Type:
@@ -108,7 +108,7 @@ const UserForm = ({formik}:{formik: FormikProps<NewUser>}) => {
                         </Feedback>
                     </Form.Group> 
                 </Col>
-                <Col>
+                <Col md={6}>
                 {
                     formik.values.type !== 'Student' &&
                         <Form.Group className="mb-3">

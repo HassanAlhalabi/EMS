@@ -4,18 +4,22 @@ import { Form, Row, Col } from "react-bootstrap"
 import Feedback from "../../../../../components/feedback"
 import { NewHall } from "../../types"
 import SwitchInput from "../../../../../components/switch-input/index."
+import useTranslate from "../../../../../hooks/useTranslate"
 
 const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
+
+    const t = useTranslate();
+
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Control
                         size="lg"
                         required
                         type="text" 
-                        placeholder="Arabic Name"
+                        placeholder={t('arabic_name')}
                         name="nameAr"
                         value={formik.values.nameAr} 
                         onChange={formik.handleChange} />
@@ -25,13 +29,13 @@ const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
                     </Feedback>
                 </Form.Group>
             </Col>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Control
                         size="lg"
                         required
                         type="text" 
-                        placeholder="English Name"
+                        placeholder={t('english_name')}
                         name="nameEn"
                         value={formik.values.nameEn} 
                         onChange={formik.handleChange} />
@@ -46,7 +50,7 @@ const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
                 size="lg"
                 as="textarea"
                 type="text" 
-                placeholder="Arabic Description"
+                placeholder={t('arabic_description')}
                 name="descriptionAr"
                 value={formik.values.descriptionAr} 
                 onChange={formik.handleChange} />
@@ -59,7 +63,7 @@ const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
                 as="textarea"
                 size="lg"
                 type="text" 
-                placeholder="English Description"
+                placeholder={t('english_description')}
                 name="descriptionEn"
                 value={formik.values.descriptionEn} 
                 onChange={formik.handleChange} />
@@ -74,7 +78,7 @@ const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
                         size="lg"
                         required
                         type="number" 
-                        placeholder="Max Student Count In a Hall"
+                        placeholder={t('max_student_in_hall')}
                         name="maxCount"
                         value={formik.values.maxCount} 
                         onChange={formik.handleChange} />
@@ -86,7 +90,7 @@ const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
             <Col sm={4}>
                 <Form.Group className="mb-3 d-flex align-items-center">
                     <Form.Label className="ms-2 me-2 mb-0" htmlFor="isLabratory">
-                        Is Labratory: 
+                        {t('is_labratory')}
                     </Form.Label>
                     <SwitchInput
                         id="isLabratory"                    
@@ -98,9 +102,9 @@ const HallsForm = ({formik}: {formik: FormikProps<NewHall>}) => {
         </Row>
         <button
             onClick={(e) => { e.preventDefault(); formik.handleSubmit()} } 
-            className={`btn btn-falcon-success px-5 px-sm-6`} 
+            className={`btn btn-falcon-success px-5 px-sm-6 mb-3`} 
             type="button" >
-            Add Hall <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>
+            {t('ADD')} {t('hall')} <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>
         </button>
     </Form>
   )

@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { Col, Form, Row } from "react-bootstrap";
 
 import { useGet } from "..";
+import useTranslate from "../useTranslate";
 
 interface Faculty {
     id: string,
@@ -22,6 +23,7 @@ export const useGetSpecialities = function(defaultFaculty?: string, defaultSpeci
     const get = useGet();
     const [faculty, setFaculty] = useState<Faculty>(optionInitialState);
     const [speciality, setSpeciality] = useState<Speciality>(optionInitialState);
+    const t = useTranslate();
 
     const reset = () => {
         setFaculty(optionInitialState);
@@ -72,10 +74,10 @@ export const useGetSpecialities = function(defaultFaculty?: string, defaultSpeci
     const renderSpecialitySelect = () => {
         return (
             <Row>
-                <Col>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="facultyId">
-                            Faculties:
+                            {t('faculties')}:
                         </Form.Label>
                         <Form.Select
                             size="lg"
@@ -92,10 +94,10 @@ export const useGetSpecialities = function(defaultFaculty?: string, defaultSpeci
                         </Form.Select>           
                     </Form.Group>
                 </Col>
-                <Col>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="specialityId">
-                            Speciality:             
+                            {t('speciality')}:            
                         </Form.Label>
                         <Form.Select
                             disabled={!faculty?.id || isFetching}
