@@ -9,10 +9,10 @@ export function useBlur(ref: MutableRefObject<any>, handleOnBlur: () => void) {
       }
     }
     // Bind the event listener
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
       // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [ref]);
 
