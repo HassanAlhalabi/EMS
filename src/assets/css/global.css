@@ -308,3 +308,7 @@
     border-bottom-color: rgb(255, 75, 75);
     border-right-color: rgb(255, 75, 75);
 }
+
+.emoji-picker-holder {
+    z-index: 9999;
+}
