@@ -62,7 +62,7 @@ const ChatPage = () => {
       .withUrl('http://alimakhlouf-002-site2.btempurl.com/chatHub', { accessTokenFactory: () => access as string })
       .configureLogging(LogLevel.Information)
       .build();
-  
+
       connection.on("newmessage", (message: Message) => {
 
         if(message.senderId === senderId) return;
@@ -77,6 +77,30 @@ const ChatPage = () => {
         ]));
 
         refetch();
+
+      });
+
+      connection.on("messagedeleted", (deletedMessage: Message) => {
+
+        console.log('Deleted', deletedMessage)
+
+        setMessages(prev => prev.filter(message => message.messageId !== deletedMessage.messageId))
+
+      });
+
+      connection.on("messageedited", (editedMessage: Message) => {
+
+        console.log('Edited', editedMessage)
+
+        setMessages(prev => prev.map(message => {
+          if(message.messageId === editedMessage.messageId){
+            return {
+              ...message,
+              content: editedMessage.content
+            }
+          }
+          return message;
+        }))
 
       });
   
@@ -102,6 +126,8 @@ const ChatPage = () => {
     if(!navigator.onLine) {
       return toast.warning('You Are Offline');
     }
+
+    setMessageContent('');
 
     const messageId = senderId+Date.now();
 
@@ -145,7 +171,6 @@ const ChatPage = () => {
       }))
     }
     refetch();
-    setMessageContent('');
   }
 
   const handleClickGroup = (group: Group) => { 
