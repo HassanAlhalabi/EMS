@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next"
+import useTranslate from "../../hooks/useTranslate"
 
 const DashboardPage = () => {
 
-  const {t} = useTranslation();
+  const t = useTranslate()
 
   return (
     <>

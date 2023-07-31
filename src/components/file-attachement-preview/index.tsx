@@ -2,15 +2,12 @@
 const imagesTypes = ['png','jpg', 'jpeg', 'gif']
 
 const FileAttachmentPreview = ({url}: {url:string}) => {
-    console.log(url)
     const ext = url.slice(url.lastIndexOf('.') + 1);
-    console.log(ext)
     if(imagesTypes.includes(ext)) {
-        console.log('True')
-        return <img src={url} />
+        return <a href={url}><img width={100} height={100} className="thumbnail p-1" src={url} /></a>
     }
 
-    return <div>{url}</div>
+    return <a href={url}><img width={100} height={100} className="thumbnail p-1" src='https://placehold.co/100x100?text=File' /></a>
 
 }
  

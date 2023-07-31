@@ -12,7 +12,7 @@ const Profile                   = lazy(() => import('../modules/users-management
 const Page404                   = lazy(() => import('../modules/404'));
 
 const SubjectsRegistration      = lazy(() => import('../modules/user-domain/subjects-registration'));
-const MyBookings      = lazy(() => import('../modules/user-domain/my-bookings'));
+const MyBookings                = lazy(() => import('../modules/user-domain/my-bookings'));
 
 // Tickets Management System
 const TicketsPage               = lazy(() => import('../modules/tickets-management/tickets'));
@@ -45,8 +45,8 @@ const Trips                     = lazy(() => import('../modules/transport-manage
 const TripsBookings             = lazy(() => import('../modules/transport-management/trips-bookings'));
 
 // Chat System
-const Chat                     = lazy(() => import('../modules/chat'));
-const ChatGroup                     = lazy(() => import('../modules/chat/components/chat-room'));
+const Chat                      = lazy(() => import('../modules/chat'));
+const ChatGroup                 = lazy(() => import('../modules/chat/components/chat-room'));
 
 export const getRoutes = () => ([
     {

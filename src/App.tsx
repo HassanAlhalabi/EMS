@@ -23,7 +23,7 @@ const renderRoutes = (routes: IRoute[]) => {
   return routes.map(route => {
     if(!route.hasPermission) return <Route key='has-no-permission' path='*' />
     if(route.childRoutes) {
-      return <Route key={route.id} path={route.path} element={route.element}>
+      return <Route key={route.id} path={route.path} element={route.element} >
                 {renderRoutes(route.childRoutes)}
               </Route>
     }

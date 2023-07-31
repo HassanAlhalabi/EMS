@@ -20,7 +20,7 @@ const CommnetForm = ({ formik }: {formik: FormikProps<NewTicketResult>}) => {
     return   <PermissionsGate scope=''>
                 <Form noValidate validated={formik.dirty} autoComplete="off" className="mb-3">
                     <Row>
-                        <Col>
+                        <Col md={6}>
                             <Form.Group className="h-100 mb-3">
                                 <Form.Control   as='textarea' 
                                                 className="h-75"
@@ -34,7 +34,7 @@ const CommnetForm = ({ formik }: {formik: FormikProps<NewTicketResult>}) => {
                                     </Feedback>
                                 </Form.Group>                   
                         </Col>
-                        <Col>
+                        <Col md={6}>
                             <Form.Group>
                                 {renderPreview()}
                             </Form.Group>
