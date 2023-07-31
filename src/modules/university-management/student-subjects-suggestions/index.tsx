@@ -34,7 +34,7 @@ const StudentSuggestedSubjectsPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useGetTableData('/StudentSuggestedSubject/GetAllStudentSuggestedSubjects', page, pageSize, searchKey)
+          refetch } = useGetTableData<{studentSuggestedSubjects: SuggestedSubject[]}>('/StudentSuggestedSubject/GetAllStudentSuggestedSubjects', page, pageSize, searchKey)
 
   const { refetch: refetchStudentSuggestedSubject,
         } = useQuery(

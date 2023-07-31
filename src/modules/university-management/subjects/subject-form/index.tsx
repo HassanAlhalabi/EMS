@@ -10,6 +10,7 @@ import { useGetSpecialities } from "../../../../hooks/useGetSpecialities";
 import SwitchInput from "../../../../components/switch-input/index.";
 import { useGetSubjects } from "../../../../hooks/useGetSubjects";
 import { useGetSubjectsTypes } from "../../../../hooks/useGetSubjectsTypes";
+import useTranslate from '../../../../hooks/useTranslate';
 
 type FacultySubjectProps = {
     facultyId: string,
@@ -30,6 +31,7 @@ const SubjectForm = (   {formik}:
     const subjectsTypes = useGetSubjectsTypes();
     const [superSubjectId, setSuperSubjectId] = useState<string>('');
     const [superSubjectName, setSuperSubjectName] = useState<string>('');
+    const t = useTranslate();
 
     const handleAddFacultySubject = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -106,19 +108,19 @@ const SubjectForm = (   {formik}:
     const columns = useMemo(
         () => [
             {
-                Header: 'Faculty Name',
+                Header: t('faculty_name'),
                 accessor: 'facultyName',
             },
             {
-                Header: 'Speciality Name',
+                Header: t('speciality_name'),
                 accessor: 'specialityName',
             },
             {
-                Header: 'Pre-Requested Subject Name',
+                Header: t('pre-request_subject'),
                 accessor: 'superSubjectName',
             },
             {
-                Header: 'Options',
+                Header: t('options'),
                 accessor: 'options',
             }
         ],
@@ -128,13 +130,13 @@ const SubjectForm = (   {formik}:
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Control
                         size="lg"
                         required
                         type="text" 
-                        placeholder="Arabic Name"
+                        placeholder={t('arabic_name')}
                         name="nameAr"
                         value={formik.values.nameAr} 
                         onChange={formik.handleChange} />
@@ -143,13 +145,13 @@ const SubjectForm = (   {formik}:
                     </Feedback>
                 </Form.Group>
             </Col>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Control
                         size="lg"
                         required
                         type="text" 
-                        placeholder="English Name"
+                        placeholder={t('english_name')}
                         name="nameEn"
                         value={formik.values.nameEn} 
                         onChange={formik.handleChange} />
@@ -164,7 +166,7 @@ const SubjectForm = (   {formik}:
                 as="textarea"
                 size="lg"
                 type="text" 
-                placeholder="Arabic Description"
+                placeholder={t('arabic_description')}
                 name="descriptionAr"
                 value={formik.values.descriptionAr} 
                 onChange={formik.handleChange} />
@@ -177,7 +179,7 @@ const SubjectForm = (   {formik}:
                 as="textarea"
                 size="lg"
                 type="text" 
-                placeholder="English Description"
+                placeholder={t('english_description')}
                 name="descriptionEn"
                 value={formik.values.descriptionEn} 
                 onChange={formik.handleChange} />
@@ -189,7 +191,7 @@ const SubjectForm = (   {formik}:
             <Col sm={8}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="type">
-                        Subject Type:
+                        {t('subject_type')}:
                     </Form.Label>
                     <Form.Select
                         size="lg"
@@ -213,7 +215,7 @@ const SubjectForm = (   {formik}:
             <Col sm={4}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="hasLabratory">
-                        Has Labratory: 
+                        {t('has_labratory')}: 
                     </Form.Label>
                     <SwitchInput
                         id="hasLabratory"                    
@@ -233,7 +235,7 @@ const SubjectForm = (   {formik}:
             <Col>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="superSubjectId">
-                        Pre-request Subject:             
+                        {t('pre-request_subject')}:             
                     </Form.Label>
                     <Form.Select
                         size="lg"
@@ -255,7 +257,7 @@ const SubjectForm = (   {formik}:
             </Col>
         </Row>
         <button className="btn btn-success mb-2" onClick={handleAddFacultySubject}>
-                Add Faculty Pre-Requested Subject <i className="fa fa-plus"></i>
+            {t('add_faculty_pre_requested_subjects')} <i className="fa fa-plus"></i>
         </button>
         <Table<FacultySubjectProps>  columns={columns} 
                 data={facultySubjects}

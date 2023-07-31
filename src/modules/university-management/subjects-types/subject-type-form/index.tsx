@@ -3,19 +3,22 @@ import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback"
 import { NewSubjectType } from "../../subjects/types";
+import useTranslate from "../../../../hooks/useTranslate";
 
 const SubjectTypeForm = ({formik}:{formik: FormikProps<NewSubjectType>}) => {
+
+    const t = useTranslate();
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Control
                         size="lg"
                         required
                         type="text" 
-                        placeholder="Arabic Name"
+                        placeholder={t('arabic_name')}
                         name="nameAr"
                         value={formik.values.nameAr} 
                         onChange={formik.handleChange} />
@@ -24,13 +27,13 @@ const SubjectTypeForm = ({formik}:{formik: FormikProps<NewSubjectType>}) => {
                     </Feedback>
                 </Form.Group>
             </Col>
-            <Col>
+            <Col md={6}>
                 <Form.Group className="mb-3">
                     <Form.Control
                         size="lg"
                         required
                         type="text" 
-                        placeholder="English Name"
+                        placeholder={t('english_name')}
                         name="nameEn"
                         value={formik.values.nameEn} 
                         onChange={formik.handleChange} />
@@ -45,7 +48,7 @@ const SubjectTypeForm = ({formik}:{formik: FormikProps<NewSubjectType>}) => {
                 as="textarea"
                 size="lg"
                 type="text" 
-                placeholder="Arabic Description"
+                placeholder={t('arabic_description')}
                 name="descriptionAr"
                 value={formik.values.descriptionAr as string} 
                 onChange={formik.handleChange} />
@@ -58,7 +61,7 @@ const SubjectTypeForm = ({formik}:{formik: FormikProps<NewSubjectType>}) => {
                 as="textarea"
                 size="lg"
                 type="text" 
-                placeholder="English Description"
+                placeholder={t('english_description')}
                 name="descriptionEn"
                 value={formik.values.descriptionEn as string} 
                 onChange={formik.handleChange} />
@@ -71,7 +74,7 @@ const SubjectTypeForm = ({formik}:{formik: FormikProps<NewSubjectType>}) => {
                 size="lg"
                 required
                 type="number" 
-                placeholder="Max Hours"
+                placeholder={t('max_hours')}
                 name="maxHours"
                 value={formik.values.maxHours} 
                 onChange={formik.handleChange} />

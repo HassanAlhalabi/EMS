@@ -41,7 +41,7 @@ const BusStopsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/BusStop/GetBusStops', page, pageSize, searchKey)
+            refetch } = useGetTableData<{busStops: BusStop[]}>('/BusStop/GetBusStops', page, pageSize, searchKey)
 
     useGetDataById<FullBusStop>(    '/BusStop/GetFullBusStop',
                                 busStopId,

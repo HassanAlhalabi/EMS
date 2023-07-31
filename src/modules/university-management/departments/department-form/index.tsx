@@ -14,7 +14,7 @@ import { mapToTyphead } from '../../../../util';
 
 const DepartmentForm = ({formik}:{formik: FormikProps<NewDepartment>}) => {
 
-    const { data: faculties } = useGetDropdownFaculties();
+    const { faculties } = useGetDropdownFaculties();
 
     const { data: usersRes } = useGetDropdownUsers('Employee');
 

@@ -3,6 +3,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap');
 
 body,
-h1,h2,h3,h4,h5,h6,p,a,div,button {
+h1,h2,h3,h4,h5,h6,p,a,div,button,label, option, ::placeholder, select, option:disabled {
     font-family: 'Cairo', sans-serif !important;
+}
+
+.fa-chevron-right,
+.fa-chevron-left {
+    transform: rotate(180deg);
+}
+
+.nav-link.dropdown-indicator:after {
+    right: auto;
+    left: 25px
+}
+
+
+.emoji-picker-holder {
+    bottom: 0;
+    left: 0
 }

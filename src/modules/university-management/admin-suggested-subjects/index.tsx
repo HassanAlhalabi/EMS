@@ -39,7 +39,7 @@ const AdminSuggestedSubjectsPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useGetTableData('/StudentSuggestedSubject/GetAllStudentSuggestedSubjectsForAdmin', page, pageSize, searchKey)
+          refetch } = useGetTableData<{studentSuggestedSubjects: SuggestedSubject[] }>('/StudentSuggestedSubject/GetAllStudentSuggestedSubjectsForAdmin', page, pageSize, searchKey)
 
   const columns = useMemo(
 		() => [

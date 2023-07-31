@@ -1,17 +1,23 @@
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/layout-context';
-// import { drawerMenu } from '../../routes';
 import NavList from '../nav-list';
 import NavLink from '../nav-list/nav-link';
 import NavListLabel from '../nav-list/nav-list-label';
 import Logo from '../logo';
 import { useTranslation } from 'react-i18next';
+import { useBlur } from '../../hooks/useBlur';
 
 const Drawer = () => {
 
-  const {toggleDrawer, drawerIsExpanded} = useContext(LayoutContext);
+  const {toggleDrawer, drawerIsExpanded, setIsExpanded} = useContext(LayoutContext);
   const { t } = useTranslation();
+  const drawerRef = useRef(null);
+  const handleOnBlur = () => { 
+    if(window.innerWidth >= 1200) return;
+    setIsExpanded(false) 
+  };
+  useBlur(drawerRef, handleOnBlur);
 
   return (
     <nav className="navbar navbar-light navbar-vertical navbar-expand-xl ps-3">
@@ -33,12 +39,15 @@ const Drawer = () => {
         </Link>
       </div>
 
-      <div className={`collapse navbar-collapse w-100 ${drawerIsExpanded ? 'show' : ''}`}>
+      <div  ref={drawerRef}  
+            className={`collapse navbar-collapse w-sm-75 w-100 w-md-50 w-xl-100
+            ${drawerIsExpanded ? 'show' : ''}`}>
         <NavList>
 
             <NavLink title={t('dashboard')} faIcon="fas fa-chart-pie" link="/" />
             <NavLink title="Subjects Registration" faIcon="fas fa-book "link="subjects-registration" scope="SubjectRegister.View" />
             <NavLink title={t('my_bookings')} faIcon="fas fa-bus "link="my-bookings" />
+            <NavLink title={t('chat')} faIcon="fas fa-message"link="chat" />
 
             <NavListLabel title={t('tasks_management')} scope={['AllTicket.View','TicketType.Insert']}/>
             <NavLink title={t('tasks')} faIcon="fas fa-tasks" link="tickets" scope='AllTicket.View'/>

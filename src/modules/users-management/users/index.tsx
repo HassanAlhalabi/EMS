@@ -13,7 +13,7 @@ import { capitalize } from "../../../util";
 import UserForm from "./user-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useActions } from "../../../hooks/useActions";
-import { Action } from "../../../types";
+import { Action, PaginationInfo } from "../../../types";
 import { useGetDataById } from "../../../hooks/useGetDataById";
 import Button from '../../../components/button';
 
@@ -48,7 +48,7 @@ const UsersPage = () => {
   });
   const { setAction } = useActions()
 
-  const { data, status, isLoading, isFetching, refetch } = useGetTableData('/User/GetAllUsers', page, pageSize, searchKey)
+  const { data, status, isLoading, isFetching, refetch } = useGetTableData<{users: User[]}>('/User/GetAllUsers', page, pageSize, searchKey)
     
   const {refetch: refetchUser} = useGetDataById<User>('/User/GetUser', userId, {
           onRefetch: data => {

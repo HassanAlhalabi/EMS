@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import PopUp from "../../../components/popup";
 import Table from "../../../components/table"
 import { ACTION_TYPES } from "../../../constants";
-import { capitalize } from "../../../util";
 import { TripBooking, NewTripBooking, UserBooking } from "./types";
 import { tripBookingValidation } from "./schema";
 import TripBookingForm from './booking-form';
@@ -15,7 +14,7 @@ import { useGetDataById } from '../../../hooks/useGetDataById';
 import { Action } from '../../../types';
 import { useActions } from '../../../hooks/useActions';
 import dayjs from 'dayjs';
-import { useTranslation } from 'react-i18next';
+import useTranslate, { TranslateKey } from '../../../hooks/useTranslate';
 
 const INITIAL_VALUES = {
     tripId: '',
@@ -30,7 +29,7 @@ const TripsBookingsPage = () => {
     const [currentAction, setCurrentAction] = useState<Action | null>(null);
     const [bookingId, setTripBookingId] = useState<string | null>(null);
     const { setAction } = useActions();
-    const {t} = useTranslation();
+    const t = useTranslate();
 
     const formik = useFormik<NewTripBooking>({
 		initialValues: INITIAL_VALUES,
@@ -41,7 +40,7 @@ const TripsBookingsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Booking/GetMyBookings', page, pageSize, searchKey)
+            refetch } = useGetTableData<{bookings: UserBooking[]}>('/Booking/GetMyBookings', page, pageSize, searchKey)
 
     useGetDataById<TripBooking>(    '/Booking/GetMyBookings',
                                     bookingId,
@@ -50,31 +49,31 @@ const TripsBookingsPage = () => {
     const columns = useMemo(
         () => [
             {
-                Header: 'Full Name',
+                Header: t('full_name'),
                 accessor: 'userFullName'
             },
             {
-                Header: 'User Name',
+                Header: t('user_name'),
                 accessor: 'userName'
             },
             {
-                Header: 'Booking Date',
+                Header: t('booking_date'),
                 accessor: 'bookingDate',
             },
             {
-                Header: 'Chairs Number',
+                Header: t('chairs_number'),
                 accessor: 'chairNumber',
             },
             {
-                Header: 'Route',
+                Header: t('route'),
                 accessor: 'route',
             },
-            // {
-            //     Header: 'Busstops',
-            //     accessor: 'busStops',
-            // },
             {
-                Header: 'Options',
+                Header: t('bus_stops'),
+                accessor: 'busStops',
+            },
+            {
+                Header: t('options'),
                 accessor: 'options',
             }
         ],
@@ -86,8 +85,8 @@ const TripsBookingsPage = () => {
             data.data.bookings.map((booking: UserBooking)=> ({
                 ...booking,
                 bookingDate: dayjs(booking.bookingDate).format('DD/MM/YYYY HH:mm'),
-                route: `From ${booking.trip.route.from ? booking.trip.route.from.cityName : 'University'} 
-                        to ${booking.trip.route.to ? booking.trip.route.to.cityName : 'University'}`
+                route: `${t('from')} ${booking.trip.route.from ? booking.trip.route.from.cityName : t('university')} 
+                        ${t('to')} ${booking.trip.route.to ? booking.trip.route.to.cityName : t('university')}`
             })) : 
             [],
         [data, isFetching, isLoading, page]
@@ -104,19 +103,19 @@ const TripsBookingsPage = () => {
           type: currentAction,
           path: '/Booking',
           payload: formik.values,
-          onSuccess: () => handleSuccess('Trip Booking Added Successfully')
+          onSuccess: () => handleSuccess(t('add_success'))
         },
         [ACTION_TYPES.update]: {
           type:  currentAction,
           path: '/Booking',
           payload: formik.values,
-          onSuccess: () => handleSuccess('Trip Booking Updated Successfully')
+          onSuccess: () => handleSuccess(t('update_success'))
         },
         [ACTION_TYPES.delete]: {
           type: currentAction,
           path: `/Booking`,
           payload: bookingId,
-          onSuccess: () => handleSuccess('Trip Booking Canceled Successfully')
+          onSuccess: () => handleSuccess(t('delete_success'))
         }
       }
 
@@ -176,10 +175,10 @@ const TripsBookingsPage = () => {
                     }}
                 />
 
-                <PopUp  title={`${t(currentAction as string)} ${t('booking')}`}
+                <PopUp  title={`${t(currentAction as TranslateKey)} ${t('booking')}`}
 								show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
 								onHide={() => reset()}
-								confirmText={`${t(currentAction as string)} ${t('booking')}`}
+								confirmText={`${t(currentAction as TranslateKey)} ${t('booking')}`}
 								confirmButtonVariant={
 									currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
 								}
@@ -190,7 +189,7 @@ const TripsBookingsPage = () => {
                             currentAction === ACTION_TYPES.update)
                                 && <TripBookingForm formik={formik} />}
                         {currentAction === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This Booking</>
+                                    <>{t('delete_confirmation')}</>
                         }
                 </PopUp>
 

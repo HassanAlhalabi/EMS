@@ -17,6 +17,7 @@ import SubjectForm from "./subject-form";
 import { useGetTableData } from "../../../hooks/useGetTableData";
 import { useGetDataById } from '../../../hooks/useGetDataById';
 import Button from '../../../components/button';
+import useTranslate, { TranslateKey } from '../../../hooks/useTranslate';
 
 const INITIAL_VALUES = {
     nameAr: '',
@@ -36,7 +37,7 @@ const SubjectsPage = () => {
     const [action, setAction] = useState<string | null>(null);
     const [subjectId, setSubjectId] = useState<string | null>(null);
     const { toggleScreenLoader } = useScreenLoader();
-    const get = useGet();
+    const t = useTranslate();
 
     const formik = useFormik<NewSubject>({
 		initialValues: INITIAL_VALUES,
@@ -47,7 +48,7 @@ const SubjectsPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Subject/GetAllSubjects', page, pageSize, searchKey)
+            refetch } = useGetTableData<{subjects: Subject[]}>('/Subject/GetAllSubjects', page, pageSize, searchKey)
 
     useGetDataById<FullSubject>('/Subject/GetFullSubject', subjectId, {
         onRefetch: data => {
@@ -72,11 +73,11 @@ const SubjectsPage = () => {
     const columns = useMemo(
         () => [
             {
-                Header: 'Subject Name',
+                Header: t('subject_name'),
                 accessor: 'name',
             },
             {
-                Header: 'Options',
+                Header: t('options'),
                 accessor: 'options',
             }
         ],
@@ -148,7 +149,7 @@ const SubjectsPage = () => {
                                                 type="button" 
                                                 onClick={() => setAction(ACTION_TYPES.add)}>        
                                                     <span className="fas fa-plus"></span>
-                                                    <span className="ms-1">New</span>
+                                                    <span className="ms-1">{t('new')}</span>
                                             </Button>} 
                     renderRowActions={(data) => {
                         return  <>
@@ -172,10 +173,10 @@ const SubjectsPage = () => {
                     }}
                 />
 
-                <PopUp  title={`${action && capitalize(action as string)} Subject`}
+                <PopUp  title={`${t(action as TranslateKey)} ${t('subject')}`}
                         show={action !== null}
                         onHide={() => { setAction(null), formik.resetForm(), setSubjectId(null) } }
-                        confirmText={`${action} Subject`}
+                        confirmText={`${t(action as TranslateKey)} ${t('subject')}`}
                         confirmButtonVariant={
                             action === ACTION_TYPES.delete ? 'danger' : "primary"
                         }
@@ -187,7 +188,7 @@ const SubjectsPage = () => {
                             action === ACTION_TYPES.update)
                                 && <SubjectForm formik={formik} />}
                         {action === ACTION_TYPES.delete && 
-                                    <>Are you Sure You Want to Delete This Subject</>
+                                    <>{t('delete_confirmation')}</>
                         }
                 </PopUp>
 

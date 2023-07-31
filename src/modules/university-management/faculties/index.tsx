@@ -27,7 +27,7 @@ const FacultiesPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useGetTableData('/Faculty/GetAllFaculties', page, pageSize, searchKey)
+          refetch } = useGetTableData<{faculties: Faculty[]}>('/Faculty/GetAllFaculties', page, pageSize, searchKey)
 
   useEffect(() => {
     if(facultyId && action === ACTION_TYPES.toggle) {

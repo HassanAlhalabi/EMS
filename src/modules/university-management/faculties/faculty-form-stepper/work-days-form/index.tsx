@@ -4,19 +4,22 @@ import { FormikProps } from 'formik';
 import Feedback from "../../../../../components/feedback"
 import { NewDay } from "../../types";
 import { WORK_DAYS } from "../../../../../constants";
+import useTranslate from "../../../../../hooks/useTranslate";
 
 const WorkDaysForm = ({formik}:{formik: FormikProps<NewDay>}) => {
+
+    const t = useTranslate();
 
   return (
     <Form noValidate validated={formik.dirty} autoComplete="off">
         <Row>
-            <Col>
+            <Col md={4}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="workingDaysNum">
-                       Work Day: 
+                        {t('work_day')}: 
                     </Form.Label>
                     <Form.Select size="lg" name="name" onChange={formik.handleChange} value={formik.values.name}>
-                        <option key='null' value=''>Select Day</option>
+                        <option key='null' value=''>{t('select_day')}</option>
                         {
                             Object.entries(WORK_DAYS).map(([key,value]) => 
                                 <option key={key} value={key}>{key}</option>
@@ -28,10 +31,10 @@ const WorkDaysForm = ({formik}:{formik: FormikProps<NewDay>}) => {
                     </Feedback>
                 </Form.Group> 
             </Col>
-            <Col>
+            <Col md={4}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="workStartAt">
-                       Starts At:
+                        {t('starts_at')}:
                     </Form.Label>
                     <Form.Control
                         id="workStartAt"
@@ -48,10 +51,10 @@ const WorkDaysForm = ({formik}:{formik: FormikProps<NewDay>}) => {
                     </Feedback>
                 </Form.Group> 
             </Col>
-            <Col>
+            <Col md={4}>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="workEndAt">
-                        Ends At:
+                        {t('ends_at')}:
                     </Form.Label>
                     <Form.Control
                         id="workEndAt"
@@ -71,10 +74,10 @@ const WorkDaysForm = ({formik}:{formik: FormikProps<NewDay>}) => {
         </Row>
         <button
             onClick={(e) => { e.preventDefault(); formik.handleSubmit()} } 
-            className={`btn btn-falcon-success px-5 px-sm-6`} 
+            className={`btn btn-falcon-success px-5 px-sm-6 mb-3`} 
             type="button"
             >
-            Add Day <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>
+            {t('ADD')} {t('day')} <span className="fas fa-plus ms-2" data-fa-transform="shrink-3"> </span>
         </button>
     </Form>
   )

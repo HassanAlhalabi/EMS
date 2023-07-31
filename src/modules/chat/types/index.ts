@@ -7,6 +7,11 @@ export interface Message {
     content: string,
     sentAt: string,
     sending?: boolean,
+    failed?: boolean,
+    handleEditMessage?: (messageId: string, content: string) => void,
+    handleDeleteMessage?: (messageId?: string) => void,
+    handleSelect?: (messageId: string, action: 'SELECT' | 'DISELECT') => void,
+    selected?: boolean
 }
 
 export interface Group {
@@ -17,5 +22,5 @@ export interface Group {
     thumbnail?: string;
     groupNum: number,
     groupMembersCount: number,
-    handleClick?: (groupId: string ) => void 
+    handleClick?: (group: Group ) => void 
 }

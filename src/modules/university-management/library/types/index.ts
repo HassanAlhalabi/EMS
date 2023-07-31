@@ -7,7 +7,7 @@ export interface NewBook {
     descriptionAr: string | null,
     descriptionEn: string | null,
     cover: string | null | File,
-    categoryId: string[],
+    categoryIds: {label: string, value: string}[],
     updateImage?: boolean,
     attachment: File | null,
     imagePath: string
@@ -17,7 +17,7 @@ export interface FullBook {
     attachment: File | null;
     authorNameAr: string,
     authorNameEn: string,
-    categoryIds: string[],
+    categoryIds: {id: string, name: string}[],
     cover: null | File;
     descriptionAr: string | null,
     descriptionEn: string | null,

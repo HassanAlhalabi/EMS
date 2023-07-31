@@ -1,90 +1,64 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
-import { Typeahead } from "react-bootstrap-typeahead";
 import { Form, Row, Col } from "react-bootstrap";
-import { useQuery } from "react-query";
 import { FormikProps } from "formik";
 
 import Feedback from "../../../../components/feedback";
 import { NewStudyPlan } from "../types";
-import Table from "../../../../components/table";
 import { mapToTyphead } from "../../../../util";
-import { useGet } from "../../../../hooks";
 import useGetDropdownFaculties from "../../../../hooks/useGetDropdownFaculties";
+import useGetDropdownSpecialities from "../../../../hooks/useGetDropdownSpecialities";
+import useGetDropdownSubjects from "../../../../hooks/useGetDropdownSubjects";
+import useTranslate from "../../../../hooks/useTranslate";
+import useTableSelect from "../../../../hooks/useTableSelect";
+import { FullSubject } from "../../subjects/types";
 
-const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
+const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan & {subjects?: FullSubject[]}>}) => {
 
-    const get = useGet();
+    const t = useTranslate();
+    const { faculties } = useGetDropdownFaculties();
+    const { specialities } = useGetDropdownSpecialities(formik.values.facultyId as string);
+    const { subjects } = useGetDropdownSubjects();
 
-    const { data: faculties } = useGetDropdownFaculties()
-
-    const { data: specialities, refetch: refetchSpecialities } = useQuery(
-        ['/Specialty/GetDropDownSpecialties', formik.values.facultyId], 
-        () => get(`/Specialty/GetDropDownSpecialties/${formik.values.facultyId}`),
-        {
-            enabled: false
-        });
-   
-    const { data: subjects } = useQuery(
-        ['/Subject/GetDropDownSubjects'], 
-        () => get(`/Subject/GetDropDownSubjects`));
-
+    const { renderSelectTable, setAllSelectedItems } = useTableSelect('Study Plans',
+                                                subjects ? mapToTyphead(subjects.data) : [] ,
+                                                formik.errors.studyPlanSubjects as string,
+                                                {
+                                                    onSelect: selectedSubjects => {
+                                                        formik.setValues({
+                                                            ...formik.values,
+                                                            studyPlanSubjects: [
+                                                                ...formik.values.studyPlanSubjects,
+                                                                selectedSubjects[0].id
+                                                            ]
+                                                        })
+                                                    },
+                                                    onDelete: subjectId => {
+                                                        const newSubjects = formik.values.studyPlanSubjects.filter(item => {
+                                                            return (item !== subjectId) 
+                                                        });
+                                                        formik.setValues({
+                                                            ...formik.values,
+                                                            studyPlanSubjects: newSubjects
+                                                        });
+                                                    }
+                                                }); 
+                                                
     useEffect(() => {
-        if(formik.values.facultyId) {
-            refetchSpecialities();
+        if(formik.values.subjects) {
+            setAllSelectedItems(formik.values.subjects)
         }
-    },[formik.values.facultyId])
+    }, [formik.values?.subjects?.length])
 
-    const [allSelectedSubjects, setAllSelectedSubjects] = useState<Record<string, any>[]>([]);
-
-   const handleSelectSubject = (selectedSubjects: Record<string, any>[]) => {
-
-        if(selectedSubjects.length === 0) return;
-
-        console.log(selectedSubjects)
-        
-        // Check If Object Already Exists
-        const objectExits = allSelectedSubjects.find(item => item.id === selectedSubjects[0].id);
-
-        if(objectExits) return;  
-        
-        setAllSelectedSubjects([
-            ...allSelectedSubjects,
-            selectedSubjects[0]
-        ])
-        
-        formik.setValues({
-            ...formik.values,
-            studyPlanSubjects: [
-                ...formik.values.studyPlanSubjects,
-                selectedSubjects[0].id
-            ]
-        })
-    }
-    
-
-    const handleDeleteSubject = (subjectId: string) => {
-        const newSubjects = formik.values.studyPlanSubjects.filter(item => {
-            return (item !== subjectId) 
-        });
-        const newSubjectsForTable = allSelectedSubjects?.filter(item => {
-            return (item.id !== subjectId) 
-        });
-        formik.setValues({
-            ...formik.values,
-            studyPlanSubjects: newSubjects
-        });
-        setAllSelectedSubjects(newSubjectsForTable);
-    }
 
    const columns = useMemo(
         () => [
             {
-                Header: 'Subject Name',
+                Header: t('subject_name'),
                 accessor: 'name',
             },
             {
-                Header: 'Options',
+                Header: t('options'),
                 accessor: 'options',
             }
         ],
@@ -100,7 +74,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                         size="lg"
                         required
                         type="text" 
-                        placeholder="Arabic Name"
+                        placeholder={t('arabic_name')}
                         name="nameAr"
                         value={formik.values.nameAr} 
                         onChange={formik.handleChange} />
@@ -115,7 +89,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                         size="lg"
                         required
                         type="text" 
-                        placeholder="English Name"
+                        placeholder={t('english_name')}
                         name="nameEn"
                         value={formik.values.nameEn} 
                         onChange={formik.handleChange} />
@@ -129,7 +103,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
             <Col>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="facultyId">
-                        Faculties:
+                        {t('faculty')}:
                     </Form.Label>
                     <Form.Select
                         required
@@ -153,7 +127,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
             <Col>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="specialtyId">
-                        Speciality:             
+                        {t('speciality')}:             
                     </Form.Label>
                     <Form.Select
                         required
@@ -176,34 +150,7 @@ const StudyPlanForm = ({formik}:{formik: FormikProps<NewStudyPlan>}) => {
                 </Form.Group>
             </Col>
         </Row>
-        <Row>
-            <Form.Group className="mb-3">
-                <Form.Label>
-                    Choose Subjects:
-                </Form.Label>
-                <Typeahead
-                    id="studyPlanSubjects"
-                    size="lg"
-                    className={formik.values?.studyPlanSubjects.length !== 0 && formik.dirty ? 'is-valid': 'is-invalid'}
-                    placeholder='Search Subjects'
-                    onChange={(options) => handleSelectSubject(options as Record<string, any>[])}
-                    options={subjects ? mapToTyphead(subjects.data) : []}
-                    isInvalid={formik.values.studyPlanSubjects.length === 0 && formik.dirty}
-                    isValid={formik.values.studyPlanSubjects.length !== 0 && formik.dirty}
-                />
-                <Feedback type="invalid">
-                    {formik.errors.studyPlanSubjects as string}
-                </Feedback>
-            </Form.Group> 
-        </Row> 
-        <Table<Record<string, any>>  
-            columns={columns} 
-            data={allSelectedSubjects}
-            renderRowActions={data =>  <button className="btn btn-falcon-danger btn-sm m-1" 
-            type="button" 
-            onClick={() => handleDeleteSubject(data.id)}>        
-                    <span className="fas fa-trash" data-fa-transform="shrink-3 down-2"></span>
-                </button>}  />
+        {renderSelectTable(columns)}
     </Form>
   )
 }

@@ -39,7 +39,7 @@ const DepartmentsPage = () => {
           status,
           isLoading, 
           isFetching, 
-          refetch } = useGetTableData('/Department/GetAllDepartments', page, pageSize, searchKey)
+          refetch } = useGetTableData<{departments: Department[]}>('/Department/GetAllDepartments', page, pageSize, searchKey)
 
   const {refetch: refetchDepartment } = useGetDataById<FullDepartment>('/Department/GetFullDepartment', departmentId, {
         onRefetch: data => {

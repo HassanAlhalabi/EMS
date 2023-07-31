@@ -111,7 +111,7 @@ export const getAllClaimsByType = (type: string) => getClaimsMap().get(type)
 
 export const hasPermission = (scope: string | string[]) => {
     const claims = getClaims();
-    console.log(claims)
+    // console.log(claims)
     return  Array.isArray(scope) ? 
                 claims.hasSomeValues(scope)
             :   claims.find( claim => claim.toLowerCase() === scope.toLocaleLowerCase()) ? true : false;
@@ -157,3 +157,27 @@ export const dateFromNow = (date: string | Date | number) => {
     dayjs.extend(relativeTime);
     return dayjs().from(dayjs(date), true);
 }
+
+export const isInViewport = (el: HTMLElement) => {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+    );
+}
+
+// export const isOnline = () => {
+//     window.addEventListener('load', function(event) {
+//         return detectInternet();
+//     });
+//     window.addEventListener('online', function(event) {
+//         return detectInternet();
+//     });
+//     window.addEventListener('offline', function(event) {
+//         return detectInternet();
+//     });
+//     const detectInternet = () => navigator.onLine ? true : false
+// }

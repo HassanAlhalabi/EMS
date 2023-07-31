@@ -162,7 +162,7 @@ const Table = <T extends Record<any,any>>({
 			
 					<div className={`d-flex align-items-center justify-content-between flex-wrap`}>
 						{
-							pagination &&
+							(pagination) &&
 							<TablePagination
 								loading={loading as boolean}
 								pagination={pagination}
@@ -175,7 +175,7 @@ const Table = <T extends Record<any,any>>({
 							/>
 						}
 						{
-							hasSearch && rows.length > 0 &&
+							(hasSearch) &&
 								<TableSearch
 									searchKey={searchKey as string}
 									handleSearchChange={handleSearchChange}
@@ -248,7 +248,7 @@ const Table = <T extends Record<any,any>>({
 															</td>
 												}
 												if(cell.column.id === 'options') {
-													return 	<td className="align-middle d-flex text-align-center justify-content-center" {...cell.getCellProps()}>
+													return 	<td className="align-middle d-flex justify-content-start" {...cell.getCellProps()}>
 																{	renderRowActions?.(cell.row.original as T) }
 															</td>
 												} 

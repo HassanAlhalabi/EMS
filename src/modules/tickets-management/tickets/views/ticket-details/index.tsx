@@ -13,6 +13,8 @@ import { ActionItem, useActions } from "../../../../../hooks/useActions";
 import { toast } from "react-toastify";
 import { ACTION_TYPES } from "../../../../../constants";
 import { ticketResultValidation } from "../../schema";
+import useTranslate, { TranslateKey } from "../../../../../hooks/useTranslate";
+import FileAttachmentPreview from "../../../../../components/file-attachement-preview";
 
 const INITIAL_VALUES = {
     attachments: [],
@@ -22,11 +24,9 @@ const INITIAL_VALUES = {
 const TicketDetils = () => {
 
     const { ticketId } = useParams();
-
+    const t = useTranslate();
     const { data, refetch } = useGetDataById<FullTicket>( '/Ticket/GetTicket', ticketId);
-
     const { setAction } = useActions()
-
     const formik = useFormik<NewTicketResult>({
 		initialValues: INITIAL_VALUES,
 		onSubmit: () => handleTicketResultAction(),
@@ -36,23 +36,27 @@ const TicketDetils = () => {
     const columns = useMemo(
         () => [
             {
-                Header: 'Ticket Serial Number',
+                Header: t('task_serial_number'),
                 accessor: 'serial',
             },
             {
-                Header: 'Created By',
+                Header: t('task_note'),
+                accessor: 'note',
+            },
+            {
+                Header: t('created_by'),
                 accessor: 'createdByFullName',
             },
             {
-                Header: 'Ticket Type',
+                Header: t('task_type'),
                 accessor: 'ticketTypeTitle',
             },
             {
-                Header: 'Status',
+                Header: t('status'),
                 accessor: 'ticketStatus',
             },
             {
-                Header: 'Attachements',
+                Header: t('attachments'),
                 accessor: 'attachments',
             }
         ],
@@ -60,7 +64,10 @@ const TicketDetils = () => {
     )
 
     const ticket = useMemo(
-        () => (data?.data) ? [data.data] : [],
+        () => (data?.data) ? [{ ...data.data, 
+                                ticketStatus: t(data.data.ticketStatus as TranslateKey),
+                                attachments: data.data.attachments.map(att => <FileAttachmentPreview key={att} url={att} />)
+                                 }] : [],
         [data]
     );
 
@@ -75,7 +82,7 @@ const TicketDetils = () => {
           type: ACTION_TYPES.formDataAdd,
           path: '/TicketResult',
           payload: {...formik.values, taskId: ticketId},
-          onSuccess: () => handleSuccess('Comment Added Successfully')
+          onSuccess: () => handleSuccess(t('add_success'))
         }
       }
 
@@ -100,7 +107,7 @@ const TicketDetils = () => {
                     isBulk={false}
                     hasSort={false}
                 />
-                <h3 className="h5 my-4">Comments</h3>
+                <h3 className="h5 my-4">{t('comments')}</h3>
                 <CommentList ticketResults={data?.data.ticketResults} />
                 <hr className="border" />
                 <CommnetForm formik={formik} />

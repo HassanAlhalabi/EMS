@@ -39,7 +39,7 @@ const RolesPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Role/GetAllRoles', page, pageSize, searchKey)
+            refetch } = useGetTableData<{roles: Role[]}>('/Role/GetAllRoles', page, pageSize, searchKey)
 
     const {refetch: refetchRole} = useGetDataById<Role>('/Role/GetRole', roleId,{ 
                             onRefetch: data => { 

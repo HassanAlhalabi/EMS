@@ -46,7 +46,7 @@ const RoutesPage = () => {
     const { data, 
             isLoading, 
             isFetching,
-            refetch } = useGetTableData('/Route/GetRoutes', page, pageSize, searchKey)
+            refetch } = useGetTableData<{routes: Route[]}>('/Route/GetRoutes', page, pageSize, searchKey)
 
     useGetDataById<Route>(    '/Route/GetRoute',
                                 routeId,

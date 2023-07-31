@@ -1,28 +1,60 @@
-import { useRef } from "react";
+import { ChangeEvent, FormEventHandler, useState } from "react";
 
 import { Button, Form } from "react-bootstrap";
+import { EmojiClickData } from "emoji-picker-react";
 
+import useTranslate from "../../../../hooks/useTranslate";
+import useEmojisPicker from "../../hooks/useEmojisPicker";
 
-const MessageForm = ({handleSendMessage}:{handleSendMessage: (msg: string) => void}) => {
-
-    const messageInput = useRef<HTMLInputElement | null>(null);                
-
+const MessageForm = (   {   handleSendMessage,
+                            isEdit,
+                            content,
+                            handleContentChange}:
+                        {   handleSendMessage: () => void,
+                            isEdit?: boolean,
+                            content?: string,
+                            handleContentChange?: (content: string) => void
+                        }) => {
+    const t = useTranslate();
     
-    return  <div className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
+    const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault();
+        handleSendMessage();
+    }
+
+    const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => { 
+        handleContentChange?.(e.target.value)
+    }
+
+    const handleEmojiClick = (emoji: EmojiClickData) => {
+        handleContentChange?.(content + emoji.emoji) 
+    }
+
+    const { renderEmojisPicker, openEmojiPicker } = useEmojisPicker({handleEmojiClick});
+
+    return      <Form onSubmit={handleSubmit} 
+                                className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
                     alt="avatar 3" style={{width: "40px",height: "100%"}} className=" me-2"/>
-                    <Form.Control ref={messageInput} 
-                                className="form-control-md"
-                                placeholder="Type your message..." />
+                    <Form.Control   value={content}
+                                    onChange={handleChangeInput}
+                                    className="form-control-md"
+                                    placeholder={`${t('type_message')}...`} />
 
-                    <a className="ms-1 text-muted" href="#!"><i className="fas fa-paperclip"></i></a>
-                    <a className="ms-3 text-muted" href="#!"><i className="fas fa-smile"></i></a>
-                    <Button 
-                            className="ms-3 btn-falcon-primary" 
-                            onClick={() => handleSendMessage(messageInput.current?.value   as string)}>
-                            <i className="fas fa-paper-plane"></i>
-                    </Button>    
-                </div>;
+                    {/* <a className="ms-1 text-muted" href="#!"><i className="fas fa-paperclip"></i></a> */}
+                    <a  className="ms-3 text-muted position-relative" 
+                        href="#!" 
+                        onClick={openEmojiPicker}><i className="fas fa-smile"></i>
+                            { renderEmojisPicker() }
+                    </a>
+                    {
+                        !isEdit && 
+                        <Button type="submit"
+                                className="ms-3 btn-falcon-primary">
+                                <i className="fas fa-paper-plane"></i>
+                        </Button> 
+                    }   
+                </Form>;
 }
  
 export default MessageForm;

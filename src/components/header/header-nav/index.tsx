@@ -14,7 +14,7 @@ const HeaderNav = () => {
     <nav className="navbar navbar-light navbar-glass navbar-top navbar-expand">
       
       <button className="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" 
-              onClick={toggleDrawer}
+              onClick={e => {e.stopPropagation(); toggleDrawer()}}
               type="button"  aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation">
           <span className="navbar-toggle-icon">
               <span className="toggle-line"></span>
