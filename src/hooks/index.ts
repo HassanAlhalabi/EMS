@@ -73,6 +73,15 @@ export const usePutFormData = <T>(path: string, data: T) => {
     const formData = new FormData();
     if(data) {
         Object.entries(data as Object).forEach(([key, value]) => {
+            // In Case Array
+            if(Array.isArray(value)) {
+                Object.values(value as Object).forEach((subvalue) => {
+                    if(subvalue && subvalue.length !== 0) {
+                        formData.append(key, subvalue)
+                    }
+                });
+                return;
+            }
             if(value  && value.length !== 0) {
                 formData.append(key, value)
             }

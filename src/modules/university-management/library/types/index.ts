@@ -17,7 +17,7 @@ export interface FullBook {
     attachment: File | null;
     authorNameAr: string,
     authorNameEn: string,
-    categoryIds: {id: string, name: string}[],
+    categories: {id: string, name: string}[],
     cover: null | File;
     descriptionAr: string | null,
     descriptionEn: string | null,

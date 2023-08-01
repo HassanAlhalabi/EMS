@@ -51,13 +51,13 @@ const BooksPage = () => {
             isFetching,
             refetch } = useGetTableData<{books: Book[]}>('/Book/GetAllBooks', page, pageSize, searchKey)
 
-    useGetDataById<FullBook>('/Book/GetFullBook', bookId, {
+    const { refetch: refetchBook } = useGetDataById<FullBook>('/Book/GetFullBook', bookId, {
         onRefetch: data => {
             data && formik.setValues({
                 ...data.data,
                 updateImage: true,
                 imagePath: data.data.thumbnail || '',
-                categoryIds: data.data.categoryIds.map(category => ({
+                categoryIds: data.data.categories.map(category => ({
                     label: category.name,
                     value: category.id
                 })),
@@ -111,14 +111,14 @@ const BooksPage = () => {
             isError, error } = action === ACTION_TYPES.add ? usePostFormData('/Book', 
                                             {
                                                 ...formik.values,
-                                                categoryId: formik.values.categoryIds.map((category) => (category as unknown as {value: string}).value)
+                                                categoryIds: formik.values.categoryIds.map((category) => (category as unknown as {value: string}).value)
                                             }) :
-                                                        action === ACTION_TYPES.update ? 
-                                                        usePutFormData('/Book', 
+                                                action === ACTION_TYPES.update ? 
+                                                usePutFormData('/Book', 
                                         {
                                             id: bookId,
                                             ...formik.values,
-                                            categoryId: formik.values.categoryIds.map((category) => (category as unknown as {value: string}).value)
+                                            categoryIds: formik.values.categoryIds.map((category) => (category as unknown as {value: string}).value)
                                         }) : action === ACTION_TYPES.delete ? 
                                                 useDelete('/Book',bookId as string) :
                                                 usePut(`/Book/ToggleActivation/${bookId}`);
@@ -146,6 +146,7 @@ const BooksPage = () => {
             toast.success(`${capitalize(action as string)} Book Done Successfully`)
             setAction(null);
 			setBookId(null);
+            refetchBook();
             formik.resetForm();
           } catch(error) {
             toast.error(getAxiosError(error))

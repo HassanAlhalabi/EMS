@@ -1,12 +1,10 @@
-import { lazy } from "react"
+import { lazy } from "react";
 
 import ProtectedRoute from "../components/protected-route";
 import { hasPermission } from "../util";
+import { authRoutes } from "../modules/auth/routes";
 
 const Main                      = lazy(() => import('../modules/main'));
-const SignIn                    = lazy(() => import('../modules/auth'));
-const ForgetPassword            = lazy(() => import('../modules/auth/forget-password'));
-const ResetPassword             = lazy(() => import('../modules/auth/reset-password'));
 const Dashboard                 = lazy(() => import('../modules/dashboard'));
 const Profile                   = lazy(() => import('../modules/users-management/profile'));
 const Page404                   = lazy(() => import('../modules/404'));
@@ -303,33 +301,7 @@ export const getRoutes = () => ([
         element: <ProtectedRoute><Main /></ProtectedRoute>,
         hasPermission: true
     },
-    {
-        id: 'sign-in',
-        name: 'Sign In',
-        path: '/sign-in',
-        isIndex: false,
-        childRoutes: null,
-        element: <SignIn />,
-        hasPermission: true
-    },
-    {
-        id: 'forget-password',
-        name: 'Forget Password',
-        path: '/forget-password',
-        isIndex: false,
-        childRoutes: null,
-        element: <ForgetPassword />,
-        hasPermission: true
-    },
-    {
-        id: 'reset-password',
-        name: 'Reset Password',
-        path: '/reset-password',
-        isIndex: false,
-        childRoutes: null,
-        element: <ResetPassword />,
-        hasPermission: true
-    },
+    ...authRoutes,
     {
         id: 'not-found',
         name: 'Not Found',
@@ -340,84 +312,3 @@ export const getRoutes = () => ([
         hasPermission: true
     }
 ])
-
-
-
-
-// export const drawerUsersMenu = [
-//     [
-//         {
-//             id: 'users',
-//             name: 'Users',
-//             path: '/users',
-//             childRoutes: null,
-//         },
-//         {
-//             id: 'roles',
-//             name: 'Roles',
-//             path: '/roles',
-//             childRoutes: null,
-//         },
-//     ]
-// ]
-
-// export const drawerUniversityManagmentMenu = [
-//     [
-//         {
-//             id: 'faculties',
-//             name: 'Faculties',
-//             path: '/faculties',
-//             isIndex: false,
-//             childRoutes: null,
-//             element: <Faculties />
-//         },
-//         {
-//             id: 'faculty-form',
-//             name: 'Add/Update Faculty',
-//             path: '/faculty-form/:id?',
-//             isIndex: false,
-//             childRoutes: null,
-//             element: <FacultyForm />
-//         },
-//         {
-//             id: 'subjects',
-//             name: 'Subjects',
-//             path: '/subjects',
-//             isIndex: false,
-//             childRoutes: null,
-//             element: <Subjects />
-//         },
-//         {
-//             id: 'subjects-types',
-//             name: 'Subjects Types',
-//             path: '/subjects-types',
-//             isIndex: false,
-//             childRoutes: null,
-//             element: <SubjectsTypes />
-//         },
-//         {
-//             id: 'books',
-//             name: 'Books',
-//             path: '/books',
-//             isIndex: false,
-//             childRoutes: null,
-//             element: <Books />
-//         },
-//         {
-//             id: 'books-categories',
-//             name: 'Categories',
-//             path: '/books-categories',
-//             isIndex: false,
-//             childRoutes: null,
-//             element: <BooksCategories />
-//         },
-//         {
-//             id: 'departments',
-//             name: 'Departments',
-//             path: '/departments',
-//             isIndex: false,
-//             childRoutes: null,
-//             element: <Departments />
-//         },
-//     ]
-// ]
