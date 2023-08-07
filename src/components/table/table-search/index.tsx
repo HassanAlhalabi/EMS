@@ -14,9 +14,7 @@ const TableSearch = ({
   
   const t = useTranslate();
 
-  return (
-    <div>
-      <Form.Control 
+  return <Form.Control 
         type="search" 
         name="search" 
         className="ms-1 me-1 fit-content" 
@@ -24,8 +22,6 @@ const TableSearch = ({
         value={searchKey}
         onChange={handleSearchChange}
         style={{maxWidth: 'fit-content'}} />
-    </div>
-  )
 }
 
 export default TableSearch

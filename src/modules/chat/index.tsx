@@ -308,7 +308,7 @@ const ChatPage = () => {
                         }
                         {currentAction === ACTION_TYPES.delete && 
                                     <div className="d-flex justify-content-between">
-                                      <div>Are you Sure You Want to Delete This Messages</div>
+                                      <>Are you Sure You Want to Delete This Messages</>
                                       <Stack className="d-flex gap-2">
                                           <Form.Label htmlFor="delete-for-all">
                                             Delete For All Users:

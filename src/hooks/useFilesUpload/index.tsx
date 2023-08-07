@@ -121,7 +121,7 @@ function Previews({files, handleDrop, handleRemoveFile, multiple}: PreviewProps)
   }, []);
 
   return (
-    <div>
+    <>
       <div {...getRootProps({className: 'dropzone'})} style={dropZoneStyle}>
         <input {...getInputProps()} />
         <i className='d-block fa fa-plus fa-2x mb-2'></i>
@@ -132,7 +132,7 @@ function Previews({files, handleDrop, handleRemoveFile, multiple}: PreviewProps)
       <aside style={thumbsContainer}>
         {thumbs}
       </aside>
-    </div>
+    </>
   );
 }
 
