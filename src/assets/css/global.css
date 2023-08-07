@@ -312,3 +312,8 @@
 .emoji-picker-holder {
     z-index: 9999;
 }
+
+/* Kanban */
+.kanban-container .kanban-column {
+    width: 24.32%;
+}

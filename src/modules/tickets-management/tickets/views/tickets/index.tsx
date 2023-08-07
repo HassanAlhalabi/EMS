@@ -5,15 +5,18 @@ import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 
 import PopUp from "../../../../../components/popup";
-import Table from "../../../../../components/table"
 import { ACTION_TYPES } from "../../../../../constants";
 import { Ticket, NewTicket, TicketResult } from "../../types";
 import { ticketsValidation } from "../../schema";
 import TicketForm from "../../ticket-form";
 import { useGetTableData } from "../../../../../hooks/useGetTableData";
 import { Action, PaginationInfo } from '../../../../../types';
-import { useActions } from '../../../../../hooks/useActions';
+import { ActionItem, useActions } from '../../../../../hooks/useActions';
 import useTranslate, { TranslateKey } from '../../../../../hooks/useTranslate';
+import Kanban from '../../../../../components/kanban';
+import TicketsTopBar from './components/tickets-top-bar';
+import TicketCard from './components/ticket';
+import { Button } from 'react-bootstrap';
 
 const INITIAL_VALUES = {
     note: '',
@@ -24,8 +27,9 @@ const INITIAL_VALUES = {
 const TicketsPage = () => {
 
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(15);
+    const [pageSize, setPageSize] = useState(4);
     const [searchKey, setSearchKey] = useState('');
+    const [ticketId ,setTicketId] = useState<null | string>(null);
     const [currentAction, setCurrentAction] = useState<Action | null>(null);
     const { setAction } = useActions();
     const t = useTranslate();
@@ -89,12 +93,20 @@ const TicketsPage = () => {
           path: '/Ticket',
           payload: formik.values,
           onSuccess: () => handleSuccess(t('add_success'))
-        }
+        },
+        ['CLOSE_TICKET']: {
+            type: ACTION_TYPES.update,
+            path: '/Ticket/CloseTickets',
+            payload: {
+                ticketIds: [ticketId]
+            },
+            onSuccess: () => handleSuccess(t('update_success'))
+          }
       }
 
     const handleTicketAction = () => {
         if(formik.isValid && currentAction) {
-        setAction(actionsMap[currentAction])
+        setAction(actionsMap[currentAction] as ActionItem)
     }}
 
     const reset = () => {
@@ -102,40 +114,79 @@ const TicketsPage = () => {
     }
 
     return  <>
-                <Table<Ticket>  
-                    columns={columns} 
-                    hasSearch
-                    data={tickets} 
-                    loading={isLoading || isFetching}
-                    isBulk={false}
-                    hasSort={false}
-                    pageNumber={page}
-                    pageSize={pageSize}
-                    setPage={setPage}
-                    setPageSize={setPageSize}
-                    searchKey={searchKey}
-                    setSearchKey={setSearchKey}
-                    pagination={data?.data.paginationInfo}
-                    renderTableOptions={() => {
-                        return  <>
-                                    <button className="btn btn-falcon-success btn-sm" 
-                                            type="button" 
-                                            onClick={() => setCurrentAction(ACTION_TYPES.formDataAdd as Action)}>        
-                                        <span className="fas fa-plus"></span>
-                                        <span className="ms-1">{`${t('create')} ${t('task')}`}</span>
-                                    </button>
-                                </>
-                    }} 
-                    renderRowActions={(data) => {
-                        return  <div className="d-flex justify-content-center align-items-center">
-                                    <Link to={`/tickets/${data.ticketId}`} className="btn btn-falcon-info btn-sm m-1"> 
-                                        <span className="fas fa-eye" data-fa-transform="shrink-3 down-2"></span>
-                                    </Link>
-                                </div>
-                    }}
-                />
 
-                <PopUp  title={`${t('create')} ${t('task')}`}
+    <button onClick={() => setCurrentAction(ACTION_TYPES.formDataAdd as Action)}>Create Ticket</button>
+
+                <TicketsTopBar />
+
+                <Kanban>
+                    <Kanban.Column header={'Open'}>
+                        {
+                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
+                                                                id={ticket.ticketId} 
+                                                                ticket={ticket}
+                                                                renderTicketOptions={() => {
+                                                                    return  <Button className='btn-falcon-danger btn-sm kanban-item-dropdown-btn hover-actions'
+                                                                                    onMouseDown={() => {
+                                                                                        setCurrentAction('CLOSE_TICKET' as Action)
+                                                                                        setTicketId(ticket.ticketId)
+                                                                                    }}>
+                                                                                <span className="fas fa-sm fa-trash"></span>
+                                                                            </Button>   
+                                                                }}/>)
+                        }
+                    </Kanban.Column>
+                    <Kanban.Column header={'In Progress'}>
+                        {
+                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
+                                                                id={ticket.ticketId} 
+                                                                ticket={ticket}
+                                                                renderTicketOptions={() => {
+                                                                    return  <Button className='btn-falcon-danger btn-sm kanban-item-dropdown-btn hover-actions'
+                                                                                    onClick={() => {
+                                                                                        setCurrentAction('CLOSE_TICKET' as Action)
+                                                                                        setTicketId(ticket.ticketId)
+                                                                                    }}>
+                                                                                <span className="fas fa-sm fa-trash"></span>
+                                                                            </Button>   
+                                                                }}/>)
+                        }
+                    </Kanban.Column>
+                    <Kanban.Column header={'Pending'}>
+                        {
+                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
+                                                                id={ticket.ticketId} 
+                                                                ticket={ticket}
+                                                                renderTicketOptions={() => {
+                                                                    return  <Button className='btn-falcon-danger btn-sm kanban-item-dropdown-btn hover-actions'
+                                                                                    onClick={() => {
+                                                                                        setCurrentAction('CLOSE_TICKET' as Action)
+                                                                                        setTicketId(ticket.ticketId)
+                                                                                    }}>
+                                                                                <span className="fas fa-sm fa-trash"></span>
+                                                                            </Button>   
+                                                                }} />)
+                        }
+                    </Kanban.Column>
+                    <Kanban.Column header={'Completed'}>
+                        {
+                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
+                                                                id={ticket.ticketId} 
+                                                                ticket={ticket}
+                                                                renderTicketOptions={() => {
+                                                                    return  <Button className='btn-falcon-danger btn-sm kanban-item-dropdown-btn hover-actions'
+                                                                                    onClick={() => {
+                                                                                        setCurrentAction('CLOSE_TICKET' as Action)
+                                                                                        setTicketId(ticket.ticketId)
+                                                                                    }}>
+                                                                                <span className="fas fa-sm fa-trash"></span>
+                                                                            </Button>   
+                                                                }}/>)
+                        }
+                    </Kanban.Column>
+                </Kanban>
+
+                <PopUp  title={`${t(currentAction as TranslateKey)} ${t('task')}`}
                         show={currentAction !== null && currentAction !== ACTION_TYPES.toggle}
                         onHide={() => reset()}
                         confirmText={`${t('create')} ${t('task')}`}
@@ -143,12 +194,15 @@ const TicketsPage = () => {
                             currentAction === ACTION_TYPES.delete ? 'danger' : "primary"
                         }
                         handleConfirm={handleTicketAction}
-                        confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && currentAction !== ACTION_TYPES.delete}
+                        confirmButtonIsDisabled={(!formik.isValid || !formik.dirty) && (
+                            currentAction !== ACTION_TYPES.delete
+                            && currentAction !== 'CLOSE_TICKET' as Action
+                        )}
                     >
                         {(  currentAction === ACTION_TYPES.formDataAdd || 
                             currentAction === ACTION_TYPES.formDataUpdate)
                                 && <TicketForm formik={formik} />}
-                        {currentAction === ACTION_TYPES.delete && 
+                        {(currentAction === ACTION_TYPES.delete || currentAction === 'CLOSE_TICKET' as Action) && 
                                     <>{t('delete_confirmation')}</>
                         }
                 </PopUp>
