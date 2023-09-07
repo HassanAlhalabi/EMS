@@ -39,7 +39,8 @@ export const WORK_DAYS: Record<string,number> = {
 export const WORK_DAYS_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 export const TASK_STATUS = {
-    pending: 'PENDING',
-    replied: 'REPLIED',
-    closed: 'CLOSED' 
+    open: 'Open',
+    inProgress: 'InProgress',
+    completed: 'Completed',
+    closed: 'Closed' 
 } 

@@ -1,4 +1,4 @@
-import {  ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 
 import {
     DndContext, 
@@ -7,7 +7,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragEndEvent
+    DragEndEvent,
+    UniqueIdentifier
   } from '@dnd-kit/core';
   import {
     arrayMove,
@@ -17,11 +18,20 @@ import {
   } from '@dnd-kit/sortable';
 import KanbanItem from "../kanban-item";
 
-const KanbanColumn = (props: {children: ReactElement[], header?: ReactNode, footer?: ReactNode}) => {
 
-    const [items, setItems] = useState( props.children.map(child => ({id: child.props.id, ...child}) ) )
+export interface DndItem extends ReactElement {
+    id:  UniqueIdentifier
+} 
+
+const KanbanColumn = (props: {children: ReactNode | ReactElement, header?: ReactNode, footer?: ReactNode}) => {
+
+    const [items, setItems] = useState<DndItem[]>([])
     useEffect(() => {
-        setItems(props.children.map(child => ({id: child.props.id, ...child}) ))
+        if(props.children) {
+            setItems(
+                (props?.children as ReactElement[])?.map(child => ({id: child.props.id, ...child}) )
+            )   
+        }
     },[props.children])
 
     const sensors = useSensors(
@@ -30,6 +40,8 @@ const KanbanColumn = (props: {children: ReactElement[], header?: ReactNode, foot
           coordinateGetter: sortableKeyboardCoordinates,
         })
     );
+
+    console.log(items)
 
     return <div className="kanban-column">
                 <div className="kanban-column-header">
@@ -46,7 +58,7 @@ const KanbanColumn = (props: {children: ReactElement[], header?: ReactNode, foot
                                 strategy={verticalListSortingStrategy}
                             >
                                 {
-                                    items.map(item => {
+                                    items?.map(item => {
                                         return <KanbanItem key={item.id} id={item.id} >
                                                     {item}
                                                 </KanbanItem>

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 
 import PopUp from "../../../../../components/popup";
-import { ACTION_TYPES } from "../../../../../constants";
+import { ACTION_TYPES, TASK_STATUS } from "../../../../../constants";
 import { Ticket, NewTicket, TicketResult } from "../../types";
 import { ticketsValidation } from "../../schema";
 import TicketForm from "../../ticket-form";
@@ -17,6 +17,7 @@ import Kanban from '../../../../../components/kanban';
 import TicketsTopBar from './components/tickets-top-bar';
 import TicketCard from './components/ticket';
 import { Button } from 'react-bootstrap';
+import useGetData from '../../../../../hooks/useGetData';
 
 const INITIAL_VALUES = {
     note: '',
@@ -26,13 +27,15 @@ const INITIAL_VALUES = {
 
 const TicketsPage = () => {
 
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(4);
-    const [searchKey, setSearchKey] = useState('');
     const [ticketId ,setTicketId] = useState<null | string>(null);
     const [currentAction, setCurrentAction] = useState<Action | null>(null);
     const { setAction } = useActions();
     const t = useTranslate();
+
+    const [openTickets, setOpenTickets] = useState<Ticket[]>([]);
+    const [inProgressTickets, setInProgressTickets] = useState<Ticket[]>([]);
+    const [completedTickets, setCompletedTickets] = useState<Ticket[]>([]);
+    const [closedTickets, setClosedTickets] = useState<Ticket[]>([]);
 
     const formik = useFormik<NewTicket>({
 		initialValues: INITIAL_VALUES,
@@ -40,46 +43,14 @@ const TicketsPage = () => {
 		validationSchema: ticketsValidation
 	})
 
-    const { data, 
-            isLoading, 
-            isFetching,
-            refetch } = useGetTableData<{tickets: Ticket[], paginationInfo: PaginationInfo}>('/Ticket/GetAllTickets', page, pageSize, searchKey)
-            
-    const columns = useMemo(
-        () => [
-            {
-                Header: t('task_serial_number'),
-                accessor: 'serial',
-            },
-            {
-                Header: t('task_note'),
-                accessor: 'note',
-            },
-            {
-                Header: t('created_by'),
-                accessor: 'createdByFullName',
-            },
-            {
-                Header: t('task_type'),
-                accessor: 'ticketTypeTitle',
-            },
-            {
-                Header: t('status'),
-                accessor: 'ticketStatus',
-            },
-            {
-                Header: t('options'),
-                accessor: 'options',
-            }
-        ],
-        []
-    )
-
-    const tickets = useMemo(
-        () => (data?.data.tickets) ? data.data.tickets.map(ticket => 
-                                        ({...ticket, ticketStatus: t(ticket.ticketStatus as TranslateKey)})) : [],
-        [data, isFetching, isLoading, page]
-    );
+    const { refetch } = useGetData<{tickets: Ticket[], paginationInfo: PaginationInfo}>(`/Ticket/GetAllTickets?page=1&pageSize=1000`,{
+                onSuccess: data => {
+                    setOpenTickets(data.data.tickets.filter(ticket => ticket.ticketStatus === TASK_STATUS.open));
+                    setInProgressTickets(data.data.tickets.filter(ticket => ticket.ticketStatus === TASK_STATUS.inProgress));
+                    setCompletedTickets(data.data.tickets.filter(ticket => ticket.ticketStatus === TASK_STATUS.completed));
+                    setClosedTickets(data.data.tickets.filter(ticket => ticket.ticketStatus === TASK_STATUS.closed));
+                }
+            });
 
     const handleSuccess = async (message: string) => {
         toast.success(message)
@@ -122,7 +93,7 @@ const TicketsPage = () => {
                 <Kanban>
                     <Kanban.Column header={'Open'}>
                         {
-                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
+                            openTickets.map(ticket => <TicketCard   key={ticket.ticketId} 
                                                                 id={ticket.ticketId} 
                                                                 ticket={ticket}
                                                                 renderTicketOptions={() => {
@@ -138,7 +109,7 @@ const TicketsPage = () => {
                     </Kanban.Column>
                     <Kanban.Column header={'In Progress'}>
                         {
-                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
+                            inProgressTickets.map(ticket => <TicketCard   key={ticket.ticketId} 
                                                                 id={ticket.ticketId} 
                                                                 ticket={ticket}
                                                                 renderTicketOptions={() => {
@@ -152,9 +123,9 @@ const TicketsPage = () => {
                                                                 }}/>)
                         }
                     </Kanban.Column>
-                    <Kanban.Column header={'Pending'}>
+                    <Kanban.Column header={'Completed'}>
                         {
-                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
+                            completedTickets.map(ticket => <TicketCard   key={ticket.ticketId} 
                                                                 id={ticket.ticketId} 
                                                                 ticket={ticket}
                                                                 renderTicketOptions={() => {
@@ -168,20 +139,21 @@ const TicketsPage = () => {
                                                                 }} />)
                         }
                     </Kanban.Column>
-                    <Kanban.Column header={'Completed'}>
+                    <Kanban.Column header={'Closed'}>
                         {
-                            tickets.map(ticket => <TicketCard   key={ticket.ticketId} 
-                                                                id={ticket.ticketId} 
-                                                                ticket={ticket}
-                                                                renderTicketOptions={() => {
-                                                                    return  <Button className='btn-falcon-danger btn-sm kanban-item-dropdown-btn hover-actions'
-                                                                                    onClick={() => {
-                                                                                        setCurrentAction('CLOSE_TICKET' as Action)
-                                                                                        setTicketId(ticket.ticketId)
-                                                                                    }}>
-                                                                                <span className="fas fa-sm fa-trash"></span>
-                                                                            </Button>   
-                                                                }}/>)
+                            closedTickets.map(ticket => <TicketCard   
+                                                            key={ticket.ticketId} 
+                                                            id={ticket.ticketId} 
+                                                            ticket={ticket}
+                                                            renderTicketOptions={() => {
+                                                                return  <Button className='btn-falcon-danger btn-sm kanban-item-dropdown-btn hover-actions'
+                                                                                onClick={() => {
+                                                                                    setCurrentAction('CLOSE_TICKET' as Action)
+                                                                                    setTicketId(ticket.ticketId)
+                                                                                }}>
+                                                                            <span className="fas fa-sm fa-trash"></span>
+                                                                        </Button>   
+                                                        }}/>)
                         }
                     </Kanban.Column>
                 </Kanban>
